@@ -1,0 +1,3 @@
+Nerodesk-Revision: ${buildNumber}
+Nerodesk-Version: ${project.version}
+Nerodesk-Date: ${maven.build.timestamp}
