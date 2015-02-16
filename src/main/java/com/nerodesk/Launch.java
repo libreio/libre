@@ -29,8 +29,12 @@
  */
 package com.nerodesk;
 
-import java.io.File;
-import org.apache.catalina.startup.Tomcat;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
 
 /**
  * Launch (used only for heroku).
@@ -54,19 +58,25 @@ public final class Launch {
      * @throws Exception If fails
      */
     public static void main(final String... args) throws Exception {
-        HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
-        server.createContext("/test", new MyHandler());
+        final HttpServer server = HttpServer.create(
+            new InetSocketAddress(Integer.parseInt(System.getenv("PORT"))), 0
+        );
+        server.createContext("/", new Launch.Handler());
         server.setExecutor(null); // creates a default executor
         server.start();
     }
 
-    static class MyHandler implements HttpHandler {
-        public void handle(HttpExchange t) throws IOException {
-            String response = "This is the response";
-            t.sendResponseHeaders(200, response.length());
-            OutputStream os = t.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
+    /**
+     * Handler.
+     */
+    static final class Handler implements HttpHandler {
+        @Override
+        public void handle(final HttpExchange http) throws IOException {
+            final String body = "hello, world!";
+            http.sendResponseHeaders(200, (long) body.length());
+            try (final OutputStream output = http.getResponseBody()) {
+                output.write(body.getBytes());
+            }
         }
     }
 
