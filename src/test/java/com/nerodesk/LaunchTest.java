@@ -29,68 +29,56 @@
  */
 package com.nerodesk;
 
-import com.jcabi.log.Logger;
-import com.jcabi.manifests.Manifests;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import javax.validation.constraints.NotNull;
+import com.jcabi.log.VerboseRunnable;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * Launch (used only for heroku).
+ * Test case for {@code Launch}.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.1
  */
-public final class Launch {
+public final class LaunchTest {
 
     /**
-     * Utility class.
-     */
-    private Launch() {
-        // intentionally empty
-    }
-
-    /**
-     * Entry point.
-     * @param args Command line args
+     * Launches web server on random port.
      * @throws Exception If fails
      */
-    public static void main(final String... args) throws Exception {
-        final int port = Integer.parseInt(args[1]);
-        final HttpServer server = HttpServer.create(
-            new InetSocketAddress(port), 0
+    @Test
+    @SuppressWarnings("PMD.DoNotUseThreads")
+    public void launchesOnRandomPort() throws Exception {
+        final int port = 8080;
+        final Thread thread = new Thread(
+            new VerboseRunnable(
+                new Callable<Void>() {
+                    @Override
+                    public Void call() throws Exception {
+                        Launch.main("", Integer.toString(port));
+                        return null;
+                    }
+                },
+                false, true
+            )
         );
-        server.createContext("/", new Launch.Handler());
-        server.setExecutor(null);
-        server.start();
-        Logger.info(Launch.class, "HTTP server started on port %d", port);
-    }
-
-    /**
-     * Handler.
-     */
-    static final class Handler implements HttpHandler {
-        @Override
-        public void handle(@NotNull final HttpExchange http)
-            throws IOException {
-            http.getResponseHeaders().set("Content-Type", "text/plain");
-            final String body = String.format(
-                "version %s is alive",
-                Manifests.read("Nerodesk-Version")
-            );
-            http.sendResponseHeaders(
-                HttpURLConnection.HTTP_OK, (long) body.length()
-            );
-            try (final OutputStream output = http.getResponseBody()) {
-                output.write(body.getBytes("UTF-8"));
-            }
-        }
+        thread.start();
+        TimeUnit.SECONDS.sleep(1L);
+        final URL url = new URL(String.format("http://localhost:%d", port));
+        final BufferedReader input = new BufferedReader(
+            new InputStreamReader(url.openConnection().getInputStream())
+        );
+        MatcherAssert.assertThat(
+            input.readLine(), Matchers.equalTo("version 1.0-SNAPSHOT is alive")
+        );
+        thread.interrupt();
+        thread.join();
     }
 
 }
