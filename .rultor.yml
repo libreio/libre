@@ -11,6 +11,7 @@ env:
 
 architect:
   - ggajos
+  - yegor256
   - karato
 
 install: |
