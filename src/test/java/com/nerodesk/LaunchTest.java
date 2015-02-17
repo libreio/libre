@@ -29,6 +29,7 @@
  */
 package com.nerodesk;
 
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.VerboseRunnable;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -78,7 +79,7 @@ public final class LaunchTest {
             input.readLine(), Matchers.containsString("version ")
         );
         thread.interrupt();
-        thread.join();
+        thread.join((long) Tv.THOUSAND, 0);
     }
 
 }
