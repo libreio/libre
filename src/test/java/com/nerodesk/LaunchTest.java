@@ -61,7 +61,7 @@ public final class LaunchTest {
                 new Callable<Void>() {
                     @Override
                     public Void call() throws Exception {
-                        Launch.main("", Integer.toString(port));
+                        Launch.main(Integer.toString(port));
                         return null;
                     }
                 },

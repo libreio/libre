@@ -62,7 +62,7 @@ public final class Launch {
      * @throws Exception If fails
      */
     public static void main(final String... args) throws Exception {
-        final int port = Integer.parseInt(args[1]);
+        final int port = Integer.parseInt(args[0]);
         final HttpServer server = HttpServer.create(
             new InetSocketAddress(port), 0
         );
