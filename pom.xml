@@ -42,7 +42,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>nerodesk</name>
-    <description>Cloud File Sharing</description>
+    <description>Open Source Cloud File Sharing</description>
     <url>http://www.nerodesk.com</url>
     <inceptionYear>2015</inceptionYear>
     <organization>
