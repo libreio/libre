@@ -1,4 +1,4 @@
 Main-Class: com.nerodesk.Launch
-Nerodesk-Revision: BUILD
+Nerodesk-Revision: 63cd7fa
 Nerodesk-Version: ${project.version}
 Nerodesk-Date: ${maven.build.timestamp}
