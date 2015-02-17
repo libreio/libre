@@ -1,2 +1,2 @@
-web: java -Xmx512m -XX:MaxPermSize=128m -cp target/nerodesk.jar:target/nerodesk/WEB-INF/lib/* com.nerodesk.Launch ${PORT}
+web: java -Xmx512m -XX:MaxPermSize=128m -cp target/nerodesk-jar-with-dependencies.jar com.nerodesk.Launch ${PORT}
 

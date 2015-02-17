@@ -20,7 +20,7 @@ install: |
 
 deploy:
   script: |
-    mvn clean package -Pnerodesk --errors --settings ../settings.xml --batch-mode
+    mvn clean package -Pnerodesk -Pqulice,cobertura --errors --settings ../settings.xml --batch-mode
     mvn clean
     pdd --source=$(pwd) --verbose --file=nerodesk.xml
     s3cmd --no-progress put nerodesk.xml --config=../s3cfg s3://pdd.teamed.io/nerodesk.xml
@@ -53,7 +53,7 @@ release:
 
 merge:
   script: |
-    mvn help:system clean install -Pqulice -Pnerodesk --errors --settings ../settings.xml
+    mvn help:system clean install -Pqulice,cobertura -Pnerodesk --errors --settings ../settings.xml
     mvn clean site -Psite --errors --settings ../settings.xml
     mvn clean
     pdd --source=$(pwd) --verbose --file=/dev/null
