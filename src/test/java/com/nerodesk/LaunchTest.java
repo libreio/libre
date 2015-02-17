@@ -32,7 +32,11 @@ package com.nerodesk;
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.VerboseRunnable;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -56,7 +60,7 @@ public final class LaunchTest {
     @Test
     @SuppressWarnings("PMD.DoNotUseThreads")
     public void launchesOnRandomPort() throws Exception {
-        final int port = 8080;
+        final int port = LaunchTest.port();
         final Thread thread = new Thread(
             new VerboseRunnable(
                 new Callable<Void>() {
@@ -80,6 +84,22 @@ public final class LaunchTest {
         );
         thread.interrupt();
         thread.join((long) Tv.THOUSAND, 0);
+    }
+
+    /**
+     * Reserve new port for each call.
+     * @return Reserved port.
+     */
+    private static int port() {
+        try (ServerSocket socket = new ServerSocket()) {
+            socket.setReuseAddress(true);
+            socket.bind(
+                new InetSocketAddress(InetAddress.getLoopbackAddress(), 0)
+            );
+            return socket.getLocalPort();
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 
 }
