@@ -1,7 +1,7 @@
 <img src="http://beta.nerodesk.com/img/logo.svg" width="64px" height="64px"/>
 
 [![Made By Teamed.io](http://img.teamed.io/btn.svg)](http://www.teamed.io)
-[![DevOps By Rultor.com](http://www.nerodesk.com/b/teamed/nerodesk)](http://www.nerodesk.com/p/teamed/nerodesk)
+[![DevOps By Rultor.com](http://www.rultor.com/b/teamed/nerodesk)](http://www.rultor.com/p/teamed/nerodesk)
 
 [![Build Status](https://travis-ci.org/teamed/nerodesk.svg?branch=master)](https://travis-ci.org/teamed/nerodesk)
 

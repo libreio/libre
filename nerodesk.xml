@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type='text/xsl' href='http://est-xsl.teamed.io/0.3.xsl'?>
+<estimate xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://est-xsd.teamed.io/0.3.xsd" version="0.3" date="2015-02-18T22:08:36Z">
+  <total>0</total>
+</estimate>
