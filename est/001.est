@@ -1,0 +1,22 @@
+date: 20-02-2015
+author: Grzegorz Gajos
+method: champions.pert
+scope:
+ 1: user can create an account via web panel
+ 2: user can delete his account
+ 3: user can upload a file, download it back and delete it
+ 4: user can share any file with a few other users
+ 5: user can see all his files in the web panel
+ 7: the web panel will be hosted on Heroku
+ 8: objects/files will be stored in Amazon S3 (in the future will be changed to Amazon EC2)
+ 9: preparing development pipeline
+10: integration tests
+champions:
+  4:
+    worst-case: 80
+    best-case: 40
+    most-likely: 60
+  1:
+    worst-case: 60
+    best-case: 30
+    most-likely: 20
