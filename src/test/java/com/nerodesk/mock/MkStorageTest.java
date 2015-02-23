@@ -83,7 +83,7 @@ public final class MkStorageTest {
     public void getAbsentFile() throws Exception {
         final File root = this.temp.getRoot();
         final String path = "/test2.txt";
-        final String content = "Test content";
+        final String content = "Test content2";
         Files.write(
             FileSystems.getDefault().getPath(root.getAbsolutePath(), path),
             content.getBytes()

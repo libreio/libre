@@ -49,7 +49,7 @@ public final class MkStorage implements Storage {
     /**
      * Root path for the storage.
      */
-    private final String root;
+    private final transient String root;
 
     /**
      * Default constructor.

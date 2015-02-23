@@ -48,6 +48,7 @@ public interface Storage {
     /**
      * Get file from storage.
      * @param path Path
+     * @throws IOException If fails
      * @return InputStream
      */
     InputStream get(String path) throws IOException;
