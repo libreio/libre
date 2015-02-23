@@ -62,7 +62,7 @@ public final class Launch {
      * @throws Exception If fails
      */
     public static void main(final String... args) throws Exception {
-        final int port = Integer.parseInt(args[0]);
+        final int port = port(args);
         final HttpServer server = HttpServer.create(
             new InetSocketAddress(port), 0
         );
@@ -70,6 +70,20 @@ public final class Launch {
         server.setExecutor(null);
         server.start();
         Logger.info(Launch.class, "HTTP server started on port %d", port);
+    }
+
+    /**
+     * Return passed port or run on default one 8080.
+     * @param args Command line args
+     * @return Application port.
+     */
+    private static int port(final String... args) {
+        // @checkstyle MagicNumberCheck (1 line)
+        int port = 8080;
+        if (args.length > 0) {
+            port = Integer.parseInt(args[0]);
+        }
+        return port;
     }
 
     /**
