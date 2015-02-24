@@ -40,7 +40,11 @@ import java.io.InputStream;
  * @version $Id$
  * @since 0.1
  * @todo #13:30min Implement put operation to add file to the storage.
+ *  In MkStorage.put() implementation file should be stored on local file system.
+ *  Don't forget about unit tests.
  * @todo #13:30min Implement delete operation to remove file from the storage.
+ *  In MkStorage.delete() implementation file should be removed from local file system.
+ *  Don't forget about unit tests.
  */
 @Immutable
 public interface Storage {
