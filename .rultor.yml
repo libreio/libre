@@ -1,11 +1,11 @@
-architect: 
-- ggajos
-- yegor256
-- karato
 install: |-
    sudo apt-get install bsdmainutils
    sudo gem install pdd
    sudo gem install est
+architect: 
+- ggajos
+- yegor256
+- karato
 assets: 
    secring.gpg: yegor256/home#assets/secring.gpg
    id_rsa: yegor256/home#assets/heroku-key
