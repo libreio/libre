@@ -89,7 +89,7 @@
         </site>
     </distributionManagement>
     <properties>
-        <hibernate.validator>5.0.0.Final</hibernate.validator>
+        <validator.version>5.0.0.Final</validator.version>
     </properties>
     <dependencies>
         <dependency>
@@ -158,7 +158,7 @@
                         <dependency>
                             <groupId>org.hibernate</groupId>
                             <artifactId>hibernate-validator</artifactId>
-                            <version>${hibernate.validator}</version>
+                            <version>${validator.version}</version>
                             <scope>runtime</scope>
                         </dependency>
                     </dependencies>
@@ -170,7 +170,7 @@
                         <dependency>
                             <groupId>org.hibernate</groupId>
                             <artifactId>hibernate-validator</artifactId>
-                            <version>${hibernate.validator}</version>
+                            <version>${validator.version}</version>
                             <scope>runtime</scope>
                         </dependency>
                     </dependencies>
