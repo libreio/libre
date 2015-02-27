@@ -39,9 +39,6 @@ import java.io.InputStream;
  * @author Paul Polishchuk (ppol@ua.fm)
  * @version $Id$
  * @since 0.1
- * @todo #13:30min Implement put operation to add file to the storage.
- *  In MkStorage.put() implementation file should be stored
- *  on local file system. Don't forget about unit tests.
  * @todo #13:30min Implement delete operation to remove file from the storage.
  *  In MkStorage.delete() implementation file should be removed
  *  from local file system. Don't forget about unit tests.
@@ -56,4 +53,12 @@ public interface Storage {
      * @return InputStream
      */
     InputStream get(String path) throws IOException;
+
+    /**
+     * Write file.
+     * @param path Path.
+     * @param input input.
+     * @throws IOException If fails
+     */
+    void put(String path, InputStream input) throws IOException;
 }

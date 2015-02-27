@@ -84,4 +84,26 @@ public final class MkStorageTest {
         new MkStorage(this.temp.getRoot().getAbsolutePath()).get("absent");
     }
 
+    /**
+     * MkStorage can write file to storage.
+     * @throws Exception If fails
+     */
+    @Test
+    public void writesFile() throws Exception {
+        final String path = "/write.txt";
+        final String content = "A content";
+        final String absolute = this.temp.getRoot().getAbsolutePath();
+        new MkStorage(absolute).put(
+            path, IOUtils.toInputStream(content)
+        );
+        MatcherAssert.assertThat(
+            IOUtils.toString(
+                Files.newInputStream(
+                    FileSystems.getDefault().getPath(absolute, path)
+                )
+            ),
+            Matchers.is(content)
+        );
+    }
+
 }
