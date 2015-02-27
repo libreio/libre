@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<!--
+/**
  * Copyright (c) 2015, nerodesk.com
  * All rights reserved.
  *
@@ -27,38 +26,62 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
- -->
-<project xmlns="http://maven.apache.org/DECORATION/1.3.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/DECORATION/1.3.0 http://maven.apache.org/xsd/decoration-1.3.0.xsd"
-    name="nerodesk">
-    <skin>
-        <groupId>com.jcabi</groupId>
-        <artifactId>jcabi-maven-skin</artifactId>
-        <version>1.5.1</version>
-    </skin>
-    <googleAnalyticsAccountId>UA-1963507-28</googleAnalyticsAccountId>
-    <bannerLeft>
-        <name>nerodesk</name>
-        <src>http://www.nerodesk.com/logo.png</src>
-        <href>http://doc.nerodesk.com/</href>
-        <title>nerodesk.com</title>
-        <width>200</width>
-        <height>45</height>
-    </bannerLeft>
-    <body>
-        <head>
-            <link href="//doc.nerodesk.com/favicon.ico" rel="shortcut icon"/>
-        </head>
-        <breadcrumbs>
-            <item name="doc.nerodesk.com" href="http://doc.nerodesk.com"/>
-        </breadcrumbs>
-        <menu name="Overview">
-            <item name="Introduction" href="./index.html"/>
-            <item name="JavaDoc ${project.version}" href="apidocs-${project.version}/index.html"/>
-            <item name="Test Coverage" href="cobertura/index.html"/>
-            <item name="Release History" href="https://github.com/teamed/nerodesk/releases"/>
-        </menu>
-        <menu ref="reports"/>
-    </body>
-</project>
+ */
+package com.nerodesk.mock;
+
+import java.io.File;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import org.apache.commons.io.IOUtils;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
+/**
+ * Test case for {@code MkStorage}.
+ *
+ * @author Paul Polishchuk (ppol@ua.fm)
+ * @version $Id$
+ * @since 0.1
+ */
+public final class MkStorageTest {
+
+    /**
+     * Temp directory.
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @Rule
+    public final transient TemporaryFolder temp = new TemporaryFolder();
+
+    /**
+     * Get file from storage.
+     * @throws Exception If fails
+     */
+    @Test
+    public void getFile() throws Exception {
+        final File root = this.temp.getRoot();
+        final String path = "/test.txt";
+        final String content = "Test content";
+        Files.write(
+            FileSystems.getDefault().getPath(root.getAbsolutePath(), path),
+            content.getBytes()
+        );
+        MatcherAssert.assertThat(
+            IOUtils.toString(new MkStorage(root.getAbsolutePath()).get(path)),
+            Matchers.is(content)
+        );
+    }
+
+    /**
+     * Throws exception if file is not found.
+     * @throws Exception If fails
+     */
+    @Test(expected = NoSuchFileException.class)
+    public void getAbsentFile() throws Exception {
+        new MkStorage(this.temp.getRoot().getAbsolutePath()).get("absent");
+    }
+
+}
