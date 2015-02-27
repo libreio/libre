@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import javax.validation.constraints.NotNull;
 
 /**
  * Mock file storage backed by local filesystem.
@@ -67,9 +68,15 @@ public final class MkStorage implements Storage {
     }
 
     @Override
-    public InputStream get(final String path) throws IOException {
+    public InputStream get(@NotNull final String path) throws IOException {
         return Files.newInputStream(
             FileSystems.getDefault().getPath(this.root, path)
         );
     }
+
+    @Override
+    public void delete(@NotNull final String path) throws IOException {
+        Files.delete(FileSystems.getDefault().getPath(this.root, path));
+    }
+
 }
