@@ -75,7 +75,8 @@ public final class MkStorage implements Storage {
     }
 
     @Override
-    public void put(final String path, final InputStream input) throws IOException {
+    public void put(final String path, final InputStream input) throws
+        IOException {
         Files.write(
             FileSystems.getDefault().getPath(this.root, path),
             IOUtils.toByteArray(input)

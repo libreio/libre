@@ -57,7 +57,7 @@ public interface Storage {
     /**
      * Write file.
      * @param path Path.
-     * @param input input.
+     * @param input Input.
      * @throws IOException If fails
      */
     void put(String path, InputStream input) throws IOException;
