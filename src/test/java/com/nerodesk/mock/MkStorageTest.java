@@ -84,4 +84,29 @@ public final class MkStorageTest {
         new MkStorage(this.temp.getRoot().getAbsolutePath()).get("absent");
     }
 
+    /**
+     * MkStorage can delete file.
+     * @throws Exception If it fails.
+     */
+    @Test
+    public void deletesFile() throws Exception {
+        final String root = this.temp.getRoot().getAbsolutePath();
+        final String path = "/delete.txt";
+        final String content = "DELETE ME!";
+        Files.write(
+            FileSystems.getDefault().getPath(root, path),
+            content.getBytes()
+        );
+        final File file = FileSystems.getDefault().getPath(root, path).toFile();
+        MatcherAssert.assertThat(
+            file.exists(),
+            Matchers.equalTo(true)
+        );
+        new MkStorage(root).delete(path);
+        MatcherAssert.assertThat(
+            file.exists(),
+            Matchers.equalTo(false)
+        );
+    }
+
 }

@@ -32,6 +32,7 @@ package com.nerodesk;
 import com.jcabi.aspects.Immutable;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.validation.constraints.NotNull;
 
 /**
  * File storage.
@@ -42,9 +43,6 @@ import java.io.InputStream;
  * @todo #13:30min Implement put operation to add file to the storage.
  *  In MkStorage.put() implementation file should be stored
  *  on local file system. Don't forget about unit tests.
- * @todo #13:30min Implement delete operation to remove file from the storage.
- *  In MkStorage.delete() implementation file should be removed
- *  from local file system. Don't forget about unit tests.
  */
 @Immutable
 public interface Storage {
@@ -55,5 +53,13 @@ public interface Storage {
      * @throws IOException If fails
      * @return InputStream
      */
-    InputStream get(String path) throws IOException;
+    InputStream get(@NotNull String path) throws IOException;
+
+    /**
+     * Delete file from storage.
+     * @param path Path
+     * @throws IOException If fails
+     */
+    void delete(@NotNull String path) throws IOException;
+
 }
