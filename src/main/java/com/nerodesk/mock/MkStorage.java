@@ -35,8 +35,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import org.apache.commons.io.IOUtils;
 import javax.validation.constraints.NotNull;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Mock file storage backed by local filesystem.

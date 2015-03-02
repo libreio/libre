@@ -32,6 +32,7 @@ package com.nerodesk;
 import com.jcabi.aspects.Immutable;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.validation.constraints.NotNull;
 
 /**
  * File storage.
@@ -49,7 +50,7 @@ public interface Storage {
      * @throws IOException If fails
      * @return InputStream
      */
-    InputStream get(@NotNullString path) throws IOException;
+    InputStream get(@NotNull String path) throws IOException;
 
     /**
      * Write file.
@@ -57,7 +58,7 @@ public interface Storage {
      * @param input Input.
      * @throws IOException If fails
      */
-    void put(@NotNullString path, InputStream input) throws IOException;
+    void put(@NotNull String path, InputStream input) throws IOException;
 
     /**
      * Delete file from storage.
