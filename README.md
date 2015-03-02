@@ -17,6 +17,18 @@ is that we're fully open source. Main features:
  - the web panel will be hosted on Heroku
  - objects/files will be stored in Amazon S3 (in the future will be changed to Amazon EC2)
 
+To start application using default port use command line specified below:
+
+```
+$ java -jar target/nerodesk-jar-with-dependencies.jar
+```
+
+You might want to start this app on different port, just add port number as parameter:
+
+```
+$ java -jar target/nerodesk-jar-with-dependencies.jar 9000
+```
+
 ## How to contribute
 
 Fork repository, make changes, send us a pull request. We will review

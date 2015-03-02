@@ -39,9 +39,6 @@ import java.io.InputStream;
  * @author Paul Polishchuk (ppol@ua.fm)
  * @version $Id$
  * @since 0.1
- * @todo #13:30min Implement delete operation to remove file from the storage.
- *  In MkStorage.delete() implementation file should be removed
- *  from local file system. Don't forget about unit tests.
  */
 @Immutable
 public interface Storage {
@@ -52,7 +49,7 @@ public interface Storage {
      * @throws IOException If fails
      * @return InputStream
      */
-    InputStream get(String path) throws IOException;
+    InputStream get(@NotNullString path) throws IOException;
 
     /**
      * Write file.
@@ -60,5 +57,12 @@ public interface Storage {
      * @param input Input.
      * @throws IOException If fails
      */
-    void put(String path, InputStream input) throws IOException;
+    void put(@NotNullString path, InputStream input) throws IOException;
+
+    /**
+     * Delete file from storage.
+     * @param path Path
+     * @throws IOException If fails
+     */
+    void delete(@NotNull String path) throws IOException;
 }
