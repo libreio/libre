@@ -31,7 +31,6 @@ package com.nerodesk;
 
 import com.jcabi.log.Logger;
 import com.jcabi.manifests.Manifests;
-import java.io.IOException;
 import org.takes.Response;
 import org.takes.Take;
 import org.takes.http.Exit;
@@ -80,7 +79,7 @@ public final class Launch {
      */
     static final class TkIndex implements Take {
         @Override
-        public Response act() throws IOException {
+        public Response act() {
             return new RsWithType(
                 new RsWithBody(
                     String.format(
