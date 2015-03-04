@@ -31,14 +31,14 @@ package com.nerodesk;
 
 import com.jcabi.log.Logger;
 import com.jcabi.manifests.Manifests;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import javax.validation.constraints.NotNull;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.http.Exit;
+import org.takes.http.FtBasic;
+import org.takes.rs.RsWithBody;
+import org.takes.rs.RsWithType;
+import org.takes.ts.TsRegex;
 
 /**
  * Launch (used only for heroku).
@@ -67,33 +67,29 @@ public final class Launch {
         if (args.length > 0) {
             port = Integer.parseInt(args[0]);
         }
-        final HttpServer server = HttpServer.create(
-            new InetSocketAddress(port), 0
-        );
-        server.createContext("/", new Launch.Handler());
-        server.setExecutor(null);
-        server.start();
-        Logger.info(Launch.class, "HTTP server started on port %d", port);
+        Logger.info(Launch.class, "HTTP server starting on port %d", port);
+        new FtBasic(
+            new TsRegex()
+                .with("/", new Launch.TkIndex()),
+            port
+        ).start(Exit.NEVER);
     }
 
     /**
      * Handler.
      */
-    static final class Handler implements HttpHandler {
+    static final class TkIndex implements Take {
         @Override
-        public void handle(@NotNull final HttpExchange http)
-            throws IOException {
-            http.getResponseHeaders().set("Content-Type", "text/plain");
-            final String body = String.format(
-                "version %s is alive",
-                Manifests.read("Nerodesk-Version")
+        public Response act() throws IOException {
+            return new RsWithType(
+                new RsWithBody(
+                    String.format(
+                        "version %s is alive",
+                        Manifests.read("Nerodesk-Version")
+                    )
+                ),
+                "text/plain"
             );
-            http.sendResponseHeaders(
-                HttpURLConnection.HTTP_OK, (long) body.length()
-            );
-            try (final OutputStream output = http.getResponseBody()) {
-                output.write(body.getBytes("UTF-8"));
-            }
         }
     }
 
