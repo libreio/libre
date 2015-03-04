@@ -31,6 +31,7 @@ package com.nerodesk;
 
 import com.jcabi.log.Logger;
 import com.jcabi.manifests.Manifests;
+import java.io.IOException;
 import org.takes.Response;
 import org.takes.Take;
 import org.takes.http.Exit;
@@ -45,33 +46,45 @@ import org.takes.ts.TsRegex;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.1
+ * @checkstyle HideUtilityClassConstructorCheck (500 lines)
+ * @todo #12:30min This is a utility class and should only launch the app. The
+ *  web server code should be moved to its own class. Remove the checkstyle
+ *  suppression above and also the PMD suppression below.
  */
+@SuppressWarnings("PMD.UseUtilityClass")
 public final class Launch {
 
     /**
-     * Utility class.
+     * Default port.
      */
-    private Launch() {
-        // intentionally empty
-    }
+    private static final int DEFAULT_PORT = 8080;
 
     /**
-     * Entry point.
-     * @param args Command line args
-     * @throws Exception If fails
+     * Ctor.
+     * @param port Port.
+     * @throws IOException If something goes wrong.
      */
-    public static void main(final String... args) throws Exception {
-        // @checkstyle MagicNumberCheck (1 line)
-        int port = 8080;
-        if (args.length > 0) {
-            port = Integer.parseInt(args[0]);
-        }
+    public Launch(final int port) throws IOException {
         Logger.info(Launch.class, "HTTP server starting on port %d", port);
         new FtBasic(
             new TsRegex()
                 .with("/", new Launch.TkIndex()),
             port
         ).start(Exit.NEVER);
+    }
+
+    /**
+     * Entry point.
+     * @param args Command line args
+     * @throws IOException If fails
+     */
+    public static void main(final String... args) throws IOException {
+        // @checkstyle MagicNumberCheck (1 line)
+        int port = Launch.DEFAULT_PORT;
+        if (args.length > 0) {
+            port = Integer.parseInt(args[0]);
+        }
+        new Launch(port);
     }
 
     /**
