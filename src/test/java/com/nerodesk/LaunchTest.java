@@ -88,6 +88,17 @@ public final class LaunchTest {
     }
 
     /**
+     * Launcher can return Response for /.
+     */
+    @Test
+    public void returnsRoot() {
+        MatcherAssert.assertThat(
+            new Launch.TkIndex().act(),
+            Matchers.notNullValue()
+        );
+    }
+
+    /**
      * Reserve new port for each call.
      * @return Reserved port.
      */
