@@ -36,6 +36,8 @@ import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import javax.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Amazon S3 storage.
@@ -44,6 +46,8 @@ import javax.validation.constraints.NotNull;
  * @version $Id$
  * @since 0.2
  */
+@ToString
+@EqualsAndHashCode
 public final class AmazonStorage implements Storage {
 
     /**
