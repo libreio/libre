@@ -29,6 +29,10 @@ You might want to start this app on different port, just add port number as para
 $ java -jar target/nerodesk-jar-with-dependencies.jar 9000
 ```
 
+Non-functional requirement is:
+
+ * Java 8
+
 ## How to contribute
 
 Fork repository, make changes, send us a pull request. We will review
