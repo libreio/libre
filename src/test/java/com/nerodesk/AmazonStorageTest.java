@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import org.apache.commons.io.IOUtils;
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -49,6 +50,11 @@ import org.mockito.Mockito;
  * @since 0.2
  */
 public final class AmazonStorageTest {
+
+    /**
+     * Region.
+     */
+    private transient Region region;
 
     /**
      * Bucket.
@@ -70,16 +76,17 @@ public final class AmazonStorageTest {
      */
     @Before
     public void setUp() {
-        final Region region = Mockito.mock(Region.class);
+        this.region = Mockito.mock(Region.class);
         this.bucket = Mockito.mock(Bucket.class);
         this.ocket = Mockito.mock(Ocket.class);
         Mockito.when(
-            region.bucket(Mockito.anyString())
+            this.region.bucket(Mockito.anyString())
         ).thenReturn(this.bucket);
         Mockito.when(
             this.bucket.ocket(Mockito.anyString())
         ).thenReturn(this.ocket);
-        this.storage = new AmazonStorage(region, "bucket");
+        // @checkstyle MultipleStringLiteralsCheck (1 line)
+        this.storage = new AmazonStorage(this.region, "bucket");
     }
 
     /**
@@ -153,5 +160,21 @@ public final class AmazonStorageTest {
         final String path = "delete_throws.txt";
         Mockito.doThrow(IOException.class).when(this.bucket).remove(path);
         this.storage.delete(path);
+    }
+
+    /**
+     * Storages can be compared over equals / hashcode.
+     */
+    @Test
+    public void equalsAndHashcodeWorks() {
+        // @checkstyle MultipleStringLiteralsCheck (1 line)
+        final AmazonStorage strg = new AmazonStorage(this.region, "bucket");
+        MatcherAssert.assertThat(
+            "Storages are equal", this.storage.equals(strg)
+        );
+        MatcherAssert.assertThat(
+            "Storages has the same hashcode",
+            this.storage.hashCode() == strg.hashCode()
+        );
     }
 }
