@@ -1,3 +1,6 @@
+docker:
+  as_root: true
+  image: mostalive/ubuntu-14.04-oracle-jdk8
 install: |-
   sudo apt-get install bsdmainutils
   sudo gem install pdd
