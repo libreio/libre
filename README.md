@@ -37,7 +37,7 @@ they don't violate our quality standards. To avoid frustration, before
 sending us your pull request please run full Maven build:
 
 ```
-$ mvn clean install -Pqulice
+$ mvn clean install -Pqulice,cobertura
 ```
 
 To avoid build errors use maven 3.2+
