@@ -29,9 +29,7 @@ You might want to start this app on different port, just add port number as para
 $ java -jar target/nerodesk-jar-with-dependencies.jar 9000
 ```
 
-Non-functional requirement is:
-
- * Java 8
+Nerodesk requires Java 8 (or higher).
 
 ## How to contribute
 
@@ -44,7 +42,7 @@ sending us your pull request please run full Maven build:
 $ mvn clean install -Pqulice
 ```
 
-To avoid build errors use maven 3.2+
+To avoid build errors use maven 3.2+ together with jdk 8+.
 
 ## Got questions?
 
