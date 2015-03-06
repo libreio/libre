@@ -29,57 +29,30 @@
  */
 package com.nerodesk;
 
-import com.jcabi.log.Logger;
-import java.io.IOException;
-import org.takes.http.Exit;
-import org.takes.http.FtBasic;
-import org.takes.ts.TsRegex;
+import com.jcabi.manifests.Manifests;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.rs.RsWithBody;
+import org.takes.rs.RsWithType;
 
 /**
- * Launch (used only for heroku).
+ * Index.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @version $Id$
  * @since 0.1
- * @checkstyle HideUtilityClassConstructorCheck (500 lines)
- * @todo #48:30min This is a utility class and should only launch the app. The
- *  web server code should be moved to its own class. Remove the checkstyle
- *  suppression above and also the PMD suppression below. This is continuation
- *  of task #48. I moved `TkIndex` to separate class but it's not enough.
  */
-@SuppressWarnings("PMD.UseUtilityClass")
-public final class Launch {
-
-    /**
-     * Default port.
-     */
-    private static final int DEFAULT_PORT = 8080;
-
-    /**
-     * Ctor.
-     * @param port Port.
-     * @throws IOException If something goes wrong.
-     */
-    public Launch(final int port) throws IOException {
-        Logger.info(Launch.class, "HTTP server starting on port %d", port);
-        new FtBasic(
-            new TsRegex().with("/", new TkIndex()),
-            port
-        ).start(Exit.NEVER);
+public final class TkIndex implements Take {
+    @Override
+    public Response act() {
+        return new RsWithType(
+            new RsWithBody(
+                String.format(
+                    "version %s is alive",
+                    Manifests.read("Nerodesk-Version")
+                )
+            ),
+            "text/plain"
+        );
     }
-
-    /**
-     * Entry point.
-     * @param args Command line args
-     * @throws IOException If fails
-     */
-    public static void main(final String... args) throws IOException {
-        // @checkstyle MagicNumberCheck (1 line)
-        int port = Launch.DEFAULT_PORT;
-        if (args.length > 0) {
-            port = Integer.parseInt(args[0]);
-        }
-        new Launch(port);
-    }
-
 }

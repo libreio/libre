@@ -29,57 +29,30 @@
  */
 package com.nerodesk;
 
-import com.jcabi.log.Logger;
-import java.io.IOException;
-import org.takes.http.Exit;
-import org.takes.http.FtBasic;
-import org.takes.ts.TsRegex;
+import org.apache.commons.io.IOUtils;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * Launch (used only for heroku).
+ * Tests for {@code TkIndex}.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @version $Id$
- * @since 0.1
- * @checkstyle HideUtilityClassConstructorCheck (500 lines)
- * @todo #48:30min This is a utility class and should only launch the app. The
- *  web server code should be moved to its own class. Remove the checkstyle
- *  suppression above and also the PMD suppression below. This is continuation
- *  of task #48. I moved `TkIndex` to separate class but it's not enough.
+ * @since 0.2
  */
-@SuppressWarnings("PMD.UseUtilityClass")
-public final class Launch {
+public final class TkIndexTest {
 
     /**
-     * Default port.
+     * TkIndex can return alive note.
+     *
+     * @throws Exception If fails.
      */
-    private static final int DEFAULT_PORT = 8080;
-
-    /**
-     * Ctor.
-     * @param port Port.
-     * @throws IOException If something goes wrong.
-     */
-    public Launch(final int port) throws IOException {
-        Logger.info(Launch.class, "HTTP server starting on port %d", port);
-        new FtBasic(
-            new TsRegex().with("/", new TkIndex()),
-            port
-        ).start(Exit.NEVER);
+    @Test
+    public void returnsPlainText() throws Exception {
+        MatcherAssert.assertThat(
+            IOUtils.toString(new TkIndex().act().body()),
+            Matchers.containsString("alive")
+        );
     }
-
-    /**
-     * Entry point.
-     * @param args Command line args
-     * @throws IOException If fails
-     */
-    public static void main(final String... args) throws IOException {
-        // @checkstyle MagicNumberCheck (1 line)
-        int port = Launch.DEFAULT_PORT;
-        if (args.length > 0) {
-            port = Integer.parseInt(args[0]);
-        }
-        new Launch(port);
-    }
-
 }

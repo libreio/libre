@@ -93,7 +93,7 @@ public final class LaunchTest {
     @Test
     public void returnsRoot() {
         MatcherAssert.assertThat(
-            new Launch.TkIndex().act(),
+            new TkIndex().act(),
             Matchers.notNullValue()
         );
     }
