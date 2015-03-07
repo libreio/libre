@@ -33,10 +33,9 @@ import com.jcabi.log.Logger;
 import com.jcabi.manifests.Manifests;
 import com.nerodesk.mock.MkStorage;
 import java.io.IOException;
-import org.takes.Response;
-import org.takes.Take;
 import org.takes.http.Exit;
 import org.takes.http.FtBasic;
+import org.takes.ts.TsRegex;
 import org.takes.rs.RsWithBody;
 import org.takes.rs.RsWithType;
 import org.takes.tk.TkHTML;
@@ -52,8 +51,10 @@ import org.takes.ts.fork.TsFork;
  * @version $Id$
  * @since 0.1
  * @checkstyle HideUtilityClassConstructorCheck (500 lines)
- * @todo #12:30min This is a utility class and should only launch the app. The
+ * @todo #48:30min This is a utility class and should only launch the app. The
  *  web server code should be moved to its own class. Remove the checkstyle
+ *  suppression above and also the PMD suppression below. This is continuation
+ *  of task #48. I moved `TkIndex` to separate class but it's not enough.
  *  suppression above and also the PMD suppression below.
  * @todo #14:30min Bind getFile operation to the GET method only.
  *  This might require updates in Takes framework.
@@ -103,7 +104,7 @@ public final class Launch {
         Logger.info(Launch.class, "HTTP server starting on port %d", port);
         new FtBasic(
             new TsFork(
-                new FkRegex("/", new Launch.TkIndex()),
+                new FkRegex("/", new TkIndex()),
                 new FkRegex(
                     "/api/file/(?<path>[^/]+)",
                     new Target<RqRegex>() {
@@ -135,24 +136,6 @@ public final class Launch {
             port = Integer.parseInt(args[0]);
         }
         new Launch(port);
-    }
-
-    /**
-     * Handler.
-     */
-    static final class TkIndex implements Take {
-        @Override
-        public Response act() {
-            return new RsWithType(
-                new RsWithBody(
-                    String.format(
-                        "version %s is alive",
-                        Manifests.read("Nerodesk-Version")
-                    )
-                ),
-                "text/plain"
-            );
-        }
     }
 
 }
