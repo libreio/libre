@@ -47,4 +47,4 @@ release:
     mvn clean site-deploy -Psite --errors --settings ../settings.xml --batch-mode
 docker:
   as_root: true
-  image: hanswesterbeek/google-debian-oracle-jdk:8
+  image: mostalive/ubuntu-14.04-oracle-jdk8
