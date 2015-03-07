@@ -44,8 +44,7 @@ import org.junit.Test;
 public final class TkIndexTest {
 
     /**
-     * TkIndex can return alive note.
-     *
+     * TkIndex can return plain text.
      * @throws Exception If fails.
      */
     @Test
