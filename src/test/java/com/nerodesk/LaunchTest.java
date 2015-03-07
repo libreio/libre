@@ -31,6 +31,7 @@ package com.nerodesk;
 
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.VerboseRunnable;
+import com.nerodesk.mock.MkStorage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -40,9 +41,12 @@ import java.net.ServerSocket;
 import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * Test case for {@code Launch}.
@@ -51,8 +55,17 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @todo #14:15min Application should be able to get binary file properly.
+ *  Add a test to check it works and fix if doesn't.
  */
 public final class LaunchTest {
+
+    /**
+     * Temp directory.
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @Rule
+    public final transient TemporaryFolder temp = new TemporaryFolder();
 
     /**
      * Launches web server on random port.
@@ -85,6 +98,49 @@ public final class LaunchTest {
         );
         thread.interrupt();
         thread.join((long) Tv.THOUSAND, 0);
+    }
+
+    /**
+     * Application can return file content.
+     * @throws Exception If fails
+     */
+    @Test
+    @SuppressWarnings("PMD.DoNotUseThreads")
+    public void getFile() throws Exception {
+        final int port = LaunchTest.port();
+        final Storage storage = new MkStorage(
+            this.temp.getRoot().getAbsolutePath()
+        );
+        final Thread thread = new Thread(
+            new VerboseRunnable(
+                new Callable<Void>() {
+                    @Override
+                    public Void call() throws Exception {
+                        new Launch(port, storage);
+                        return null;
+                    }
+                },
+                false, true
+            )
+        );
+        thread.start();
+        TimeUnit.SECONDS.sleep(1L);
+        final String path = "some_file.txt";
+        final String content = "some text content";
+        storage.put(path, IOUtils.toInputStream(content));
+        final URL url = new URL(
+            String.format("http://localhost:%d/api/file/%s", port, path)
+        );
+        try (final BufferedReader input = new BufferedReader(
+            new InputStreamReader(url.openConnection().getInputStream())
+        )
+        ) {
+            MatcherAssert.assertThat(
+                input.readLine(), Matchers.containsString(content)
+            );
+            thread.interrupt();
+            thread.join((long) Tv.THOUSAND);
+        }
     }
 
     /**

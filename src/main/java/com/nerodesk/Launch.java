@@ -31,6 +31,7 @@ package com.nerodesk;
 
 import com.jcabi.log.Logger;
 import com.jcabi.manifests.Manifests;
+import com.nerodesk.mock.MkStorage;
 import java.io.IOException;
 import org.takes.Response;
 import org.takes.Take;
@@ -38,7 +39,11 @@ import org.takes.http.Exit;
 import org.takes.http.FtBasic;
 import org.takes.rs.RsWithBody;
 import org.takes.rs.RsWithType;
-import org.takes.ts.TsRegex;
+import org.takes.tk.TkHTML;
+import org.takes.ts.fork.FkRegex;
+import org.takes.ts.fork.RqRegex;
+import org.takes.ts.fork.Target;
+import org.takes.ts.fork.TsFork;
 
 /**
  * Launch (used only for heroku).
@@ -50,6 +55,20 @@ import org.takes.ts.TsRegex;
  * @todo #12:30min This is a utility class and should only launch the app. The
  *  web server code should be moved to its own class. Remove the checkstyle
  *  suppression above and also the PMD suppression below.
+ * @todo #14:30min Bind getFile operation to the GET method only.
+ *  This might require updates in Takes framework.
+ *  Don't forget about unit tests.
+ * @todo #14:30min Implement PUT operation to upload file to the store
+ *  under specific path. Don't forget about unit tests.
+ * @todo #14:30min Implement DELETE operation to remove file from the
+ *  store by file specific path. Don't forget about unit tests.
+ * @todo #14:30min Add exception handling to return 404
+ *  when resource not available. Don't forget about unit tests.
+ * @todo #14:30min Update FkRegex patterns for all file operations
+ *  (get, put, delete) to manage filename with path.
+ *  Now it works with pure file name only. Don't forget about unit tests.
+ * @todo #14:15min Add new section to the README described REST API for
+ *  the file operations available.
  */
 @SuppressWarnings("PMD.UseUtilityClass")
 public final class Launch {
@@ -60,15 +79,46 @@ public final class Launch {
     private static final int DEFAULT_PORT = 8080;
 
     /**
+     * Storage.
+     */
+    private final transient Storage storage;
+
+    /**
      * Ctor.
      * @param port Port.
      * @throws IOException If something goes wrong.
      */
     public Launch(final int port) throws IOException {
+        this(port, new MkStorage());
+    }
+
+    /**
+     * Constructor with port and Store.
+     * @param port Port.
+     * @param store Store to start with.
+     * @throws IOException If something goes wrong.
+     */
+    public Launch(final int port, final Storage store) throws IOException {
+        this.storage = store;
         Logger.info(Launch.class, "HTTP server starting on port %d", port);
         new FtBasic(
-            new TsRegex()
-                .with("/", new Launch.TkIndex()),
+            new TsFork(
+                new FkRegex("/", new Launch.TkIndex()),
+                new FkRegex(
+                    "/api/file/(?<path>[^/]+)",
+                    new Target<RqRegex>() {
+                        @Override
+                        public Take route(final RqRegex req)
+                            throws IOException {
+                            return new TkHTML(
+                                Launch.this.storage.get(
+                                    req.matcher().group("path")
+                                )
+                            );
+                        }
+                    }
+                )
+            ),
             port
         ).start(Exit.NEVER);
     }
