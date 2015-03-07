@@ -30,18 +30,11 @@
 package com.nerodesk;
 
 import com.jcabi.log.Logger;
-import com.jcabi.manifests.Manifests;
 import com.nerodesk.mock.MkStorage;
 import java.io.IOException;
 import org.takes.http.Exit;
 import org.takes.http.FtBasic;
-import org.takes.ts.TsRegex;
-import org.takes.rs.RsWithBody;
-import org.takes.rs.RsWithType;
-import org.takes.tk.TkHTML;
 import org.takes.ts.fork.FkRegex;
-import org.takes.ts.fork.RqRegex;
-import org.takes.ts.fork.Target;
 import org.takes.ts.fork.TsFork;
 
 /**
@@ -80,11 +73,6 @@ public final class Launch {
     private static final int DEFAULT_PORT = 8080;
 
     /**
-     * Storage.
-     */
-    private final transient Storage storage;
-
-    /**
      * Ctor.
      * @param port Port.
      * @throws IOException If something goes wrong.
@@ -100,25 +88,11 @@ public final class Launch {
      * @throws IOException If something goes wrong.
      */
     public Launch(final int port, final Storage store) throws IOException {
-        this.storage = store;
         Logger.info(Launch.class, "HTTP server starting on port %d", port);
         new FtBasic(
             new TsFork(
                 new FkRegex("/", new TkIndex()),
-                new FkRegex(
-                    "/api/file/(?<path>[^/]+)",
-                    new Target<RqRegex>() {
-                        @Override
-                        public Take route(final RqRegex req)
-                            throws IOException {
-                            return new TkHTML(
-                                Launch.this.storage.get(
-                                    req.matcher().group("path")
-                                )
-                            );
-                        }
-                    }
-                )
+                new FkRegex(TkGetFile.PATH, new TkGetFile(store))
             ),
             port
         ).start(Exit.NEVER);

@@ -29,6 +29,7 @@
  */
 package com.nerodesk;
 
+import com.jayway.awaitility.Awaitility;
 import com.jcabi.aspects.Tv;
 import com.jcabi.log.VerboseRunnable;
 import com.nerodesk.mock.MkStorage;
@@ -124,23 +125,29 @@ public final class LaunchTest {
             )
         );
         thread.start();
-        TimeUnit.SECONDS.sleep(1L);
         final String path = "some_file.txt";
         final String content = "some text content";
         storage.put(path, IOUtils.toInputStream(content));
         final URL url = new URL(
             String.format("http://localhost:%d/api/file/%s", port, path)
         );
-        try (final BufferedReader input = new BufferedReader(
-            new InputStreamReader(url.openConnection().getInputStream())
-        )
-        ) {
-            MatcherAssert.assertThat(
-                input.readLine(), Matchers.containsString(content)
-            );
-            thread.interrupt();
-            thread.join((long) Tv.THOUSAND);
-        }
+        Awaitility.await().atMost(2L, TimeUnit.SECONDS).until(
+            new Callable<String>() {
+                @Override
+                public String call() throws Exception {
+                    try (final BufferedReader input = new BufferedReader(
+                        new InputStreamReader(
+                            url.openConnection().getInputStream()
+                        )
+                    )
+                    ) {
+                        return input.readLine();
+                    }
+                }
+            }, Matchers.is(content)
+        );
+        thread.interrupt();
+        thread.join((long) Tv.THOUSAND);
     }
 
     /**
