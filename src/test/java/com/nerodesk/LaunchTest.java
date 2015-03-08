@@ -107,7 +107,7 @@ public final class LaunchTest {
      */
     @Test
     @SuppressWarnings("PMD.DoNotUseThreads")
-    public void getFile() throws Exception {
+    public void returnsFileContent() throws Exception {
         final int port = LaunchTest.port();
         final Storage storage = new MkStorage(
             this.temp.getRoot().getAbsolutePath()

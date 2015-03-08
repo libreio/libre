@@ -61,7 +61,7 @@ public final class TkGetFileTest {
      * @throws Exception If something went wrong
      */
     @Test
-    public void returnFileContent() throws Exception {
+    public void returnsFileContent() throws Exception {
         final Storage storage = new MkStorage(
             this.temp.getRoot().getAbsolutePath()
         );
