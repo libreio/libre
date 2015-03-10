@@ -5,17 +5,12 @@
 
 [![Build Status](https://travis-ci.org/teamed/nerodesk.svg?branch=master)](https://travis-ci.org/teamed/nerodesk)
 
-It is a cloud file sharing system, similar to Dropbox. Our key difference
-is that we're fully open source. Main features:
+Nerodesk is an Open-Source Cloud Storage service.
 
- - user can create an account via web panel
- - user can delete his account
- - user can upload a file, download it back and delete it
- - user can share any file with a few other users
- - user can see all his files in the web panel
- - the entire code will be open source
- - the web panel will be hosted on Heroku
- - objects/files will be stored in Amazon S3 (in the future will be changed to Amazon EC2)
+ - File management system with uploads, downloads, and secure file deletion
+ - Share and tag files with other Nerodesk users
+ - User messaging and file commenting
+ - & more
 
 To start application using default port use command line specified below:
 
