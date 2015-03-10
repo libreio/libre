@@ -2,16 +2,32 @@ install: |-
   sudo apt-get install bsdmainutils
   sudo gem install pdd
   sudo gem install est
-architect: [ggajos, yegor256, karato]
-assets: {secring.gpg: yegor256/home#assets/secring.gpg, id_rsa: yegor256/home#assets/heroku-key,
-  settings.xml: yegor256/home#assets/nerodesk/settings.xml, pubring.gpg: yegor256/home#assets/pubring.gpg,
-  id_rsa.pub: yegor256/home#assets/heroku-key.pub, s3cfg: yegor256/home#assets/s3cfg}
+architect:
+- ggajos
+- yegor256
+- karato
+assets:
+  secring.gpg: yegor256/home#assets/secring.gpg
+  id_rsa: yegor256/home#assets/heroku-key
+  settings.xml: yegor256/home#assets/nerodesk/settings.xml
+  pubring.gpg: yegor256/home#assets/pubring.gpg
+  id_rsa.pub: yegor256/home#assets/heroku-key.pub
+  s3cfg: yegor256/home#assets/s3cfg
 merge:
   script: |-
     mvn help:system clean install -Pqulice,cobertura -Pnerodesk --errors --settings ../settings.xml
     mvn clean site -Psite --errors --settings ../settings.xml
     mvn clean
     pdd --source=$(pwd) --verbose --file=/dev/null
+  commanders:
+  - ggajos
+  - darkled
+  - caarlos0
+  - carlosmiranda
+  - maurezen
+  - krzyk
+  - longtimeago
+  - alevohin
 deploy:
   script: |-
     mvn clean package -Pnerodesk -Pqulice,cobertura --errors --settings ../settings.xml --batch-mode
@@ -20,7 +36,11 @@ deploy:
     s3cmd --no-progress put nerodesk.xml --config=../s3cfg s3://pdd.teamed.io/nerodesk.xml
     est --dir=$(pwd)/est --verbose --file=nerodesk.xml --format=xml
     s3cmd --no-progress put nerodesk.xml --config=../s3cfg s3://est.teamed.io/nerodesk.xml
-env: {MAVEN_OPTS: '-XX:MaxPermSize=256m -Xmx1g'}
+  commanders:
+  - ggajos
+  - yegor256
+env:
+  MAVEN_OPTS: -XX:MaxPermSize=256m -Xmx1g
 release:
   script: |-
     mvn versions:set "-DnewVersion=${tag}"
@@ -45,3 +65,6 @@ release:
     git reset HEAD~1
     curl -f --connect-timeout 30 --retry 8 --retry-delay 60 http://beta.nerodesk.com
     mvn clean site-deploy -Psite --errors --settings ../settings.xml --batch-mode
+  commanders:
+  - ggajos
+  - yegor256
