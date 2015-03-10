@@ -53,16 +53,21 @@ import org.takes.ts.fork.TsFork;
  *  This might require updates in Takes framework.
  *  Don't forget about unit tests.
  * @todo #14:30min Implement PUT operation to upload file to the store
- *  under specific path. Don't forget about unit tests.
+ *  under specific path. This might require updates in Takes framework.
+ *  Don't forget about unit tests.
  * @todo #14:30min Implement DELETE operation to remove file from the
- *  store by file specific path. Don't forget about unit tests.
+ *  store by file specific path.
+ *  This might require updates in Takes framework.
+ *  Don't forget about unit tests.
  * @todo #14:30min Add exception handling to return 404
- *  when resource not available. Don't forget about unit tests.
+ *  when resource not available. Now we show not nice stacktrace.
+ *  Don't forget about unit tests.
  * @todo #14:30min Update FkRegex patterns for all file operations
  *  (get, put, delete) to manage filename with path.
  *  Now it works with pure file name only. Don't forget about unit tests.
  * @todo #14:15min Add new section to the README described REST API for
- *  the file operations available.
+ *  the file operations available. GET, PUT and DELETE operations should be
+ *  described.
  */
 @SuppressWarnings("PMD.UseUtilityClass")
 public final class Launch {
