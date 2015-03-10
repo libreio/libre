@@ -19,6 +19,15 @@ merge:
     mvn clean site -Psite --errors --settings ../settings.xml
     mvn clean
     pdd --source=$(pwd) --verbose --file=/dev/null
+  commanders:
+  - ggajos
+  - darkled
+  - caarlos0
+  - carlosmiranda
+  - maurezen
+  - krzyk
+  - longtimeago
+  - alevohin
 deploy:
   script: |-
     mvn clean package -Pnerodesk -Pqulice,cobertura --errors --settings ../settings.xml --batch-mode
