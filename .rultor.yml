@@ -36,6 +36,9 @@ deploy:
     s3cmd --no-progress put nerodesk.xml --config=../s3cfg s3://pdd.teamed.io/nerodesk.xml
     est --dir=$(pwd)/est --verbose --file=nerodesk.xml --format=xml
     s3cmd --no-progress put nerodesk.xml --config=../s3cfg s3://est.teamed.io/nerodesk.xml
+  commanders:
+  - ggajos
+  - yegor256
 env:
   MAVEN_OPTS: -XX:MaxPermSize=256m -Xmx1g
 release:
