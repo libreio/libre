@@ -10,3 +10,5 @@ before_install:
   - unset GEM_PATH
 script:
   - mvn clean install -Pqulice,cobertura --errors
+jdk:
+  - oraclejdk8

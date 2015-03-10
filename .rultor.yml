@@ -65,3 +65,5 @@ release:
     git reset HEAD~1
     curl -f --connect-timeout 30 --retry 8 --retry-delay 60 http://beta.nerodesk.com
     mvn clean site-deploy -Psite --errors --settings ../settings.xml --batch-mode
+docker:
+  image: "mostalive/ubuntu-14.04-oracle-jdk8"
