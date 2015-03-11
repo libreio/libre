@@ -30,10 +30,12 @@
 package com.nerodesk;
 
 import com.jcabi.log.Logger;
+import com.nerodesk.mock.MkStorage;
 import java.io.IOException;
 import org.takes.http.Exit;
 import org.takes.http.FtBasic;
-import org.takes.ts.TsRegex;
+import org.takes.ts.fork.FkRegex;
+import org.takes.ts.fork.TsFork;
 
 /**
  * Launch (used only for heroku).
@@ -46,6 +48,26 @@ import org.takes.ts.TsRegex;
  *  web server code should be moved to its own class. Remove the checkstyle
  *  suppression above and also the PMD suppression below. This is continuation
  *  of task #48. I moved `TkIndex` to separate class but it's not enough.
+ *  suppression above and also the PMD suppression below.
+ * @todo #14:30min Bind getFile operation to the GET method only.
+ *  This might require updates in Takes framework.
+ *  Don't forget about unit tests.
+ * @todo #14:30min Implement PUT operation to upload file to the store
+ *  under specific path. This might require updates in Takes framework.
+ *  Don't forget about unit tests.
+ * @todo #14:30min Implement DELETE operation to remove file from the
+ *  store by file specific path.
+ *  This might require updates in Takes framework.
+ *  Don't forget about unit tests.
+ * @todo #14:30min Add exception handling to return 404
+ *  when resource not available. Now we show not nice stacktrace.
+ *  Don't forget about unit tests.
+ * @todo #14:30min Update FkRegex patterns for all file operations
+ *  (get, put, delete) to manage filename with path.
+ *  Now it works with pure file name only. Don't forget about unit tests.
+ * @todo #14:15min Add new section to the README described REST API for
+ *  the file operations available. GET, PUT and DELETE operations should be
+ *  described.
  */
 @SuppressWarnings("PMD.UseUtilityClass")
 public final class Launch {
@@ -61,9 +83,22 @@ public final class Launch {
      * @throws IOException If something goes wrong.
      */
     public Launch(final int port) throws IOException {
+        this(port, new MkStorage());
+    }
+
+    /**
+     * Constructor with port and Store.
+     * @param port Port.
+     * @param store Store to start with.
+     * @throws IOException If something goes wrong.
+     */
+    public Launch(final int port, final Storage store) throws IOException {
         Logger.info(Launch.class, "HTTP server starting on port %d", port);
         new FtBasic(
-            new TsRegex().with("/", new TkIndex()),
+            new TsFork(
+                new FkRegex("/", new TkIndex()),
+                new FkRegex(TkGetFile.PATH, new TkGetFile(store))
+            ),
             port
         ).start(Exit.NEVER);
     }

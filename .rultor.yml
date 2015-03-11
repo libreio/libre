@@ -8,8 +8,8 @@ docker:
   image: "mostalive/ubuntu-14.04-oracle-jdk8"
 architect:
 - ggajos
-- yegor256
 - karato
+- yegor256
 assets:
   secring.gpg: yegor256/home#assets/secring.gpg
   id_rsa: yegor256/home#assets/heroku-key
@@ -24,14 +24,14 @@ merge:
     mvn clean
     pdd --source=$(pwd) --verbose --file=/dev/null
   commanders:
-  - ggajos
-  - darkled
+  - alevohin
   - caarlos0
   - carlosmiranda
-  - maurezen
+  - darkled
+  - ggajos
   - krzyk
   - longtimeago
-  - alevohin
+  - maurezen
 deploy:
   script: |-
     mvn clean package -Pnerodesk -Pqulice,cobertura --errors --settings ../settings.xml --batch-mode
