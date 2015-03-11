@@ -5,7 +5,7 @@ install: |-
   sudo apt-get install ruby
   sudo apt-get install maven
 docker:
-  image: mostalive/ubuntu-14.04-oracle-jdk8
+  image: "mostalive/ubuntu-14.04-oracle-jdk8"
 architect:
 - ggajos
 - yegor256
