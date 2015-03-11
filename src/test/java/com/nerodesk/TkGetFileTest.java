@@ -30,16 +30,13 @@
 package com.nerodesk;
 
 import com.nerodesk.mock.MkStorage;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.mockito.Mockito;
-import org.takes.ts.fork.RqRegex;
+import org.takes.facets.fork.RqRegex;
 
 /**
  * Tests for {@code TkGetFile}.
@@ -68,13 +65,18 @@ public final class TkGetFileTest {
         final String path = "some_file.txt";
         final String content = "some text content";
         storage.put(path, IOUtils.toInputStream(content));
-        final Matcher matcher = Pattern.compile(TkGetFile.PATH)
-            .matcher(String.format("http://localhost:8080/api/file/%s", path));
-        matcher.find();
-        final RqRegex regex = Mockito.mock(RqRegex.class);
-        Mockito.when(regex.matcher()).thenReturn(matcher);
         MatcherAssert.assertThat(
-            IOUtils.toString(new TkGetFile(storage).route(regex).act().body()),
+            IOUtils.toString(
+                new TkGetFile(storage).route(
+                    new RqRegex.Fake(
+                        "/api/file/(?<path>[^/]+)",
+                        String.format(
+                            "/api/file/%s",
+                            path
+                        )
+                    )
+                ).act().body()
+            ),
             Matchers.containsString(content)
         );
     }

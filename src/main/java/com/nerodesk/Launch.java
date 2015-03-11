@@ -32,10 +32,10 @@ package com.nerodesk;
 import com.jcabi.log.Logger;
 import com.nerodesk.mock.MkStorage;
 import java.io.IOException;
+import org.takes.facets.fork.FkRegex;
+import org.takes.facets.fork.TsFork;
 import org.takes.http.Exit;
 import org.takes.http.FtBasic;
-import org.takes.ts.fork.FkRegex;
-import org.takes.ts.fork.TsFork;
 
 /**
  * Launch (used only for heroku).
@@ -97,7 +97,7 @@ public final class Launch {
         new FtBasic(
             new TsFork(
                 new FkRegex("/", new TkIndex()),
-                new FkRegex(TkGetFile.PATH, new TkGetFile(store))
+                new FkRegex("/api/file/(?<path>[^/]+)", new TkGetFile(store))
             ),
             port
         ).start(Exit.NEVER);

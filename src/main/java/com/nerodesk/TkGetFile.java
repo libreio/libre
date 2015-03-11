@@ -31,9 +31,9 @@ package com.nerodesk;
 
 import java.io.IOException;
 import org.takes.Take;
+import org.takes.facets.fork.RqRegex;
+import org.takes.facets.fork.Target;
 import org.takes.tk.TkHTML;
-import org.takes.ts.fork.RqRegex;
-import org.takes.ts.fork.Target;
 
 /**
  * Part of REST API to get a file.
@@ -43,10 +43,6 @@ import org.takes.ts.fork.Target;
  * @since 0.2
  */
 public final class TkGetFile implements Target<RqRegex> {
-    /**
-     * Get file path.
-     */
-    public static final String PATH = "/api/file/(?<path>[^/]+)";
     /**
      * File storage.
      */
