@@ -20,14 +20,14 @@ merge:
     mvn clean
     pdd --source=$(pwd) --verbose --file=/dev/null
   commanders:
-  - ggajos
-  - darkled
+  - alevohin
   - caarlos0
   - carlosmiranda
-  - maurezen
+  - darkled
+  - ggajos
   - krzyk
   - longtimeago
-  - alevohin
+  - maurezen
 deploy:
   script: |-
     mvn clean package -Pnerodesk -Pqulice,cobertura --errors --settings ../settings.xml --batch-mode
