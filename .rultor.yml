@@ -4,8 +4,8 @@ install: |-
   sudo gem install est
 architect:
 - ggajos
-- yegor256
 - karato
+- yegor256
 assets:
   secring.gpg: yegor256/home#assets/secring.gpg
   id_rsa: yegor256/home#assets/heroku-key
