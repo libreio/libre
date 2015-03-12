@@ -56,18 +56,19 @@ import org.takes.ts.fork.RqRegex;
  * @since 0.2
  */
 public final class TkPutFileTest {
-    /**
-     * Temp directory.
-     * @checkstyle VisibilityModifierCheck (5 lines)
-     */
-    @Rule
-    public final transient TemporaryFolder temp = new TemporaryFolder();
 
     /**
      * Template for API call.
      */
     private static final transient String TEMPLATE =
         "http://localhost:8080/api/file/%s";
+
+    /**
+     * Temp directory.
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @Rule
+    public final transient TemporaryFolder temp = new TemporaryFolder();
 
     /**
      * TkPutFile can save content to file storage.
