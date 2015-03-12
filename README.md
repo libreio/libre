@@ -45,6 +45,9 @@ The file contents will be returned in the response's body.
 
 The file contents should be present in the request's body.
 
+### Delete
+```DELETE https://nerodesk.com/api/file/$PATH```
+
 ## How to contribute
 
 Fork repository, make changes, send us a pull request. We will review
