@@ -27,42 +27,69 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om.mock;
 
-import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import com.nerodesk.om.Doc;
+import com.nerodesk.om.Docs;
+import java.io.File;
+import java.util.List;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 
 /**
- * Index.
+ * Mocked version of docs.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-public final class TkIndex implements Take {
+@ToString
+@EqualsAndHashCode
+public final class MkDocs implements Docs {
 
     /**
-     * Request.
+     * Directory.
      */
-    private final transient Request request;
+    private final transient File dir;
+
+    /**
+     * URN.
+     */
+    private final transient String name;
 
     /**
      * Ctor.
-     * @param req Request
+     * @param file Directory
+     * @param urn URN
      */
-    public TkIndex(final Request req) {
-        this.request = req;
+    public MkDocs(final File file, final String urn) {
+        this.dir = file;
+        this.name = urn;
     }
 
     @Override
-    public Response act() throws IOException {
-        return new RsPage(
-            "/xsl/home.xsl",
-            this.request
+    public List<String> names() {
+        return Lists.transform(
+            Lists.newArrayList(
+                FileUtils.listFiles(
+                    this.dir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE
+                )
+            ),
+            new Function<File, String>() {
+                @Override
+                public String apply(final File input) {
+                    return input.getName();
+                }
+            }
         );
     }
 
+    @Override
+    public Doc doc(final String doc) {
+        return new MkDoc(this.dir, this.name, doc);
+    }
 }

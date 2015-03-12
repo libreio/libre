@@ -29,13 +29,16 @@
  */
 package com.nerodesk;
 
-import com.jcabi.log.Logger;
-import com.nerodesk.mock.MkStorage;
+import com.jcabi.manifests.Manifests;
+import com.jcabi.s3.Bucket;
+import com.jcabi.s3.Region;
+import com.jcabi.s3.mock.MkRegion;
+import com.jcabi.s3.retry.ReBucket;
+import com.nerodesk.om.aws.AwsBase;
 import java.io.IOException;
+import java.util.Arrays;
 import org.takes.http.Exit;
-import org.takes.http.FtBasic;
-import org.takes.ts.fork.FkRegex;
-import org.takes.ts.fork.TsFork;
+import org.takes.http.FtCLI;
 
 /**
  * Launch (used only for heroku).
@@ -43,15 +46,6 @@ import org.takes.ts.fork.TsFork;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.1
- * @checkstyle HideUtilityClassConstructorCheck (500 lines)
- * @todo #48:30min This is a utility class and should only launch the app. The
- *  web server code should be moved to its own class. Remove the checkstyle
- *  suppression above and also the PMD suppression below. This is continuation
- *  of task #48. I moved `TkIndex` to separate class but it's not enough.
- *  suppression above and also the PMD suppression below.
- * @todo #14:30min Bind getFile operation to the GET method only.
- *  This might require updates in Takes framework.
- *  Don't forget about unit tests.
  * @todo #14:30min Implement PUT operation to upload file to the store
  *  under specific path. This might require updates in Takes framework.
  *  Don't forget about unit tests.
@@ -69,52 +63,54 @@ import org.takes.ts.fork.TsFork;
  *  the file operations available. GET, PUT and DELETE operations should be
  *  described.
  */
-@SuppressWarnings("PMD.UseUtilityClass")
 public final class Launch {
 
     /**
-     * Default port.
+     * Arguments.
      */
-    private static final int DEFAULT_PORT = 8080;
+    private final transient Iterable<String> arguments;
 
     /**
      * Ctor.
-     * @param port Port.
-     * @throws IOException If something goes wrong.
-     */
-    public Launch(final int port) throws IOException {
-        this(port, new MkStorage());
-    }
-
-    /**
-     * Constructor with port and Store.
-     * @param port Port.
-     * @param store Store to start with.
-     * @throws IOException If something goes wrong.
-     */
-    public Launch(final int port, final Storage store) throws IOException {
-        Logger.info(Launch.class, "HTTP server starting on port %d", port);
-        new FtBasic(
-            new TsFork(
-                new FkRegex("/", new TkIndex()),
-                new FkRegex(TkGetFile.PATH, new TkGetFile(store))
-            ),
-            port
-        ).start(Exit.NEVER);
-    }
-
-    /**
-     * Entry point.
      * @param args Command line args
+     */
+    public Launch(final String[] args) {
+        this.arguments = Arrays.asList(args);
+    }
+
+    /**
+     * Main entry point.
+     * @param args Arguments
      * @throws IOException If fails
      */
     public static void main(final String... args) throws IOException {
-        // @checkstyle MagicNumberCheck (1 line)
-        int port = Launch.DEFAULT_PORT;
-        if (args.length > 0) {
-            port = Integer.parseInt(args[0]);
+        new Launch(args).exec();
+    }
+
+    /**
+     * Run it all.
+     * @throws IOException If fails
+     */
+    public void exec() throws IOException {
+        final App app = new App(new AwsBase(Launch.bucket()));
+        new FtCLI(app, this.arguments).start(Exit.NEVER);
+    }
+
+    /**
+     * AWS bucket.
+     * @return Bucket
+     */
+    private static Bucket bucket() {
+        final String key = Manifests.read("Nerodesk-AwsKey");
+        final Bucket bucket;
+        if (key.startsWith("AAAAA")) {
+            bucket = new MkRegion().bucket("");
+        } else {
+            bucket = new Region.Simple(
+                key, Manifests.read("Nerodesk-AwsSecret")
+            ).bucket(Manifests.read("Nerodesk-Bucket"));
         }
-        new Launch(port);
+        return new ReBucket(bucket);
     }
 
 }

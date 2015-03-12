@@ -27,81 +27,49 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om.mock;
 
-import com.jcabi.s3.Ocket;
-import com.jcabi.s3.Region;
+import com.google.common.io.Files;
+import com.nerodesk.om.Base;
+import com.nerodesk.om.User;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Amazon S3 storage.
+ * Mocked version of base.
  *
- * @author Alexey Saenko (alexey.saenko@gmail.com)
+ * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
 @ToString
 @EqualsAndHashCode
-public final class AmazonStorage implements Storage {
+public final class MkBase implements Base {
 
     /**
-     * Region.
+     * Directory.
      */
-    private final transient Region region;
-
-    /**
-     * Bucket name.
-     */
-    private final transient String bucket;
+    private final transient File dir;
 
     /**
      * Ctor.
-     * @param key Amazon key
-     * @param secret Amazon secret
-     * @param bckt The name of the bucket to get
      */
-    public AmazonStorage(@NotNull final String key,
-        @NotNull final String secret, @NotNull final String bckt) {
-        this(new Region.Simple(key, secret), bckt);
+    public MkBase() {
+        this(Files.createTempDir());
     }
 
     /**
      * Ctor.
-     * @param rgn Amazon region abstraction
-     * @param bckt The name of the bucket to get
+     * @param file Directory
      */
-    public AmazonStorage(
-        @NotNull final Region rgn,
-        @NotNull final String bckt) {
-        super();
-        this.region = rgn;
-        this.bucket = bckt;
+    public MkBase(final File file) {
+        this.dir = file;
     }
 
     @Override
-    public InputStream get(@NotNull final String path) throws IOException {
-        final PipedOutputStream pos = new PipedOutputStream();
-        this.region.bucket(this.bucket).ocket(path).read(pos);
-        return new PipedInputStream(pos);
+    public User user(final String urn) throws IOException {
+        return new MkUser(this.dir, urn);
     }
-
-    @Override
-    public void put(
-        @NotNull final String path,
-        @NotNull final InputStream input) throws IOException {
-        final Ocket ocket = this.region.bucket(this.bucket).ocket(path);
-        ocket.write(input, ocket.meta());
-    }
-
-    @Override
-    public void delete(@NotNull final String path) throws IOException {
-        this.region.bucket(this.bucket).remove(path);
-    }
-
 }

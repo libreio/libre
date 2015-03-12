@@ -29,41 +29,69 @@
  */
 package com.nerodesk;
 
-import com.jcabi.aspects.Immutable;
+import com.nerodesk.om.Docs;
 import java.io.IOException;
-import java.io.InputStream;
-import javax.validation.constraints.NotNull;
+import org.takes.Request;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.rs.xe.XeSource;
+import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
- * File storage.
+ * List of docs.
  *
- * @author Paul Polishchuk (ppol@ua.fm)
+ * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-@Immutable
-public interface Storage {
+public final class TkDocs implements Take {
 
     /**
-     * Get file from storage.
-     * @param path Path
-     * @throws IOException If fails
-     * @return InputStream
+     * Docs.
      */
-    InputStream get(@NotNull String path) throws IOException;
+    private final transient Docs docs;
 
     /**
-     * Write file.
-     * @param path Path.
-     * @param input Input.
-     * @throws IOException If fails
+     * Request.
      */
-    void put(@NotNull String path, InputStream input) throws IOException;
+    private final transient Request request;
 
     /**
-     * Delete file from storage.
-     * @param path Path
+     * Ctor.
+     * @param dcs Docs
+     * @param req Request
+     */
+    public TkDocs(final Docs dcs, final Request req) {
+        this.docs = dcs;
+        this.request = req;
+    }
+
+    @Override
+    public Response act() throws IOException {
+        return new RsPage(
+            "/xsl/home.xsl",
+            this.request,
+            new XeSource() {
+                @Override
+                public Iterable<Directive> toXembly() throws IOException {
+                    return TkDocs.this.docs();
+                }
+            }
+        );
+    }
+
+    /**
+     * Convert docs into directives.
+     * @return Directives
      * @throws IOException If fails
      */
-    void delete(@NotNull String path) throws IOException;
+    private Iterable<Directive> docs() throws IOException {
+        final Directives dirs = new Directives().add("docs");
+        for (final String name : this.docs.names()) {
+            dirs.add("name").set(name).up();
+        }
+        return dirs;
+    }
+
 }

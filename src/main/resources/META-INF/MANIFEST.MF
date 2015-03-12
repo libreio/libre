@@ -1,4 +1,7 @@
 Main-Class: com.nerodesk.Launch
 Nerodesk-Revision: BUILD
 Nerodesk-Version: ${project.version}
-Nerodesk-Date: ${maven.build.timestamp}
+Nerodesk-Date: ${timestamp}
+Nerodesk-FacebookId: ${fb.app}
+Nerodesk-FacebookSecret: ${fb.secret}
+Nerodesk-SecurityKey: ${security.key}

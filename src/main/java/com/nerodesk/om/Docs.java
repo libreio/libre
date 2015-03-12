@@ -27,55 +27,35 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om;
 
-import com.nerodesk.mock.MkStorage;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import org.apache.commons.io.IOUtils;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.mockito.Mockito;
-import org.takes.ts.fork.RqRegex;
+import com.jcabi.aspects.Immutable;
+import java.io.IOException;
+import java.util.List;
 
 /**
- * Tests for {@code TkGetFile}.
+ * Docs.
  *
- * @author Paul Polishchuk (ppol@ua.fm)
+ * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
-public final class TkGetFileTest {
-    /**
-     * Temp directory.
-     * @checkstyle VisibilityModifierCheck (5 lines)
-     */
-    @Rule
-    public final transient TemporaryFolder temp = new TemporaryFolder();
+@Immutable
+public interface Docs {
 
     /**
-     * TkGetFile can return file content.
-     * @throws Exception If something went wrong
+     * List all docs.
+     * @throws IOException If fails
+     * @return List of names
      */
-    @Test
-    public void returnsFileContent() throws Exception {
-        final Storage storage = new MkStorage(
-            this.temp.getRoot().getAbsolutePath()
-        );
-        final String path = "some_file.txt";
-        final String content = "some text content";
-        storage.put(path, IOUtils.toInputStream(content));
-        final Matcher matcher = Pattern.compile(TkGetFile.PATH)
-            .matcher(String.format("http://localhost:8080/api/file/%s", path));
-        matcher.find();
-        final RqRegex regex = Mockito.mock(RqRegex.class);
-        Mockito.when(regex.matcher()).thenReturn(matcher);
-        MatcherAssert.assertThat(
-            IOUtils.toString(new TkGetFile(storage).route(regex).act().body()),
-            Matchers.containsString(content)
-        );
-    }
+    List<String> names() throws IOException;
+
+    /**
+     * Get document by name.
+     * @param name Name of the document, e.g. "/my/files/picture.gif"
+     * @throws IOException If fails
+     * @return Document
+     */
+    Doc doc(String name) throws IOException;
+
 }

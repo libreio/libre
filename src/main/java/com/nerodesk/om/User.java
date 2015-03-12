@@ -27,42 +27,26 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om;
 
+import com.jcabi.aspects.Immutable;
 import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
 
 /**
- * Index.
+ * User.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-public final class TkIndex implements Take {
+@Immutable
+public interface User {
 
     /**
-     * Request.
+     * Get documents.
+     * @throws IOException If fails
+     * @return Documents
      */
-    private final transient Request request;
-
-    /**
-     * Ctor.
-     * @param req Request
-     */
-    public TkIndex(final Request req) {
-        this.request = req;
-    }
-
-    @Override
-    public Response act() throws IOException {
-        return new RsPage(
-            "/xsl/home.xsl",
-            this.request
-        );
-    }
+    Docs docs() throws IOException;
 
 }

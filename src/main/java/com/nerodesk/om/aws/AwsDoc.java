@@ -27,41 +27,83 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om.aws;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.jcabi.s3.Bucket;
+import com.jcabi.s3.Ocket;
+import com.nerodesk.om.Doc;
 import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
+import java.io.InputStream;
+import java.io.OutputStream;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
- * Index.
+ * AWS-based version of Doc.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-public final class TkIndex implements Take {
+@ToString
+@EqualsAndHashCode
+public final class AwsDoc implements Doc {
 
     /**
-     * Request.
+     * Bucket.
      */
-    private final transient Request request;
+    private final transient Bucket bucket;
+
+    /**
+     * URN of user.
+     */
+    private final transient String user;
+
+    /**
+     * Doc name.
+     */
+    private final transient String label;
 
     /**
      * Ctor.
-     * @param req Request
+     * @param bkt Bucket
+     * @param urn User URN
+     * @param doc Name of document
      */
-    public TkIndex(final Request req) {
-        this.request = req;
+    public AwsDoc(final Bucket bkt, final String urn, final String doc) {
+        this.bucket = bkt;
+        this.user = urn;
+        this.label = doc;
     }
 
     @Override
-    public Response act() throws IOException {
-        return new RsPage(
-            "/xsl/home.xsl",
-            this.request
+    public boolean exists() throws IOException {
+        return this.ocket().exists();
+    }
+
+    @Override
+    public void delete() throws IOException {
+        this.bucket.remove(this.ocket().key());
+    }
+
+    @Override
+    public void read(final OutputStream output) throws IOException {
+        this.ocket().read(output);
+    }
+
+    @Override
+    public void write(final InputStream input) throws IOException {
+        this.ocket().write(input, new ObjectMetadata());
+    }
+
+    /**
+     * Get ocket.
+     * @return Ocket
+     */
+    private Ocket ocket() {
+        return this.bucket.ocket(
+            String.format("/%s%s", this.user, this.label)
         );
     }
 

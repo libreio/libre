@@ -27,45 +27,81 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om.mock;
 
+import com.nerodesk.om.Doc;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import org.takes.Take;
-import org.takes.tk.TkHTML;
-import org.takes.ts.fork.RqRegex;
-import org.takes.ts.fork.Target;
+import java.io.InputStream;
+import java.io.OutputStream;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.apache.commons.io.IOUtils;
 
 /**
- * Part of REST API to get a file.
+ * Mocked version of doc.
  *
- * @author Paul Polishchuk (ppol@ua.fm)
+ * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
-public final class TkGetFile implements Target<RqRegex> {
+@ToString
+@EqualsAndHashCode
+public final class MkDoc implements Doc {
+
     /**
-     * Get file path.
+     * Directory.
      */
-    public static final String PATH = "/api/file/(?<path>[^/]+)";
+    private final transient File dir;
+
     /**
-     * File storage.
+     * URN.
      */
-    private final transient Storage storage;
+    private final transient String user;
+
+    /**
+     * Doc name.
+     */
+    private final transient String label;
+
     /**
      * Ctor.
-     * @param store Storage.
+     * @param file Directory
+     * @param urn URN
      */
-    public TkGetFile(final Storage store) {
-        this.storage = store;
+    public MkDoc(final File file, final String urn, final String name) {
+        this.dir = file;
+        this.user = urn;
+        this.label = name;
     }
 
     @Override
-    public Take route(final RqRegex req)
-        throws IOException {
-        return new TkHTML(
-            this.storage.get(
-                req.matcher().group("path")
-            )
-        );
+    public boolean exists() {
+        return this.file().exists();
+    }
+
+    @Override
+    public void delete() {
+        this.file().delete();
+    }
+
+    @Override
+    public void read(final OutputStream output) throws IOException {
+        IOUtils.copy(new FileInputStream(this.file()), output);
+    }
+
+    @Override
+    public void write(final InputStream input) throws IOException {
+        IOUtils.copy(input, new FileOutputStream(this.file()));
+    }
+
+    /**
+     * File.
+     * @return File
+     */
+    private File file() {
+        return new File(new File(this.dir, this.user), this.label);
     }
 }

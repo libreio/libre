@@ -1,4 +1,5 @@
-/**
+<?xml version="1.0"?>
+<!--
  * Copyright (c) 2015, nerodesk.com
  * All rights reserved.
  *
@@ -26,67 +27,27 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-package com.nerodesk.mock;
-
-import com.jcabi.aspects.Immutable;
-import com.nerodesk.Storage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import javax.validation.constraints.NotNull;
-import org.apache.commons.io.IOUtils;
-
-/**
- * Mock file storage backed by local filesystem.
- *
- * @author Paul Polishchuk (ppol@ua.fm)
- * @version $Id$
- * @since 0.1
- */
-@Immutable
-public final class MkStorage implements Storage {
-
-    /**
-     * Root path for the storage.
-     */
-    private final transient String root;
-
-    /**
-     * Default constructor.
-     */
-    public MkStorage() {
-        this("~/.nerodesk/storage");
-    }
-
-    /**
-     * Constructor with custom root path.
-     * @param rpath Path
-     */
-    public MkStorage(final String rpath) {
-        this.root = rpath;
-    }
-
-    @Override
-    public InputStream get(@NotNull final String path) throws IOException {
-        return Files.newInputStream(
-            FileSystems.getDefault().getPath(this.root, path)
-        );
-    }
-
-    @Override
-    public void put(final String path, final InputStream input) throws
-        IOException {
-        Files.write(
-            FileSystems.getDefault().getPath(this.root, path),
-            IOUtils.toByteArray(input)
-        );
-    }
-
-    @Override
-    public void delete(@NotNull final String path) throws IOException {
-        Files.delete(FileSystems.getDefault().getPath(this.root, path));
-    }
-
-}
+ -->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns="http://www.w3.org/1999/xhtml" version="1.0">
+    <xsl:output method="xml" omit-xml-declaration="yes"/>
+    <xsl:include href="/xsl/layout.xsl"/>
+    <xsl:template match="page" mode="head">
+        <title>
+            <xsl:text>docs</xsl:text>
+        </title>
+    </xsl:template>
+    <xsl:template match="page" mode="body">
+        <p>
+            <xsl:text>My docs:</xsl:text>
+        </p>
+        <ul>
+            <xsl:apply-templates select="docs/name"/>
+        </ul>
+    </xsl:template>
+    <xsl:template match="name">
+        <li>
+            <a href="{@href}"><xsl:value-of select="."/></a>
+        </li>
+    </xsl:template>
+</xsl:stylesheet>

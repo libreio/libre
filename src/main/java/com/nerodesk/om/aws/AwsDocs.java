@@ -27,12 +27,54 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package com.nerodesk.om.aws;
+
+import com.google.common.collect.Lists;
+import com.jcabi.s3.Bucket;
+import com.nerodesk.om.Doc;
+import com.nerodesk.om.Docs;
+import java.io.IOException;
+import java.util.List;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
- * Nerodesk, tests.
+ * AWS-based version of Docs.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-package com.nerodesk.mock;
+@ToString
+@EqualsAndHashCode
+public final class AwsDocs implements Docs {
+
+    /**
+     * Bucket.
+     */
+    private final transient Bucket bucket;
+
+    /**
+     * URN of user.
+     */
+    private final transient String name;
+
+    /**
+     * Ctor.
+     * @param bkt Bucket
+     */
+    public AwsDocs(final Bucket bkt, final String urn) {
+        this.bucket = bkt;
+        this.name = urn;
+    }
+
+    @Override
+    public List<String> names() throws IOException {
+        return Lists.newArrayList(this.bucket.list(""));
+    }
+
+    @Override
+    public Doc doc(final String doc) {
+        return new AwsDoc(this.bucket, this.name, doc);
+    }
+}

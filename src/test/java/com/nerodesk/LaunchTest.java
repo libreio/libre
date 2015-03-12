@@ -29,25 +29,19 @@
  */
 package com.nerodesk;
 
-import com.jayway.awaitility.Awaitility;
-import com.jcabi.aspects.Tv;
-import com.jcabi.log.VerboseRunnable;
-import com.nerodesk.mock.MkStorage;
-import java.io.BufferedReader;
+import com.jcabi.http.request.JdkRequest;
+import com.jcabi.http.response.RestResponse;
+import com.jcabi.http.response.XmlResponse;
+import com.jcabi.http.wire.VerboseWire;
+import com.nerodesk.om.Base;
+import com.nerodesk.om.mock.MkBase;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.URL;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-import org.apache.commons.io.IOUtils;
-import org.hamcrest.MatcherAssert;
+import java.net.HttpURLConnection;
+import java.net.URI;
 import org.hamcrest.Matchers;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.takes.http.FtRemote;
 
 /**
  * Test case for {@code Launch}.
@@ -62,43 +56,33 @@ import org.junit.rules.TemporaryFolder;
 public final class LaunchTest {
 
     /**
-     * Temp directory.
-     * @checkstyle VisibilityModifierCheck (5 lines)
-     */
-    @Rule
-    public final transient TemporaryFolder temp = new TemporaryFolder();
-
-    /**
      * Launches web server on random port.
      * @throws Exception If fails
      */
     @Test
-    @SuppressWarnings("PMD.DoNotUseThreads")
     public void launchesOnRandomPort() throws Exception {
-        final int port = LaunchTest.port();
-        final Thread thread = new Thread(
-            new VerboseRunnable(
-                new Callable<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        Launch.main(Integer.toString(port));
-                        return null;
-                    }
-                },
-                false, true
-            )
+        final App app = new App(new MkBase());
+        new FtRemote(app).exec(
+            new FtRemote.Script() {
+                @Override
+                public void exec(final URI home) throws IOException {
+                    new JdkRequest(home)
+                        .fetch()
+                        .as(RestResponse.class)
+                        .assertStatus(HttpURLConnection.HTTP_OK)
+                        .as(XmlResponse.class)
+                        .assertXPath("/xhtml:html");
+                    new JdkRequest(home)
+                        .through(VerboseWire.class)
+                        .header("Accept", "application/xml")
+                        .fetch()
+                        .as(RestResponse.class)
+                        .assertStatus(HttpURLConnection.HTTP_OK)
+                        .as(XmlResponse.class)
+                        .assertXPath("/page/version");
+                }
+            }
         );
-        thread.start();
-        TimeUnit.SECONDS.sleep(1L);
-        final URL url = new URL(String.format("http://localhost:%d", port));
-        final BufferedReader input = new BufferedReader(
-            new InputStreamReader(url.openConnection().getInputStream())
-        );
-        MatcherAssert.assertThat(
-            input.readLine(), Matchers.containsString("version ")
-        );
-        thread.interrupt();
-        thread.join((long) Tv.THOUSAND, 0);
     }
 
     /**
@@ -106,75 +90,25 @@ public final class LaunchTest {
      * @throws Exception If fails
      */
     @Test
-    @SuppressWarnings("PMD.DoNotUseThreads")
     public void returnsFileContent() throws Exception {
-        final int port = LaunchTest.port();
-        final Storage storage = new MkStorage(
-            this.temp.getRoot().getAbsolutePath()
+        final Base base = new MkBase();
+        base.user("urn:test:1").docs().doc("test.txt").write(
+            new ByteArrayInputStream("hello, world!".getBytes())
         );
-        final Thread thread = new Thread(
-            new VerboseRunnable(
-                new Callable<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        new Launch(port, storage);
-                        return null;
-                    }
-                },
-                false, true
-            )
-        );
-        thread.start();
-        final String path = "some_file.txt";
-        final String content = "some text content";
-        storage.put(path, IOUtils.toInputStream(content));
-        final URL url = new URL(
-            String.format("http://localhost:%d/api/file/%s", port, path)
-        );
-        Awaitility.await().atMost(2L, TimeUnit.SECONDS).until(
-            new Callable<String>() {
+        final App app = new App(base);
+        new FtRemote(app).exec(
+            new FtRemote.Script() {
                 @Override
-                public String call() throws Exception {
-                    try (final BufferedReader input = new BufferedReader(
-                        new InputStreamReader(
-                            url.openConnection().getInputStream()
-                        )
-                    )
-                    ) {
-                        return input.readLine();
-                    }
+                public void exec(final URI home) throws IOException {
+                    new JdkRequest(home)
+                        .uri().path("/test.txt").back()
+                        .fetch()
+                        .as(RestResponse.class)
+                        .assertStatus(HttpURLConnection.HTTP_OK)
+                        .assertBody(Matchers.startsWith("hello, world"));
                 }
-            }, Matchers.is(content)
+            }
         );
-        thread.interrupt();
-        thread.join((long) Tv.THOUSAND);
-    }
-
-    /**
-     * Launcher can return Response for /.
-     */
-    @Test
-    public void returnsRoot() {
-        MatcherAssert.assertThat(
-            new TkIndex().act(),
-            Matchers.notNullValue()
-        );
-    }
-
-    /**
-     * Reserve new port for each call.
-     * @return Reserved port.
-     */
-    private static int port() {
-        try (ServerSocket socket = new ServerSocket()) {
-            socket.setReuseAddress(true);
-            socket.bind(
-                new InetSocketAddress(InetAddress.getLoopbackAddress(), 0)
-            );
-            return socket.getLocalPort();
-        } catch (final IOException ex) {
-            throw new IllegalStateException(ex);
-        }
     }
 
 }

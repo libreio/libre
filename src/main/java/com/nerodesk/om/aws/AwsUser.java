@@ -27,42 +27,47 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om.aws;
 
+import com.jcabi.s3.Bucket;
+import com.nerodesk.om.Docs;
+import com.nerodesk.om.User;
 import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
- * Index.
+ * AWS-based version of User.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-public final class TkIndex implements Take {
+@ToString
+@EqualsAndHashCode
+public final class AwsUser implements User {
 
     /**
-     * Request.
+     * Bucket.
      */
-    private final transient Request request;
+    private final transient Bucket bucket;
+
+    /**
+     * URN of user.
+     */
+    private final transient String name;
 
     /**
      * Ctor.
-     * @param req Request
+     * @param bkt Bucket
      */
-    public TkIndex(final Request req) {
-        this.request = req;
+    public AwsUser(final Bucket bkt, final String urn) {
+        this.bucket = bkt;
+        this.name = urn;
     }
 
     @Override
-    public Response act() throws IOException {
-        return new RsPage(
-            "/xsl/home.xsl",
-            this.request
-        );
+    public Docs docs() {
+        return new AwsDocs(this.bucket, this.name);
     }
-
 }

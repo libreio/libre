@@ -33,6 +33,7 @@ import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.takes.rq.RqFake;
 
 /**
  * Tests for {@code TkIndex}.
@@ -50,7 +51,7 @@ public final class TkIndexTest {
     @Test
     public void returnsPlainText() throws Exception {
         MatcherAssert.assertThat(
-            IOUtils.toString(new TkIndex().act().body()),
+            IOUtils.toString(new TkIndex(new RqFake()).act().body()),
             Matchers.containsString("alive")
         );
     }
