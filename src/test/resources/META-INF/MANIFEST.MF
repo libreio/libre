@@ -1,3 +1,6 @@
 Nerodesk-Revision: ${buildNumber}
 Nerodesk-Version: ${project.version}
 Nerodesk-Date: ${timestamp}
+Nerodesk-FacebookId: XXXX
+Nerodesk-FacebookSecret: XXXX
+Nerodesk-SecurityKey: XXXX

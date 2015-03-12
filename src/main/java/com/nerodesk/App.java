@@ -39,6 +39,7 @@ import org.takes.Takes;
 import org.takes.facets.auth.PsByFlag;
 import org.takes.facets.auth.PsChain;
 import org.takes.facets.auth.PsCookie;
+import org.takes.facets.auth.PsFake;
 import org.takes.facets.auth.PsLogout;
 import org.takes.facets.auth.RqAuth;
 import org.takes.facets.auth.TsAuth;
@@ -84,7 +85,7 @@ public final class App extends TsWrap {
      * @throws IOException If fails
      */
     public static Takes make(final Base base) throws IOException {
-        return new TsFork(
+        final Takes fork = new TsFork(
             new FkParams(
                 PsByFlag.class.getSimpleName(),
                 Pattern.compile(".+"),
@@ -128,6 +129,7 @@ public final class App extends TsWrap {
                 )
             )
         );
+        return App.auth(fork);
     }
 
     /**
@@ -136,15 +138,16 @@ public final class App extends TsWrap {
      * @return Authenticated takes
      */
     private static Takes auth(final Takes takes) {
+        final String key = Manifests.read("Nerodesk-FacebookId");
         return new TsAuth(
             takes,
             new PsChain(
-                new PsFake(),
+                new PsFake(key.startsWith("XXXX")),
                 new PsByFlag(
                     new PsByFlag.Pair(
                         PsGithub.class.getSimpleName(),
                         new PsGithub(
-                            Manifests.read("Nerodesk-FacebookId"),
+                            key,
                             Manifests.read("Nerodesk-FacebookSecret")
                         )
                     ),
@@ -158,7 +161,7 @@ public final class App extends TsWrap {
                         new CcHex(
                             new CcXOR(
                                 new CcSalted(new CcCompact()),
-                                Manifests.read("Facebook-SecurityKey")
+                                Manifests.read("Nerodesk-SecurityKey")
                             )
                         )
                     )
