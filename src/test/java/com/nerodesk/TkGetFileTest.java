@@ -37,6 +37,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.takes.facets.fork.RqRegex;
+import org.takes.rs.RsPrint;
 
 /**
  * Tests for {@code TkGetFile}.
@@ -66,7 +67,7 @@ public final class TkGetFileTest {
         final String content = "some text content";
         storage.put(path, IOUtils.toInputStream(content));
         MatcherAssert.assertThat(
-            IOUtils.toString(
+            new RsPrint(
                 new TkGetFile(storage).route(
                     new RqRegex.Fake(
                         "/api/file/(?<path>[^/]+)",
@@ -75,8 +76,8 @@ public final class TkGetFileTest {
                             path
                         )
                     )
-                ).act().body()
-            ),
+                ).act()
+            ).printBody(),
             Matchers.containsString(content)
         );
     }
