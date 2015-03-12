@@ -1,9 +1,9 @@
 install: |-
+  sudo apt-get install ruby
+  sudo apt-get install maven
   sudo apt-get install bsdmainutils
   sudo gem install pdd
   sudo gem install est
-  sudo apt-get install ruby
-  sudo apt-get install maven
 docker:
   image: mostalive/ubuntu-14.04-oracle-jdk8
 architect:
