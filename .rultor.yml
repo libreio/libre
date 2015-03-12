@@ -27,10 +27,10 @@ merge:
   - caarlos0
   - carlosmiranda
   - darkled
-  - ggajos
   - krzyk
   - longtimeago
   - maurezen
+  - yegor256
 deploy:
   script: |-
     mvn clean package -Pnerodesk -Pqulice,cobertura --errors --settings ../settings.xml --batch-mode
