@@ -128,7 +128,7 @@
             </xsl:if>
         </div>
     </xsl:template>
-    <xsl:template match="identity">
+    <xsl:template match="identity[urn!='urn:test:1']">
         <span title="Facebook account logged in: {urn}">
             <xsl:value-of select="name"/>
         </span>
@@ -136,6 +136,11 @@
             <a title="log out" href="{/page/links/link[@rel='takes:logout']/@href}">
                 <xsl:text>logout</xsl:text>
             </a>
+        </span>
+    </xsl:template>
+    <xsl:template match="identity[urn='urn:test:1']">
+        <span>
+            <xsl:text>tester</xsl:text>
         </span>
     </xsl:template>
     <xsl:template name="millis">

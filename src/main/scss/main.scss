@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2009-2015, rultor.com
+ * Copyright (c) 2015, nerodesk.com
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  * disclaimer. 2) Redistributions in binary form must reproduce the above
  * copyright notice, this list of conditions and the following
  * disclaimer in the documentation and/or other materials provided
- * with the distribution. 3) Neither the name of the rultor.com nor
+ * with the distribution. 3) Neither the name of the nerodesk.com nor
  * the names of its contributors may be used to endorse or promote
  * products derived from this software without specific prior written
  * permission.
@@ -28,8 +28,12 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-.menu {
+body {
   font-family: 'Courier New', 'Courier', monospace;
+  font-size: 18px;
+}
+
+.menu {
   font-size: 85%;
   padding: .3em;
   text-align: center;
@@ -39,23 +43,5 @@
   span {
     margin-left: .3em;
     margin-right: .3em;
-  }
-}
-
-#pulse {
-  border: 1px solid lightgray;
-  padding: 1em;
-  height: 64px;
-  img {
-    width: 100%;
-    height: 100%;
-  }
-}
-
-.recent {
-  list-style: none;
-  .ago {
-    margin-left: .5em;
-    color: gray;
   }
 }

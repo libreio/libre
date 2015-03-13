@@ -30,7 +30,10 @@
 package com.nerodesk;
 
 import com.jcabi.manifests.Manifests;
+import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Region;
+import com.jcabi.s3.mock.MkRegion;
+import com.jcabi.s3.retry.ReBucket;
 import com.nerodesk.om.aws.AwsBase;
 import java.io.IOException;
 import java.util.Arrays;
@@ -90,16 +93,26 @@ public final class Launch {
      */
     public void exec() throws IOException {
         new FtCLI(
-            new App(
-                new AwsBase(
-                    new Region.Simple(
-                        Manifests.read("Nerodesk-AwsKey"),
-                        Manifests.read("Nerodesk-AwsSecret")
-                    ).bucket(Manifests.read("Nerodesk-Bucket"))
-                )
-            ),
+            new App(new AwsBase(Launch.bucket())),
             this.arguments
         ).start(Exit.NEVER);
+    }
+
+    /**
+     * AWS bucket.
+     * @return Bucket
+     */
+    private static Bucket bucket() {
+        final String key = Manifests.read("Nerodesk-AwsKey");
+        final Bucket bucket;
+        if (key.startsWith("AAAAA") || key.startsWith("${")) {
+            bucket = new MkRegion().bucket("test");
+        } else {
+            bucket = new Region.Simple(
+                key, Manifests.read("Nerodesk-AwsSecret")
+            ).bucket(Manifests.read("Nerodesk-Bucket"));
+        }
+        return new ReBucket(bucket);
     }
 
 }
