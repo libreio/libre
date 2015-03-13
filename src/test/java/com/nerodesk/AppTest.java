@@ -53,7 +53,7 @@ import org.takes.http.FtRemote;
  * @todo #14:15min Application should be able to get binary file properly.
  *  Add a test to check it works and fix if doesn't.
  */
-public final class LaunchTest {
+public final class AppTest {
 
     /**
      * Launches web server on random port.

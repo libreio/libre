@@ -5,3 +5,6 @@ Nerodesk-Date: ${timestamp}
 Nerodesk-FacebookId: ${fb.app}
 Nerodesk-FacebookSecret: ${fb.secret}
 Nerodesk-SecurityKey: ${security.key}
+Nerodesk-AwsKey: AAAABBBBAAAABBBBAAAAA
+Nerodesk-AwsSecret: AAAABBBBAAAABBBBAAAAAAAAABBBBAAAABBBBAAAAA
+Nerodesk-Bucket: XXXX
