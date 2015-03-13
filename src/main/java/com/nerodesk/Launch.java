@@ -92,8 +92,10 @@ public final class Launch {
      * @throws IOException If fails
      */
     public void exec() throws IOException {
-        final App app = new App(new AwsBase(Launch.bucket()));
-        new FtCLI(app, this.arguments).start(Exit.NEVER);
+        new FtCLI(
+            new App(new AwsBase(Launch.bucket())),
+            this.arguments
+        ).start(Exit.NEVER);
     }
 
     /**
