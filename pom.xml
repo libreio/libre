@@ -416,6 +416,7 @@
                         <configuration>
                             <excludes>
                                 <exclude>findbugs:.*</exclude>
+                                <exclude>cobertura:.*</exclude>
                             </excludes>
                         </configuration>
                     </plugin>
