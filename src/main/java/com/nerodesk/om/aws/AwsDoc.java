@@ -30,12 +30,14 @@
 package com.nerodesk.om.aws;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.jcabi.log.Logger;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
 import com.nerodesk.om.Doc;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -88,13 +90,15 @@ public final class AwsDoc implements Doc {
     }
 
     @Override
-    public void read(final OutputStream output) throws IOException {
+    public void read(@NotNull final OutputStream output) throws IOException {
         this.ocket().read(output);
+        Logger.info(this, "%s read", this.label);
     }
 
     @Override
     public void write(final InputStream input) throws IOException {
         this.ocket().write(input, new ObjectMetadata());
+        Logger.info(this, "%s written", this.label);
     }
 
     /**

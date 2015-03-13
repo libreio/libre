@@ -32,7 +32,6 @@ package com.nerodesk.om.aws;
 import com.jcabi.s3.Bucket;
 import com.nerodesk.om.Base;
 import com.nerodesk.om.User;
-import java.io.IOException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 

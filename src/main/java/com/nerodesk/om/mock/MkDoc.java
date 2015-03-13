@@ -71,6 +71,7 @@ public final class MkDoc implements Doc {
      * Ctor.
      * @param file Directory
      * @param urn URN
+     * @param name Document name
      */
     public MkDoc(final File file, final String urn, final String name) {
         this.dir = file;

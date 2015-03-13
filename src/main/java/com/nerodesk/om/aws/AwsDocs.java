@@ -62,6 +62,7 @@ public final class AwsDocs implements Docs {
     /**
      * Ctor.
      * @param bkt Bucket
+     * @param urn User's URN
      */
     public AwsDocs(final Bucket bkt, final String urn) {
         this.bucket = bkt;

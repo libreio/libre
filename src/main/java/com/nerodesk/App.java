@@ -67,7 +67,10 @@ import org.takes.ts.TsWrap;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle ClassFanOutComplexityCheck (500 lines)
  */
+@SuppressWarnings({ "PMD.UseUtilityClass", "PMD.ExcessiveImports" })
 public final class App extends TsWrap {
 
     /**
@@ -92,7 +95,6 @@ public final class App extends TsWrap {
                 Pattern.compile(".+"),
                 new TkRedirect()
             ),
-            new FkRegex("/robots.txt", ""),
             new FkRegex(
                 "/xsl/.*",
                 new TsWithType(new TsClasspath(), "text/xsl")
@@ -130,7 +132,7 @@ public final class App extends TsWrap {
                 )
             ),
             new FkRegex(
-                "/read",
+                "/r",
                 new Takes() {
                     @Override
                     public Take route(final Request req) throws IOException {

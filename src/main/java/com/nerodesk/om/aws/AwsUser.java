@@ -32,7 +32,6 @@ package com.nerodesk.om.aws;
 import com.jcabi.s3.Bucket;
 import com.nerodesk.om.Docs;
 import com.nerodesk.om.User;
-import java.io.IOException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -60,6 +59,7 @@ public final class AwsUser implements User {
     /**
      * Ctor.
      * @param bkt Bucket
+     * @param urn URN of the user
      */
     public AwsUser(final Bucket bkt, final String urn) {
         this.bucket = bkt;

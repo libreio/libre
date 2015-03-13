@@ -30,10 +30,11 @@
 package com.nerodesk;
 
 import com.jcabi.matchers.XhtmlMatchers;
-import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.takes.rq.RqFake;
+import org.takes.rq.RqWithHeader;
+import org.takes.rs.RsPrint;
 
 /**
  * Tests for {@code TkIndex}.
@@ -45,14 +46,30 @@ import org.takes.rq.RqFake;
 public final class TkIndexTest {
 
     /**
-     * TkIndex can return plain text.
+     * TkIndex can return XML.
      * @throws Exception If fails.
      */
     @Test
-    public void returnsPlainText() throws Exception {
+    public void returnsXml() throws Exception {
         MatcherAssert.assertThat(
-            IOUtils.toString(new TkIndex(new RqFake()).act().body()),
+            new RsPrint(new TkIndex(new RqFake()).act()).printBody(),
             XhtmlMatchers.hasXPath("/page/millis")
+        );
+    }
+
+    /**
+     * TkIndex can return HTML.
+     * @throws Exception If fails.
+     */
+    @Test
+    public void returnsHtml() throws Exception {
+        MatcherAssert.assertThat(
+            new RsPrint(
+                new TkIndex(
+                    new RqWithHeader(new RqFake(), "Accept: text/html")
+                ).act()
+            ).printBody(),
+            XhtmlMatchers.hasXPath("/xhtml:html")
         );
     }
 }

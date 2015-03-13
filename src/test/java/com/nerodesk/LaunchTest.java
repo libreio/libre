@@ -92,7 +92,8 @@ public final class LaunchTest {
     @Test
     public void returnsFileContent() throws Exception {
         final Base base = new MkBase();
-        base.user("urn:test:1").docs().doc("test.txt").write(
+        final String name = "test.txt";
+        base.user("urn:test:1").docs().doc(name).write(
             new ByteArrayInputStream("hello, world!".getBytes())
         );
         final App app = new App(base);
@@ -101,7 +102,7 @@ public final class LaunchTest {
                 @Override
                 public void exec(final URI home) throws IOException {
                     new JdkRequest(home)
-                        .uri().path("/read").queryParam("f", "test.txt").back()
+                        .uri().path("/r").queryParam("f", name).back()
                         .fetch()
                         .as(RestResponse.class)
                         .assertStatus(HttpURLConnection.HTTP_OK)

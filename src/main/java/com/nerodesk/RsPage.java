@@ -101,7 +101,9 @@ final class RsPage extends RsWrap {
                 new XeAppend(
                     "version",
                     new XeAppend("name", Manifests.read("Nerodesk-Version")),
-                    new XeAppend("revision", Manifests.read("Nerodesk-Revision")),
+                    new XeAppend(
+                        "revision", Manifests.read("Nerodesk-Revision")
+                    ),
                     new XeAppend("date", Manifests.read("Nerodesk-Date"))
                 )
             )
