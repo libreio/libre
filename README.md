@@ -42,6 +42,12 @@ $ mvn clean install -Pqulice,cobertura
 
 To avoid build errors use maven 3.2+
 
+To start a web server locally run:
+
+```
+$ mvn clean integration-test -Phit-refresh -Dport=8080
+```
+
 ## Got questions?
 
 If you have questions or general suggestions, don't hesitate to submit
