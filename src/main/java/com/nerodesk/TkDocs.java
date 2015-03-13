@@ -72,7 +72,7 @@ public final class TkDocs implements Take {
     @Override
     public Response act() throws IOException {
         return new RsPage(
-            "/xsl/home.xsl",
+            "/xsl/docs.xsl",
             this.request,
             new XeSource() {
                 @Override

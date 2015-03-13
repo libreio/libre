@@ -41,6 +41,11 @@
         <p>
             <xsl:text>My docs:</xsl:text>
         </p>
+        <form>
+            <input name="name"/>
+            <input name="file" type="file"/>
+            <input name="upload" type="submit"/>
+        </form>
         <ul>
             <xsl:apply-templates select="docs/name"/>
         </ul>

@@ -145,6 +145,20 @@ public final class App extends TsWrap {
                         );
                     }
                 }
+            ),
+            new FkRegex(
+                "/w",
+                new Takes() {
+                    @Override
+                    public Take route(final Request req) throws IOException {
+                        return new TkWrite(
+                            base.user(
+                                new RqAuth(req).identity().urn()
+                            ).docs(),
+                            req
+                        );
+                    }
+                }
             )
         );
         return App.auth(fork);

@@ -27,22 +27,51 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package com.nerodesk;
 
-body {
-  font-family: monospace;
-  font-size: 20px;
-  padding: 1em;
-}
+import com.nerodesk.om.Docs;
+import java.io.IOException;
+import org.takes.Request;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.facets.flash.RsFlash;
+import org.takes.rq.RqMultipart;
+import org.takes.rq.RqPrint;
 
-.menu {
-  font-size: 75%;
-  padding: .3em;
-  text-align: center;
-  @media only screen and (max-width: 400px) {
-    width: 100%;
-  }
-  span {
-    margin-left: .3em;
-    margin-right: .3em;
-  }
+/**
+ * Write file content.
+ *
+ * @author Yegor Bugayenko (yegor@teamed.io)
+ * @version $Id$
+ * @since 0.2
+ */
+public final class TkWrite implements Take {
+
+    /**
+     * Docs.
+     */
+    private final transient Docs docs;
+
+    /**
+     * Request.
+     */
+    private final transient Request request;
+
+    /**
+     * Ctor.
+     * @param dcs Docs
+     */
+    public TkWrite(final Docs dcs, final Request req) {
+        this.docs = dcs;
+        this.request = req;
+    }
+
+    @Override
+    public Response act() throws IOException {
+        final RqMultipart multi = new RqMultipart(this.request);
+        final String name = new RqPrint(multi.part("name").get(0)).printBody();
+        this.docs.doc(name).write(multi.part("file").get(0).body());
+        return new RsFlash("file uploaded");
+    }
+
 }
