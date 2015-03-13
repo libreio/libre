@@ -31,9 +31,11 @@ package com.nerodesk;
 
 import com.nerodesk.om.Docs;
 import java.io.IOException;
+import org.takes.Href;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.rq.RqHref;
 import org.takes.rs.xe.XeSource;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -88,8 +90,12 @@ public final class TkDocs implements Take {
      */
     private Iterable<Directive> docs() throws IOException {
         final Directives dirs = new Directives().add("docs");
+        final Href home = new RqHref(this.request).href();
         for (final String name : this.docs.names()) {
-            dirs.add("name").set(name).up();
+            dirs.add("doc").add("name").set(name).up()
+                .add("read")
+                .set(home.path("read").with("f", name).toString()).up()
+                .up();
         }
         return dirs;
     }

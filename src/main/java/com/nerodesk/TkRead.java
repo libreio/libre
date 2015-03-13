@@ -27,83 +27,43 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.mock;
+package com.nerodesk;
 
 import com.nerodesk.om.Doc;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.rs.RsWithBody;
 
 /**
- * Mocked version of doc.
+ * Read file content.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
-@ToString
-@EqualsAndHashCode
-public final class MkDoc implements Doc {
+public final class TkRead implements Take {
 
     /**
-     * Directory.
+     * Doc.
      */
-    private final transient File dir;
-
-    /**
-     * URN.
-     */
-    private final transient String user;
-
-    /**
-     * Doc name.
-     */
-    private final transient String label;
+    private final transient Doc doc;
 
     /**
      * Ctor.
-     * @param file Directory
-     * @param urn URN
+     * @param src Source document to read from
      */
-    public MkDoc(final File file, final String urn, final String name) {
-        this.dir = file;
-        this.user = urn;
-        this.label = name;
+    public TkRead(final Doc src) {
+        this.doc = src;
     }
 
     @Override
-    public boolean exists() {
-        return this.file().exists();
+    public Response act() throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        this.doc.read(baos);
+        return new RsWithBody(new ByteArrayInputStream(baos.toByteArray()));
     }
 
-    @Override
-    public void delete() {
-        this.file().delete();
-    }
-
-    @Override
-    public void read(final OutputStream output) throws IOException {
-        IOUtils.copy(new FileInputStream(this.file()), output);
-    }
-
-    @Override
-    public void write(final InputStream input) throws IOException {
-        FileUtils.touch(this.file());
-        IOUtils.copy(input, new FileOutputStream(this.file()));
-    }
-
-    /**
-     * File.
-     * @return File
-     */
-    private File file() {
-        return new File(new File(this.dir, this.user), this.label);
-    }
 }

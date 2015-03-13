@@ -199,6 +199,28 @@
                     <argLine>-XX:-UseSplitVerifier</argLine>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.tunyk.mvn.plugins.htmlcompressor</groupId>
+                <artifactId>htmlcompressor-maven-plugin</artifactId>
+                <version>1.3</version>
+                <executions>
+                    <execution>
+                        <id>compress-xsl</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>xml</goal>
+                        </goals>
+                        <configuration>
+                            <srcFolder>${basedir}/src/main/xsl</srcFolder>
+                            <targetFolder>${project.build.outputDirectory}/xsl</targetFolder>
+                            <fileExt>
+                                <ext>xsl</ext>
+                            </fileExt>
+                            <removeIntertagSpaces>false</removeIntertagSpaces>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>

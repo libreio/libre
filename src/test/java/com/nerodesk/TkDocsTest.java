@@ -27,83 +27,48 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.mock;
+package com.nerodesk;
 
-import com.nerodesk.om.Doc;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+import com.jcabi.matchers.XhtmlMatchers;
+import com.nerodesk.om.User;
+import com.nerodesk.om.mock.MkBase;
+import java.io.ByteArrayInputStream;
+import org.hamcrest.MatcherAssert;
+import org.junit.Test;
+import org.takes.rq.RqFake;
+import org.takes.rs.RsPrint;
 
 /**
- * Mocked version of doc.
+ * Tests for {@code TkDocs}.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
-@ToString
-@EqualsAndHashCode
-public final class MkDoc implements Doc {
+public final class TkDocsTest {
 
     /**
-     * Directory.
+     * TkDocs can return a list of docs.
+     * @throws Exception If fails.
      */
-    private final transient File dir;
-
-    /**
-     * URN.
-     */
-    private final transient String user;
-
-    /**
-     * Doc name.
-     */
-    private final transient String label;
-
-    /**
-     * Ctor.
-     * @param file Directory
-     * @param urn URN
-     */
-    public MkDoc(final File file, final String urn, final String name) {
-        this.dir = file;
-        this.user = urn;
-        this.label = name;
-    }
-
-    @Override
-    public boolean exists() {
-        return this.file().exists();
-    }
-
-    @Override
-    public void delete() {
-        this.file().delete();
-    }
-
-    @Override
-    public void read(final OutputStream output) throws IOException {
-        IOUtils.copy(new FileInputStream(this.file()), output);
-    }
-
-    @Override
-    public void write(final InputStream input) throws IOException {
-        FileUtils.touch(this.file());
-        IOUtils.copy(input, new FileOutputStream(this.file()));
-    }
-
-    /**
-     * File.
-     * @return File
-     */
-    private File file() {
-        return new File(new File(this.dir, this.user), this.label);
+    @Test
+    public void returnsPlainText() throws Exception {
+        final User user = new MkBase().user("urn:test:1");
+        user.docs().doc("test.txt").write(
+            new ByteArrayInputStream("hello, world!".getBytes())
+        );
+        user.docs().doc("test-2.txt").write(
+            new ByteArrayInputStream("hello!".getBytes())
+        );
+        MatcherAssert.assertThat(
+            new RsPrint(
+                new TkDocs(user.docs(), new RqFake()).act()
+            ).printBody(),
+            XhtmlMatchers.hasXPaths(
+                "/page/docs[count(doc)=2]",
+                "/page/docs/doc[name='test.txt']",
+                "/page/docs/doc/read"
+            )
+        );
     }
 }

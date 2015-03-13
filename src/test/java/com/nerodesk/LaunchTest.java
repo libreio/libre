@@ -101,7 +101,7 @@ public final class LaunchTest {
                 @Override
                 public void exec(final URI home) throws IOException {
                     new JdkRequest(home)
-                        .uri().path("/test.txt").back()
+                        .uri().path("/read").queryParam("f", "test.txt").back()
                         .fetch()
                         .as(RestResponse.class)
                         .assertStatus(HttpURLConnection.HTTP_OK)

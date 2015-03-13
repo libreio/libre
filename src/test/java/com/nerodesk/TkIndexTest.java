@@ -29,9 +29,9 @@
  */
 package com.nerodesk;
 
+import com.jcabi.matchers.XhtmlMatchers;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.rq.RqFake;
 
@@ -52,7 +52,7 @@ public final class TkIndexTest {
     public void returnsPlainText() throws Exception {
         MatcherAssert.assertThat(
             IOUtils.toString(new TkIndex(new RqFake()).act().body()),
-            Matchers.containsString("alive")
+            XhtmlMatchers.hasXPath("/page/millis")
         );
     }
 }

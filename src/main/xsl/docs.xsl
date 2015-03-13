@@ -47,7 +47,11 @@
     </xsl:template>
     <xsl:template match="name">
         <li>
-            <a href="{@href}"><xsl:value-of select="."/></a>
+            <xsl:value-of select="."/>
+            <xsl:text> </xsl:text>
+            <a href="{read}">read</a>
+            <xsl:text> | </xsl:text>
+            <a href="{read}">delete</a>
         </li>
     </xsl:template>
 </xsl:stylesheet>

@@ -55,6 +55,7 @@ import org.takes.facets.fork.FkParams;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.Target;
 import org.takes.facets.fork.TsFork;
+import org.takes.rq.RqHref;
 import org.takes.tk.TkRedirect;
 import org.takes.ts.TsClasspath;
 import org.takes.ts.TsWithType;
@@ -127,6 +128,21 @@ public final class App extends TsWrap {
                         }
                     )
                 )
+            ),
+            new FkRegex(
+                "/read",
+                new Takes() {
+                    @Override
+                    public Take route(final Request req) throws IOException {
+                        final String file =
+                            new RqHref(req).href().param("f").get(0);
+                        return new TkRead(
+                            base.user(
+                                new RqAuth(req).identity().urn()
+                            ).docs().doc(file)
+                        );
+                    }
+                }
             )
         );
         return App.auth(fork);
