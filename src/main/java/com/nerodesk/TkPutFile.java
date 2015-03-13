@@ -79,7 +79,7 @@ public final class TkPutFile implements Target<RqRegex> {
                 req.body()
             );
         } catch (final IOException ex) {
-            Logger.info(
+            Logger.error(
                 this,
                 String.format(
                     "Internal error saving to storage at %s: %s",

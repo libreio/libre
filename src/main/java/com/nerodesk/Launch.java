@@ -69,8 +69,8 @@ import org.takes.ts.fork.TsFork;
  *  the file operations available. GET, PUT and DELETE operations should be
  *  described.
  * @todo #66:30min Wire PUT method to file storage using TkPutFile. Add a test
- * for saving content using the PUT method and a path matching TkPutFile.PATH.
- * For example: PUT http://localhost:8080/api/files/filename.txt .
+ *  for saving content using the PUT method and a path matching TkPutFile.PATH.
+ *  For example: PUT http://localhost:8080/api/files/filename.txt .
  */
 @SuppressWarnings("PMD.UseUtilityClass")
 public final class Launch {
