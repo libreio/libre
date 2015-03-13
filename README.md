@@ -38,7 +38,8 @@ have a path of `documents/album_list.txt`, where `documents` is a folder and `al
 ### Download
 ```GET https://nerodesk.com/api/file/$PATH```
 
-The file contents will be returned in the response's body.
+The file contents will be returned in the response's body. Returns status 404 if
+ the file is not available.
 
 ### Upload
 ```PUT https://nerodesk.com/api/file/$PATH```
@@ -47,6 +48,8 @@ The file contents should be present in the request's body.
 
 ### Delete
 ```DELETE https://nerodesk.com/api/file/$PATH```
+
+Returns status 404 if the file is not available.
 
 ## How to contribute
 
