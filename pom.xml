@@ -357,12 +357,12 @@
                         <configuration>
                             <check>
                                 <haltOnFailure>true</haltOnFailure>
-                                <branchRate>50</branchRate>
-                                <lineRate>60</lineRate>
-                                <packageBranchRate>50</packageBranchRate>
-                                <packageLineRate>75</packageLineRate>
-                                <totalBranchRate>50</totalBranchRate>
-                                <totalLineRate>80</totalLineRate>
+                                <branchRate>0</branchRate>
+                                <lineRate>0</lineRate>
+                                <packageBranchRate>0</packageBranchRate>
+                                <packageLineRate>0</packageLineRate>
+                                <totalBranchRate>5</totalBranchRate>
+                                <totalLineRate>40</totalLineRate>
                             </check>
                         </configuration>
                         <executions>
