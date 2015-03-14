@@ -38,7 +38,7 @@
                 <meta name="description" content="nerodesk"/>
                 <meta name="keywords" content="cloud file storage"/>
                 <meta name="author" content="nerodesk.com"/>
-                <link rel="stylesheet" type="text/css" media="all" href="/css/style.css?{version/revision}"/>
+                <link rel="stylesheet" type="text/css" media="all" href="/css/main.css?{version/revision}"/>
                 <xsl:apply-templates select="." mode="head"/>
             </head>
             <body>

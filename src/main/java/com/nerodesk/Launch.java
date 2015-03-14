@@ -105,7 +105,7 @@ public final class Launch {
     private static Bucket bucket() {
         final String key = Manifests.read("Nerodesk-AwsKey");
         final Bucket bucket;
-        if (key.startsWith("AAAAA") || key.startsWith("${")) {
+        if (key.startsWith("AAAA") || key.startsWith("${")) {
             bucket = new MkRegion().bucket("test");
         } else {
             bucket = new Region.Simple(

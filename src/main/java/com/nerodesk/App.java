@@ -29,8 +29,10 @@
  */
 package com.nerodesk;
 
+import com.jcabi.log.VerboseProcess;
 import com.jcabi.manifests.Manifests;
 import com.nerodesk.om.Base;
+import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
 import org.takes.Request;
@@ -51,6 +53,8 @@ import org.takes.facets.auth.codecs.CcXOR;
 import org.takes.facets.auth.social.PsGithub;
 import org.takes.facets.fork.FkAnonymous;
 import org.takes.facets.fork.FkAuthenticated;
+import org.takes.facets.fork.FkFixed;
+import org.takes.facets.fork.FkHitRefresh;
 import org.takes.facets.fork.FkParams;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.Target;
@@ -58,6 +62,7 @@ import org.takes.facets.fork.TsFork;
 import org.takes.rq.RqHref;
 import org.takes.tk.TkRedirect;
 import org.takes.ts.TsClasspath;
+import org.takes.ts.TsFiles;
 import org.takes.ts.TsWithType;
 import org.takes.ts.TsWrap;
 
@@ -101,7 +106,28 @@ public final class App extends TsWrap {
             ),
             new FkRegex(
                 "/css/.*",
-                new TsWithType(new TsClasspath(), "text/css")
+                new TsWithType(
+                    new TsFork(
+                        new FkHitRefresh(
+                            new File("./src/main/scss"),
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    new VerboseProcess(
+                                        new ProcessBuilder(
+                                            "mvn",
+                                            "sass:update-stylesheets",
+                                            "minify:minify"
+                                        )
+                                    ).stdout();
+                                }
+                            },
+                            new TsFiles("./target/classes")
+                        ),
+                        new FkFixed(new TsClasspath())
+                    ),
+                    "text/css"
+                )
             ),
             new FkRegex("/robots.txt", ""),
             new FkRegex(
