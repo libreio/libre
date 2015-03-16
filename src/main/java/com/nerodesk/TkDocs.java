@@ -29,79 +29,75 @@
  */
 package com.nerodesk;
 
-import com.jcabi.s3.Ocket;
-import com.jcabi.s3.Region;
+import com.nerodesk.om.Docs;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import javax.validation.constraints.NotNull;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import org.takes.Href;
+import org.takes.Request;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.rq.RqHref;
+import org.takes.rs.xe.XeSource;
+import org.xembly.Directive;
+import org.xembly.Directives;
 
 /**
- * Amazon S3 storage.
+ * List of docs.
  *
- * @author Alexey Saenko (alexey.saenko@gmail.com)
+ * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
-@ToString
-@EqualsAndHashCode
-public final class AmazonStorage implements Storage {
+public final class TkDocs implements Take {
 
     /**
-     * Region.
+     * Docs.
      */
-    private final transient Region region;
+    private final transient Docs docs;
 
     /**
-     * Bucket name.
+     * Request.
      */
-    private final transient String bucket;
+    private final transient Request request;
 
     /**
      * Ctor.
-     * @param key Amazon key
-     * @param secret Amazon secret
-     * @param bckt The name of the bucket to get
+     * @param dcs Docs
+     * @param req Request
      */
-    public AmazonStorage(@NotNull final String key,
-        @NotNull final String secret, @NotNull final String bckt) {
-        this(new Region.Simple(key, secret), bckt);
+    public TkDocs(final Docs dcs, final Request req) {
+        this.docs = dcs;
+        this.request = req;
+    }
+
+    @Override
+    public Response act() throws IOException {
+        return new RsPage(
+            "/xsl/docs.xsl",
+            this.request,
+            new XeSource() {
+                @Override
+                public Iterable<Directive> toXembly() throws IOException {
+                    return TkDocs.this.list();
+                }
+            }
+        );
     }
 
     /**
-     * Ctor.
-     * @param rgn Amazon region abstraction
-     * @param bckt The name of the bucket to get
+     * Convert docs into directives.
+     * @return Directives
+     * @throws IOException If fails
      */
-    public AmazonStorage(
-        @NotNull final Region rgn,
-        @NotNull final String bckt) {
-        super();
-        this.region = rgn;
-        this.bucket = bckt;
-    }
-
-    @Override
-    public InputStream get(@NotNull final String path) throws IOException {
-        final PipedOutputStream pos = new PipedOutputStream();
-        this.region.bucket(this.bucket).ocket(path).read(pos);
-        return new PipedInputStream(pos);
-    }
-
-    @Override
-    public void put(
-        @NotNull final String path,
-        @NotNull final InputStream input) throws IOException {
-        final Ocket ocket = this.region.bucket(this.bucket).ocket(path);
-        ocket.write(input, ocket.meta());
-    }
-
-    @Override
-    public void delete(@NotNull final String path) throws IOException {
-        this.region.bucket(this.bucket).remove(path);
+    private Iterable<Directive> list() throws IOException {
+        final Directives dirs = new Directives().add("docs");
+        final Href home = new RqHref(this.request).href();
+        for (final String name : this.docs.names()) {
+            dirs.add("doc").add("name").set(name).up()
+                .add("read")
+                .set(home.path("r").with("f", name).toString()).up()
+                .up();
+        }
+        return dirs;
     }
 
 }

@@ -27,66 +27,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.mock;
-
-import com.jcabi.aspects.Immutable;
-import com.nerodesk.Storage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import javax.validation.constraints.NotNull;
-import org.apache.commons.io.IOUtils;
 
 /**
- * Mock file storage backed by local filesystem.
+ * Object model, mocks.
  *
- * @author Paul Polishchuk (ppol@ua.fm)
+ * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-@Immutable
-public final class MkStorage implements Storage {
-
-    /**
-     * Root path for the storage.
-     */
-    private final transient String root;
-
-    /**
-     * Default constructor.
-     */
-    public MkStorage() {
-        this("~/.nerodesk/storage");
-    }
-
-    /**
-     * Constructor with custom root path.
-     * @param rpath Path
-     */
-    public MkStorage(final String rpath) {
-        this.root = rpath;
-    }
-
-    @Override
-    public InputStream get(@NotNull final String path) throws IOException {
-        return Files.newInputStream(
-            FileSystems.getDefault().getPath(this.root, path)
-        );
-    }
-
-    @Override
-    public void put(final String path, final InputStream input) throws
-        IOException {
-        Files.write(
-            FileSystems.getDefault().getPath(this.root, path),
-            IOUtils.toByteArray(input)
-        );
-    }
-
-    @Override
-    public void delete(@NotNull final String path) throws IOException {
-        Files.delete(FileSystems.getDefault().getPath(this.root, path));
-    }
-
-}
+package com.nerodesk.om.mock;

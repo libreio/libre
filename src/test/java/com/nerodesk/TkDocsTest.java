@@ -29,41 +29,46 @@
  */
 package com.nerodesk;
 
-import com.jcabi.aspects.Immutable;
-import java.io.IOException;
-import java.io.InputStream;
-import javax.validation.constraints.NotNull;
+import com.jcabi.matchers.XhtmlMatchers;
+import com.nerodesk.om.User;
+import com.nerodesk.om.mock.MkBase;
+import java.io.ByteArrayInputStream;
+import org.hamcrest.MatcherAssert;
+import org.junit.Test;
+import org.takes.rq.RqFake;
+import org.takes.rs.RsPrint;
 
 /**
- * File storage.
+ * Tests for {@code TkDocs}.
  *
- * @author Paul Polishchuk (ppol@ua.fm)
+ * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-@Immutable
-public interface Storage {
+public final class TkDocsTest {
 
     /**
-     * Get file from storage.
-     * @param path Path
-     * @throws IOException If fails
-     * @return InputStream
+     * TkDocs can return a list of docs.
+     * @throws Exception If fails.
      */
-    InputStream get(@NotNull String path) throws IOException;
-
-    /**
-     * Write file.
-     * @param path Path.
-     * @param input Input.
-     * @throws IOException If fails
-     */
-    void put(@NotNull String path, InputStream input) throws IOException;
-
-    /**
-     * Delete file from storage.
-     * @param path Path
-     * @throws IOException If fails
-     */
-    void delete(@NotNull String path) throws IOException;
+    @Test
+    public void returnsListOfDocs() throws Exception {
+        final User user = new MkBase().user("urn:test:1");
+        user.docs().doc("test.txt").write(
+            new ByteArrayInputStream("hello, world!".getBytes())
+        );
+        user.docs().doc("test-2.txt").write(
+            new ByteArrayInputStream("hello!".getBytes())
+        );
+        MatcherAssert.assertThat(
+            new RsPrint(
+                new TkDocs(user.docs(), new RqFake()).act()
+            ).printBody(),
+            XhtmlMatchers.hasXPaths(
+                "/page/docs[count(doc)=2]",
+                "/page/docs/doc[name='test.txt']",
+                "/page/docs/doc/read"
+            )
+        );
+    }
 }

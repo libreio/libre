@@ -27,45 +27,35 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om;
 
+import com.jcabi.aspects.Immutable;
 import java.io.IOException;
-import org.takes.Take;
-import org.takes.tk.TkHTML;
-import org.takes.ts.fork.RqRegex;
-import org.takes.ts.fork.Target;
+import java.util.List;
 
 /**
- * Part of REST API to get a file.
+ * Docs.
  *
- * @author Paul Polishchuk (ppol@ua.fm)
+ * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
-public final class TkGetFile implements Target<RqRegex> {
-    /**
-     * Get file path.
-     */
-    public static final String PATH = "/api/file/(?<path>[^/]+)";
-    /**
-     * File storage.
-     */
-    private final transient Storage storage;
-    /**
-     * Ctor.
-     * @param store Storage.
-     */
-    public TkGetFile(final Storage store) {
-        this.storage = store;
-    }
+@Immutable
+public interface Docs {
 
-    @Override
-    public Take route(final RqRegex req)
-        throws IOException {
-        return new TkHTML(
-            this.storage.get(
-                req.matcher().group("path")
-            )
-        );
-    }
+    /**
+     * List all docs.
+     * @throws IOException If fails
+     * @return List of names
+     */
+    List<String> names() throws IOException;
+
+    /**
+     * Get document by name.
+     * @param name Name of the document, e.g. "/my/files/picture.gif"
+     * @throws IOException If fails
+     * @return Document
+     */
+    Doc doc(String name) throws IOException;
+
 }

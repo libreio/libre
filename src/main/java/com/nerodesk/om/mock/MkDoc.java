@@ -27,79 +27,84 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om.mock;
 
-import com.jcabi.manifests.Manifests;
-import com.jcabi.s3.Bucket;
-import com.jcabi.s3.Region;
-import com.jcabi.s3.mock.MkRegion;
-import com.jcabi.s3.retry.ReBucket;
-import com.nerodesk.om.aws.AwsBase;
+import com.nerodesk.om.Doc;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import org.takes.http.Exit;
-import org.takes.http.FtCLI;
+import java.io.InputStream;
+import java.io.OutputStream;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 /**
- * Launch (used only for heroku).
+ * Mocked version of doc.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
- * @todo #14:30min Add exception handling to return 404
- *  when resource not available. Now we show not nice stacktrace.
- *  Don't forget about unit tests.
+ * @since 0.2
  */
-public final class Launch {
+@ToString
+@EqualsAndHashCode
+public final class MkDoc implements Doc {
 
     /**
-     * Arguments.
+     * Directory.
      */
-    private final transient Iterable<String> arguments;
+    private final transient File dir;
+
+    /**
+     * URN.
+     */
+    private final transient String user;
+
+    /**
+     * Doc name.
+     */
+    private final transient String label;
 
     /**
      * Ctor.
-     * @param args Command line args
+     * @param file Directory
+     * @param urn URN
+     * @param name Document name
      */
-    public Launch(final String[] args) {
-        this.arguments = Arrays.asList(args);
+    public MkDoc(final File file, final String urn, final String name) {
+        this.dir = file;
+        this.user = urn;
+        this.label = name;
+    }
+
+    @Override
+    public boolean exists() {
+        return this.file().exists();
+    }
+
+    @Override
+    public void delete() {
+        this.file().delete();
+    }
+
+    @Override
+    public void read(final OutputStream output) throws IOException {
+        IOUtils.copy(new FileInputStream(this.file()), output);
+    }
+
+    @Override
+    public void write(final InputStream input) throws IOException {
+        FileUtils.touch(this.file());
+        IOUtils.copy(input, new FileOutputStream(this.file()));
     }
 
     /**
-     * Main entry point.
-     * @param args Arguments
-     * @throws IOException If fails
+     * File.
+     * @return File
      */
-    public static void main(final String... args) throws IOException {
-        new Launch(args).exec();
+    private File file() {
+        return new File(new File(this.dir, this.user), this.label);
     }
-
-    /**
-     * Run it all.
-     * @throws IOException If fails
-     */
-    public void exec() throws IOException {
-        new FtCLI(
-            new App(new AwsBase(Launch.bucket())),
-            this.arguments
-        ).start(Exit.NEVER);
-    }
-
-    /**
-     * AWS bucket.
-     * @return Bucket
-     */
-    private static Bucket bucket() {
-        final String key = Manifests.read("Nerodesk-AwsKey");
-        final Bucket bucket;
-        if (key.startsWith("AAAA") || key.startsWith("${")) {
-            bucket = new MkRegion().bucket("test");
-        } else {
-            bucket = new Region.Simple(
-                key, Manifests.read("Nerodesk-AwsSecret")
-            ).bucket(Manifests.read("Nerodesk-Bucket"));
-        }
-        return new ReBucket(bucket);
-    }
-
 }

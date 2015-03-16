@@ -27,79 +27,48 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om;
 
-import com.jcabi.manifests.Manifests;
-import com.jcabi.s3.Bucket;
-import com.jcabi.s3.Region;
-import com.jcabi.s3.mock.MkRegion;
-import com.jcabi.s3.retry.ReBucket;
-import com.nerodesk.om.aws.AwsBase;
+import com.jcabi.aspects.Immutable;
 import java.io.IOException;
-import java.util.Arrays;
-import org.takes.http.Exit;
-import org.takes.http.FtCLI;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
- * Launch (used only for heroku).
+ * Document.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
- * @todo #14:30min Add exception handling to return 404
- *  when resource not available. Now we show not nice stacktrace.
- *  Don't forget about unit tests.
+ * @since 0.2
  */
-public final class Launch {
+@Immutable
+public interface Doc {
 
     /**
-     * Arguments.
-     */
-    private final transient Iterable<String> arguments;
-
-    /**
-     * Ctor.
-     * @param args Command line args
-     */
-    public Launch(final String[] args) {
-        this.arguments = Arrays.asList(args);
-    }
-
-    /**
-     * Main entry point.
-     * @param args Arguments
+     * Does it exist?
+     * @return TRUE if exists
      * @throws IOException If fails
      */
-    public static void main(final String... args) throws IOException {
-        new Launch(args).exec();
-    }
+    boolean exists() throws IOException;
 
     /**
-     * Run it all.
+     * Delete it.
      * @throws IOException If fails
      */
-    public void exec() throws IOException {
-        new FtCLI(
-            new App(new AwsBase(Launch.bucket())),
-            this.arguments
-        ).start(Exit.NEVER);
-    }
+    void delete() throws IOException;
 
     /**
-     * AWS bucket.
-     * @return Bucket
+     * Read its entire content into this output stream.
+     * @param output Output stream
+     * @throws IOException If fails
      */
-    private static Bucket bucket() {
-        final String key = Manifests.read("Nerodesk-AwsKey");
-        final Bucket bucket;
-        if (key.startsWith("AAAA") || key.startsWith("${")) {
-            bucket = new MkRegion().bucket("test");
-        } else {
-            bucket = new Region.Simple(
-                key, Manifests.read("Nerodesk-AwsSecret")
-            ).bucket(Manifests.read("Nerodesk-Bucket"));
-        }
-        return new ReBucket(bucket);
-    }
+    void read(OutputStream output) throws IOException;
+
+    /**
+     * Write its entire content from this input stream.
+     * @param input Input stream
+     * @throws IOException If fails
+     */
+    void write(InputStream input) throws IOException;
 
 }

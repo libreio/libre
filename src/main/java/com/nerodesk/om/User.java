@@ -27,12 +27,26 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package com.nerodesk.om;
+
+import com.jcabi.aspects.Immutable;
+import java.io.IOException;
 
 /**
- * Nerodesk.
+ * User.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-package com.nerodesk.mock;
+@Immutable
+public interface User {
+
+    /**
+     * Get documents.
+     * @throws IOException If fails
+     * @return Documents
+     */
+    Docs docs() throws IOException;
+
+}

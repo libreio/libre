@@ -27,79 +27,40 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om.aws;
 
-import com.jcabi.manifests.Manifests;
 import com.jcabi.s3.Bucket;
-import com.jcabi.s3.Region;
-import com.jcabi.s3.mock.MkRegion;
-import com.jcabi.s3.retry.ReBucket;
-import com.nerodesk.om.aws.AwsBase;
-import java.io.IOException;
-import java.util.Arrays;
-import org.takes.http.Exit;
-import org.takes.http.FtCLI;
+import com.nerodesk.om.Base;
+import com.nerodesk.om.User;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
- * Launch (used only for heroku).
+ * AWS-based version of Base.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
- * @todo #14:30min Add exception handling to return 404
- *  when resource not available. Now we show not nice stacktrace.
- *  Don't forget about unit tests.
+ * @since 0.2
  */
-public final class Launch {
+@ToString
+@EqualsAndHashCode
+public final class AwsBase implements Base {
 
     /**
-     * Arguments.
+     * Bucket.
      */
-    private final transient Iterable<String> arguments;
+    private final transient Bucket bucket;
 
     /**
      * Ctor.
-     * @param args Command line args
+     * @param bkt Bucket
      */
-    public Launch(final String[] args) {
-        this.arguments = Arrays.asList(args);
+    public AwsBase(final Bucket bkt) {
+        this.bucket = bkt;
     }
 
-    /**
-     * Main entry point.
-     * @param args Arguments
-     * @throws IOException If fails
-     */
-    public static void main(final String... args) throws IOException {
-        new Launch(args).exec();
+    @Override
+    public User user(final String urn) {
+        return new AwsUser(this.bucket, urn);
     }
-
-    /**
-     * Run it all.
-     * @throws IOException If fails
-     */
-    public void exec() throws IOException {
-        new FtCLI(
-            new App(new AwsBase(Launch.bucket())),
-            this.arguments
-        ).start(Exit.NEVER);
-    }
-
-    /**
-     * AWS bucket.
-     * @return Bucket
-     */
-    private static Bucket bucket() {
-        final String key = Manifests.read("Nerodesk-AwsKey");
-        final Bucket bucket;
-        if (key.startsWith("AAAA") || key.startsWith("${")) {
-            bucket = new MkRegion().bucket("test");
-        } else {
-            bucket = new Region.Simple(
-                key, Manifests.read("Nerodesk-AwsSecret")
-            ).bucket(Manifests.read("Nerodesk-Bucket"));
-        }
-        return new ReBucket(bucket);
-    }
-
 }

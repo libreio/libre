@@ -27,79 +27,55 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om.aws;
 
-import com.jcabi.manifests.Manifests;
+import com.google.common.collect.Lists;
 import com.jcabi.s3.Bucket;
-import com.jcabi.s3.Region;
-import com.jcabi.s3.mock.MkRegion;
-import com.jcabi.s3.retry.ReBucket;
-import com.nerodesk.om.aws.AwsBase;
+import com.nerodesk.om.Doc;
+import com.nerodesk.om.Docs;
 import java.io.IOException;
-import java.util.Arrays;
-import org.takes.http.Exit;
-import org.takes.http.FtCLI;
+import java.util.List;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
- * Launch (used only for heroku).
+ * AWS-based version of Docs.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
- * @todo #14:30min Add exception handling to return 404
- *  when resource not available. Now we show not nice stacktrace.
- *  Don't forget about unit tests.
+ * @since 0.2
  */
-public final class Launch {
+@ToString
+@EqualsAndHashCode
+public final class AwsDocs implements Docs {
 
     /**
-     * Arguments.
+     * Bucket.
      */
-    private final transient Iterable<String> arguments;
+    private final transient Bucket bucket;
+
+    /**
+     * URN of user.
+     */
+    private final transient String name;
 
     /**
      * Ctor.
-     * @param args Command line args
+     * @param bkt Bucket
+     * @param urn User's URN
      */
-    public Launch(final String[] args) {
-        this.arguments = Arrays.asList(args);
+    public AwsDocs(final Bucket bkt, final String urn) {
+        this.bucket = bkt;
+        this.name = urn;
     }
 
-    /**
-     * Main entry point.
-     * @param args Arguments
-     * @throws IOException If fails
-     */
-    public static void main(final String... args) throws IOException {
-        new Launch(args).exec();
+    @Override
+    public List<String> names() throws IOException {
+        return Lists.newArrayList(this.bucket.list(""));
     }
 
-    /**
-     * Run it all.
-     * @throws IOException If fails
-     */
-    public void exec() throws IOException {
-        new FtCLI(
-            new App(new AwsBase(Launch.bucket())),
-            this.arguments
-        ).start(Exit.NEVER);
+    @Override
+    public Doc doc(final String doc) {
+        return new AwsDoc(this.bucket, this.name, doc);
     }
-
-    /**
-     * AWS bucket.
-     * @return Bucket
-     */
-    private static Bucket bucket() {
-        final String key = Manifests.read("Nerodesk-AwsKey");
-        final Bucket bucket;
-        if (key.startsWith("AAAA") || key.startsWith("${")) {
-            bucket = new MkRegion().bucket("test");
-        } else {
-            bucket = new Region.Simple(
-                key, Manifests.read("Nerodesk-AwsSecret")
-            ).bucket(Manifests.read("Nerodesk-Bucket"));
-        }
-        return new ReBucket(bucket);
-    }
-
 }

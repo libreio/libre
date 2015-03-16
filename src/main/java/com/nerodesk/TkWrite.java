@@ -29,53 +29,53 @@
  */
 package com.nerodesk;
 
-import com.nerodesk.mock.MkStorage;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import org.apache.commons.io.IOUtils;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.mockito.Mockito;
-import org.takes.ts.fork.RqRegex;
+import com.nerodesk.om.Docs;
+import java.io.IOException;
+import org.takes.Request;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.facets.flash.RsFlash;
+import org.takes.facets.forward.RsForward;
+import org.takes.rq.RqMultipart;
+import org.takes.rq.RqPrint;
 
 /**
- * Tests for {@code TkGetFile}.
+ * Write file content.
  *
- * @author Paul Polishchuk (ppol@ua.fm)
+ * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
-public final class TkGetFileTest {
-    /**
-     * Temp directory.
-     * @checkstyle VisibilityModifierCheck (5 lines)
-     */
-    @Rule
-    public final transient TemporaryFolder temp = new TemporaryFolder();
+public final class TkWrite implements Take {
 
     /**
-     * TkGetFile can return file content.
-     * @throws Exception If something went wrong
+     * Docs.
      */
-    @Test
-    public void returnsFileContent() throws Exception {
-        final Storage storage = new MkStorage(
-            this.temp.getRoot().getAbsolutePath()
-        );
-        final String path = "some_file.txt";
-        final String content = "some text content";
-        storage.put(path, IOUtils.toInputStream(content));
-        final Matcher matcher = Pattern.compile(TkGetFile.PATH)
-            .matcher(String.format("http://localhost:8080/api/file/%s", path));
-        matcher.find();
-        final RqRegex regex = Mockito.mock(RqRegex.class);
-        Mockito.when(regex.matcher()).thenReturn(matcher);
-        MatcherAssert.assertThat(
-            IOUtils.toString(new TkGetFile(storage).route(regex).act().body()),
-            Matchers.containsString(content)
+    private final transient Docs docs;
+
+    /**
+     * Request.
+     */
+    private final transient Request request;
+
+    /**
+     * Ctor.
+     * @param dcs Docs
+     * @param req Request
+     */
+    public TkWrite(final Docs dcs, final Request req) {
+        this.docs = dcs;
+        this.request = req;
+    }
+
+    @Override
+    public Response act() throws IOException {
+        final RqMultipart multi = new RqMultipart(this.request);
+        final String name = new RqPrint(multi.part("name").get(0)).printBody();
+        this.docs.doc(name).write(multi.part("file").get(0).body());
+        return new RsForward(
+            new RsFlash("file uploaded")
         );
     }
+
 }

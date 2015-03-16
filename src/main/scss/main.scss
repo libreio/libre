@@ -28,11 +28,21 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Nerodesk, tests.
- *
- * @author Yegor Bugayenko (yegor@teamed.io)
- * @version $Id$
- * @since 0.1
- */
-package com.nerodesk.mock;
+body {
+  font-family: monospace;
+  font-size: 20px;
+  padding: 1em;
+}
+
+.menu {
+  font-size: 75%;
+  padding: .3em;
+  text-align: center;
+  @media only screen and (max-width: 400px) {
+    width: 100%;
+  }
+  span {
+    margin-left: .3em;
+    margin-right: .3em;
+  }
+}

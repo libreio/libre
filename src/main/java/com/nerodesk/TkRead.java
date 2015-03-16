@@ -29,77 +29,41 @@
  */
 package com.nerodesk;
 
-import com.jcabi.manifests.Manifests;
-import com.jcabi.s3.Bucket;
-import com.jcabi.s3.Region;
-import com.jcabi.s3.mock.MkRegion;
-import com.jcabi.s3.retry.ReBucket;
-import com.nerodesk.om.aws.AwsBase;
+import com.nerodesk.om.Doc;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import org.takes.http.Exit;
-import org.takes.http.FtCLI;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.rs.RsWithBody;
 
 /**
- * Launch (used only for heroku).
+ * Read file content.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
- * @todo #14:30min Add exception handling to return 404
- *  when resource not available. Now we show not nice stacktrace.
- *  Don't forget about unit tests.
+ * @since 0.2
  */
-public final class Launch {
+public final class TkRead implements Take {
 
     /**
-     * Arguments.
+     * Doc.
      */
-    private final transient Iterable<String> arguments;
+    private final transient Doc doc;
 
     /**
      * Ctor.
-     * @param args Command line args
+     * @param src Source document to read from
      */
-    public Launch(final String[] args) {
-        this.arguments = Arrays.asList(args);
+    public TkRead(final Doc src) {
+        this.doc = src;
     }
 
-    /**
-     * Main entry point.
-     * @param args Arguments
-     * @throws IOException If fails
-     */
-    public static void main(final String... args) throws IOException {
-        new Launch(args).exec();
-    }
-
-    /**
-     * Run it all.
-     * @throws IOException If fails
-     */
-    public void exec() throws IOException {
-        new FtCLI(
-            new App(new AwsBase(Launch.bucket())),
-            this.arguments
-        ).start(Exit.NEVER);
-    }
-
-    /**
-     * AWS bucket.
-     * @return Bucket
-     */
-    private static Bucket bucket() {
-        final String key = Manifests.read("Nerodesk-AwsKey");
-        final Bucket bucket;
-        if (key.startsWith("AAAA") || key.startsWith("${")) {
-            bucket = new MkRegion().bucket("test");
-        } else {
-            bucket = new Region.Simple(
-                key, Manifests.read("Nerodesk-AwsSecret")
-            ).bucket(Manifests.read("Nerodesk-Bucket"));
-        }
-        return new ReBucket(bucket);
+    @Override
+    public Response act() throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        this.doc.read(baos);
+        return new RsWithBody(new ByteArrayInputStream(baos.toByteArray()));
     }
 
 }

@@ -27,79 +27,49 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om.mock;
 
-import com.jcabi.manifests.Manifests;
-import com.jcabi.s3.Bucket;
-import com.jcabi.s3.Region;
-import com.jcabi.s3.mock.MkRegion;
-import com.jcabi.s3.retry.ReBucket;
-import com.nerodesk.om.aws.AwsBase;
+import com.google.common.io.Files;
+import com.nerodesk.om.Base;
+import com.nerodesk.om.User;
+import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import org.takes.http.Exit;
-import org.takes.http.FtCLI;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
- * Launch (used only for heroku).
+ * Mocked version of base.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
- * @todo #14:30min Add exception handling to return 404
- *  when resource not available. Now we show not nice stacktrace.
- *  Don't forget about unit tests.
+ * @since 0.2
  */
-public final class Launch {
+@ToString
+@EqualsAndHashCode
+public final class MkBase implements Base {
 
     /**
-     * Arguments.
+     * Directory.
      */
-    private final transient Iterable<String> arguments;
+    private final transient File dir;
 
     /**
      * Ctor.
-     * @param args Command line args
      */
-    public Launch(final String[] args) {
-        this.arguments = Arrays.asList(args);
+    public MkBase() {
+        this(Files.createTempDir());
     }
 
     /**
-     * Main entry point.
-     * @param args Arguments
-     * @throws IOException If fails
+     * Ctor.
+     * @param file Directory
      */
-    public static void main(final String... args) throws IOException {
-        new Launch(args).exec();
+    public MkBase(final File file) {
+        this.dir = file;
     }
 
-    /**
-     * Run it all.
-     * @throws IOException If fails
-     */
-    public void exec() throws IOException {
-        new FtCLI(
-            new App(new AwsBase(Launch.bucket())),
-            this.arguments
-        ).start(Exit.NEVER);
+    @Override
+    public User user(final String urn) throws IOException {
+        return new MkUser(this.dir, urn);
     }
-
-    /**
-     * AWS bucket.
-     * @return Bucket
-     */
-    private static Bucket bucket() {
-        final String key = Manifests.read("Nerodesk-AwsKey");
-        final Bucket bucket;
-        if (key.startsWith("AAAA") || key.startsWith("${")) {
-            bucket = new MkRegion().bucket("test");
-        } else {
-            bucket = new Region.Simple(
-                key, Manifests.read("Nerodesk-AwsSecret")
-            ).bucket(Manifests.read("Nerodesk-Bucket"));
-        }
-        return new ReBucket(bucket);
-    }
-
 }
