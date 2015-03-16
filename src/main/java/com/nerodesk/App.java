@@ -93,6 +93,7 @@ public final class App extends TsWrap {
      * @return Takes
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.DoNotUseThreads")
     public static Takes make(final Base base) throws IOException {
         final Takes fork = new TsFork(
             new FkParams(
