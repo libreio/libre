@@ -46,22 +46,9 @@ import org.takes.http.FtCLI;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.1
- * @todo #14:30min Implement PUT operation to upload file to the store
- *  under specific path. This might require updates in Takes framework.
- *  Don't forget about unit tests.
- * @todo #14:30min Implement DELETE operation to remove file from the
- *  store by file specific path.
- *  This might require updates in Takes framework.
- *  Don't forget about unit tests.
  * @todo #14:30min Add exception handling to return 404
  *  when resource not available. Now we show not nice stacktrace.
  *  Don't forget about unit tests.
- * @todo #14:30min Update FkRegex patterns for all file operations
- *  (get, put, delete) to manage filename with path.
- *  Now it works with pure file name only. Don't forget about unit tests.
- * @todo #14:15min Add new section to the README described REST API for
- *  the file operations available. GET, PUT and DELETE operations should be
- *  described.
  */
 public final class Launch {
 
