@@ -323,21 +323,24 @@
                 <finalName>nerodesk</finalName>
                 <plugins>
                     <plugin>
-                        <artifactId>maven-assembly-plugin</artifactId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <archive>
+                                <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                            </archive>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>make-assembly</id>
+                                <id>copy-dependencies-for-heroku</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>single</goal>
+                                    <goal>copy-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <archive>
-                                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                                    </archive>
-                                    <descriptorRefs>
-                                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                                    </descriptorRefs>
+                                    <outputDirectory>${project.build.directory}/deps</outputDirectory>
                                 </configuration>
                             </execution>
                         </executions>
