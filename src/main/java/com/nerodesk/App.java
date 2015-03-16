@@ -50,7 +50,7 @@ import org.takes.facets.auth.codecs.CcHex;
 import org.takes.facets.auth.codecs.CcSafe;
 import org.takes.facets.auth.codecs.CcSalted;
 import org.takes.facets.auth.codecs.CcXOR;
-import org.takes.facets.auth.social.PsGithub;
+import org.takes.facets.auth.social.PsFacebook;
 import org.takes.facets.fork.FkAnonymous;
 import org.takes.facets.fork.FkAuthenticated;
 import org.takes.facets.fork.FkFixed;
@@ -204,8 +204,8 @@ public final class App extends TsWrap {
                 new PsFake(key.startsWith("XXXX")),
                 new PsByFlag(
                     new PsByFlag.Pair(
-                        PsGithub.class.getSimpleName(),
-                        new PsGithub(
+                        PsFacebook.class.getSimpleName(),
+                        new PsFacebook(
                             key,
                             Manifests.read("Nerodesk-FacebookSecret")
                         )
