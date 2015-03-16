@@ -35,6 +35,7 @@ import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
 import org.takes.facets.flash.RsFlash;
+import org.takes.facets.forward.RsForward;
 import org.takes.rq.RqMultipart;
 import org.takes.rq.RqPrint;
 
@@ -72,7 +73,9 @@ public final class TkWrite implements Take {
         final RqMultipart multi = new RqMultipart(this.request);
         final String name = new RqPrint(multi.part("name").get(0)).printBody();
         this.docs.doc(name).write(multi.part("file").get(0).body());
-        return new RsFlash("file uploaded");
+        return new RsForward(
+            new RsFlash("file uploaded")
+        );
     }
 
 }
