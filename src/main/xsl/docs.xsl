@@ -41,7 +41,7 @@
         <p>
             <xsl:text>My docs:</xsl:text>
         </p>
-        <form method="post" action="/w">
+        <form method="post" action="/w" enctype="multipart/form-data">
             <input name="name"/>
             <input name="file" type="file"/>
             <input name="upload" type="submit"/>
