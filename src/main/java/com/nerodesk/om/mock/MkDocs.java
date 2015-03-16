@@ -69,6 +69,7 @@ public final class MkDocs implements Docs {
     public MkDocs(final File file, final String urn) {
         this.dir = file;
         this.name = urn;
+        this.dir.mkdirs();
     }
 
     @Override

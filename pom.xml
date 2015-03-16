@@ -360,7 +360,17 @@
                                 <lineRate>0</lineRate>
                                 <packageBranchRate>0</packageBranchRate>
                                 <packageLineRate>0</packageLineRate>
+                                <!--
+                                @todo #63:30min Branch coverage is intentionally lowered here,
+                                 in order to get version 0.2 out of the door. Let's
+                                 raise it back to 50.
+                                -->
                                 <totalBranchRate>5</totalBranchRate>
+                                <!--
+                                @todo #63:30min Line coverage is intentionally lowered here,
+                                 in order to get version 0.2 out of the door. Let's
+                                 raise it back to 75.
+                                -->
                                 <totalLineRate>40</totalLineRate>
                             </check>
                         </configuration>

@@ -48,7 +48,7 @@ import org.takes.http.FtRemote;
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @todo #14:15min Application should be able to get binary file properly.
  *  Add a test to check it works and fix if doesn't.

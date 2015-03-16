@@ -56,7 +56,7 @@
             <xsl:text> </xsl:text>
             <a href="{read}">read</a>
             <xsl:text> | </xsl:text>
-            <a href="{read}">delete</a>
+            <a href="{delete}">delete</a>
         </li>
     </xsl:template>
 </xsl:stylesheet>

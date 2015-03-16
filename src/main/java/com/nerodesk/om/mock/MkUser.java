@@ -32,7 +32,6 @@ package com.nerodesk.om.mock;
 import com.nerodesk.om.Docs;
 import com.nerodesk.om.User;
 import java.io.File;
-import java.io.IOException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -68,7 +67,7 @@ public final class MkUser implements User {
     }
 
     @Override
-    public Docs docs() throws IOException {
-        return new MkDocs(this.dir, this.name);
+    public Docs docs() {
+        return new MkDocs(this.dir, this.name.replace("[^a-z0-9]", "/"));
     }
 }

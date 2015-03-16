@@ -52,7 +52,7 @@ public final class TkDocsTest {
      * @throws Exception If fails.
      */
     @Test
-    public void returnsPlainText() throws Exception {
+    public void returnsListOfDocs() throws Exception {
         final User user = new MkBase().user("urn:test:1");
         user.docs().doc("test.txt").write(
             new ByteArrayInputStream("hello, world!".getBytes())

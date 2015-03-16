@@ -103,6 +103,11 @@ public final class AwsDoc implements Doc {
 
     /**
      * Get ocket.
+     *
+     * <p>Name of the resource will always start with a "slash", that's
+     * why this concatenation will always produce unique names of
+     * objects in S3 bucket.
+     *
      * @return Ocket
      */
     private Ocket ocket() {
