@@ -56,7 +56,7 @@ public final class TkWriteTest {
     @Test
     public void writesFileContent() throws Exception {
         final Docs docs = new MkBase().user("urn:test:1").docs();
-        ;
+        final String file = "hey.txt";
         MatcherAssert.assertThat(
             new RsPrint(
                 new TkWrite(
@@ -65,10 +65,10 @@ public final class TkWriteTest {
                         new RqFake(
                             "POST", "/",
                             Joiner.on("\r\n").join(
-                                "--AaB03x",
+                                " --AaB03x",
                                 "Content-Disposition: form-data; name=\"name\"",
                                 "",
-                                "hey.txt",
+                                file,
                                 "--AaB03x",
                                 "Content-Disposition: form-data; name=\"file\"",
                                 "Content-Transfer-Encoding: utf-8",
@@ -84,7 +84,7 @@ public final class TkWriteTest {
             Matchers.startsWith("HTTP/1.1 303 See Other")
         );
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        docs.doc("hey.txt").read(baos);
+        docs.doc(file).read(baos);
         MatcherAssert.assertThat(
             new String(baos.toByteArray()),
             Matchers.endsWith("world!")
