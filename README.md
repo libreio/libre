@@ -30,6 +30,28 @@ You might want to start this app on different port, just add port number as para
 $ java -jar target/nerodesk-jar-with-dependencies.jar 9000
 ```
 
+## API
+
+In order to download, upload or delete a file, use the following API. Here,
+`$PATH` is the full pathname of the file. For example, your list of albums could
+have a path of `documents/album_list.txt`, where `documents` is a folder and `album_list.txt` is the actual file.
+
+### Download
+```GET https://nerodesk.com/api/file/$PATH```
+
+The file contents will be returned in the response's body. Returns status 404 if
+ the file is not available.
+
+### Upload
+```PUT https://nerodesk.com/api/file/$PATH```
+
+The file contents should be present in the request's body.
+
+### Delete
+```DELETE https://nerodesk.com/api/file/$PATH```
+
+Returns status 404 if the file is not available.
+
 ## How to contribute
 
 Fork repository, make changes, send us a pull request. We will review
