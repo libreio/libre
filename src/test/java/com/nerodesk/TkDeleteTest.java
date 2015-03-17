@@ -29,77 +29,38 @@
  */
 package com.nerodesk;
 
+import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
-import java.io.IOException;
-import org.takes.Href;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
-import org.takes.rq.RqHref;
-import org.takes.rs.xe.XeSource;
-import org.xembly.Directive;
-import org.xembly.Directives;
+import com.nerodesk.om.mock.MkBase;
+import org.apache.commons.io.IOUtils;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.takes.rs.RsPrint;
 
 /**
- * List of docs.
+ * Tests for {@code TkDelete}.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
-public final class TkDocs implements Take {
+public final class TkDeleteTest {
 
     /**
-     * Docs.
+     * TkDelete can delete file.
+     * @throws Exception If fails.
      */
-    private final transient Docs docs;
-
-    /**
-     * Request.
-     */
-    private final transient Request request;
-
-    /**
-     * Ctor.
-     * @param dcs Docs
-     * @param req Request
-     */
-    public TkDocs(final Docs dcs, final Request req) {
-        this.docs = dcs;
-        this.request = req;
-    }
-
-    @Override
-    public Response act() throws IOException {
-        return new RsPage(
-            "/xsl/docs.xsl",
-            this.request,
-            new XeSource() {
-                @Override
-                public Iterable<Directive> toXembly() throws IOException {
-                    return TkDocs.this.list();
-                }
-            }
+    @Test
+    public void deletesFile() throws Exception {
+        final Docs docs = new MkBase().user("urn:test:1").docs();
+        final Doc doc = docs.doc("hey");
+        doc.write(IOUtils.toInputStream("hello, world!"));
+        MatcherAssert.assertThat(
+            new RsPrint(new TkDelete(doc).act()).print(),
+            Matchers.startsWith("HTTP/1.1 303")
         );
-    }
-
-    /**
-     * Convert docs into directives.
-     * @return Directives
-     * @throws IOException If fails
-     */
-    private Iterable<Directive> list() throws IOException {
-        final Directives dirs = new Directives().add("docs");
-        final Href home = new RqHref(this.request).href();
-        for (final String name : this.docs.names()) {
-            dirs.add("doc").add("name").set(name).up()
-                .add("read")
-                .set(home.path("r").with("f", name).toString()).up()
-                .add("delete")
-                .set(home.path("d").with("x", name).toString()).up()
-                .up();
-        }
-        return dirs;
+        MatcherAssert.assertThat(docs.names(), Matchers.emptyIterable());
     }
 
 }

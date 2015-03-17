@@ -29,77 +29,41 @@
  */
 package com.nerodesk;
 
-import com.nerodesk.om.Docs;
+import com.nerodesk.om.Doc;
 import java.io.IOException;
-import org.takes.Href;
-import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.rq.RqHref;
-import org.takes.rs.xe.XeSource;
-import org.xembly.Directive;
-import org.xembly.Directives;
+import org.takes.facets.flash.RsFlash;
+import org.takes.facets.forward.RsForward;
 
 /**
- * List of docs.
+ * Delete file.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
-public final class TkDocs implements Take {
+public final class TkDelete implements Take {
 
     /**
-     * Docs.
+     * Doc.
      */
-    private final transient Docs docs;
-
-    /**
-     * Request.
-     */
-    private final transient Request request;
+    private final transient Doc doc;
 
     /**
      * Ctor.
-     * @param dcs Docs
-     * @param req Request
+     * @param src Source document to delete
      */
-    public TkDocs(final Docs dcs, final Request req) {
-        this.docs = dcs;
-        this.request = req;
+    public TkDelete(final Doc src) {
+        this.doc = src;
     }
 
     @Override
     public Response act() throws IOException {
-        return new RsPage(
-            "/xsl/docs.xsl",
-            this.request,
-            new XeSource() {
-                @Override
-                public Iterable<Directive> toXembly() throws IOException {
-                    return TkDocs.this.list();
-                }
-            }
+        this.doc.delete();
+        return new RsForward(
+            new RsFlash("file deleted")
         );
-    }
-
-    /**
-     * Convert docs into directives.
-     * @return Directives
-     * @throws IOException If fails
-     */
-    private Iterable<Directive> list() throws IOException {
-        final Directives dirs = new Directives().add("docs");
-        final Href home = new RqHref(this.request).href();
-        for (final String name : this.docs.names()) {
-            dirs.add("doc").add("name").set(name).up()
-                .add("read")
-                .set(home.path("r").with("f", name).toString()).up()
-                .add("delete")
-                .set(home.path("d").with("x", name).toString()).up()
-                .up();
-        }
-        return dirs;
     }
 
 }

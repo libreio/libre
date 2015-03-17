@@ -74,8 +74,12 @@ import org.takes.ts.TsWrap;
  * @since 0.2
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
+ * @checkstyle ExcessiveMethodLength (500 lines)
  */
-@SuppressWarnings({ "PMD.UseUtilityClass", "PMD.ExcessiveImports" })
+@SuppressWarnings({
+    "PMD.UseUtilityClass", "PMD.ExcessiveImports",
+    "PMD.ExcessiveMethodLength"
+})
 public final class App extends TsWrap {
 
     /**
@@ -165,6 +169,21 @@ public final class App extends TsWrap {
                     public Take route(final Request req) throws IOException {
                         final String file =
                             new RqHref(req).href().param("f").iterator().next();
+                        return new TkRead(
+                            base.user(
+                                new RqAuth(req).identity().urn()
+                            ).docs().doc(file)
+                        );
+                    }
+                }
+            ),
+            new FkRegex(
+                "/d",
+                new Takes() {
+                    @Override
+                    public Take route(final Request req) throws IOException {
+                        final String file =
+                            new RqHref(req).href().param("x").iterator().next();
                         return new TkRead(
                             base.user(
                                 new RqAuth(req).identity().urn()
