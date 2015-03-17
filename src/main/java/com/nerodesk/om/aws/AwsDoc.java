@@ -91,14 +91,16 @@ public final class AwsDoc implements Doc {
 
     @Override
     public void read(@NotNull final OutputStream output) throws IOException {
-        this.ocket().read(output);
-        Logger.info(this, "%s read", this.label);
+        final Ocket ocket = this.ocket();
+        ocket.read(output);
+        Logger.info(this, "%s read", ocket);
     }
 
     @Override
     public void write(final InputStream input) throws IOException {
-        this.ocket().write(input, new ObjectMetadata());
-        Logger.info(this, "%s written", this.label);
+        final Ocket ocket = this.ocket();
+        ocket.write(input, new ObjectMetadata());
+        Logger.info(this, "%s written", ocket);
     }
 
     /**

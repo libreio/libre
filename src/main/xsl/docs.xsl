@@ -47,12 +47,12 @@
             <input name="upload" type="submit"/>
         </form>
         <ul>
-            <xsl:apply-templates select="docs/name"/>
+            <xsl:apply-templates select="docs/doc"/>
         </ul>
     </xsl:template>
-    <xsl:template match="name">
+    <xsl:template match="doc">
         <li>
-            <xsl:value-of select="."/>
+            <xsl:value-of select="name"/>
             <xsl:text> </xsl:text>
             <a href="{read}">read</a>
             <xsl:text> | </xsl:text>

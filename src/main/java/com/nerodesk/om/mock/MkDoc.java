@@ -29,6 +29,7 @@
  */
 package com.nerodesk.om.mock;
 
+import com.jcabi.log.Logger;
 import com.nerodesk.om.Doc;
 import java.io.File;
 import java.io.FileInputStream;
@@ -91,13 +92,17 @@ public final class MkDoc implements Doc {
 
     @Override
     public void read(final OutputStream output) throws IOException {
+        final File file = this.file();
         IOUtils.copy(new FileInputStream(this.file()), output);
+        Logger.info(this, "%s loaded", file);
     }
 
     @Override
     public void write(final InputStream input) throws IOException {
-        FileUtils.touch(this.file());
-        IOUtils.copy(input, new FileOutputStream(this.file()));
+        final File file = this.file();
+        FileUtils.touch(file);
+        IOUtils.copy(input, new FileOutputStream(file));
+        Logger.info(this, "%s saved", file);
     }
 
     /**
