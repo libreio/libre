@@ -51,6 +51,7 @@ import org.takes.facets.auth.codecs.CcSafe;
 import org.takes.facets.auth.codecs.CcSalted;
 import org.takes.facets.auth.codecs.CcXOR;
 import org.takes.facets.auth.social.PsFacebook;
+import org.takes.facets.flash.TsFlash;
 import org.takes.facets.fork.FkAnonymous;
 import org.takes.facets.fork.FkAuthenticated;
 import org.takes.facets.fork.FkFixed;
@@ -207,7 +208,7 @@ public final class App extends TsWrap {
                 }
             )
         );
-        return App.auth(fork);
+        return new TsFlash(App.auth(fork));
     }
 
     /**
