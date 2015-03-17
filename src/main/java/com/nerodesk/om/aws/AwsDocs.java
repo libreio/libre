@@ -71,7 +71,7 @@ public final class AwsDocs implements Docs {
 
     @Override
     public List<String> names() throws IOException {
-        return Lists.newArrayList(this.bucket.list(""));
+        return Lists.newArrayList(this.bucket.list(this.name));
     }
 
     @Override
