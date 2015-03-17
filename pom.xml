@@ -39,7 +39,7 @@
     </parent>
     <groupId>com.nerodesk</groupId>
     <artifactId>nerodesk</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.7</version>
     <packaging>jar</packaging>
     <name>nerodesk</name>
     <description>Open Source Cloud File Sharing</description>
