@@ -41,7 +41,7 @@ sending us your pull request please run full Maven build:
 $ mvn clean install -Pqulice,cobertura
 ```
 
-To avoid build errors use maven 3.2+
+To avoid build errors use maven 3.2+. Minimum Java version is 1.7.
 
 To start a web server locally run:
 
