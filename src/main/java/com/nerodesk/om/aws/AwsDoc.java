@@ -58,11 +58,6 @@ public final class AwsDoc implements Doc {
     private final transient Bucket bucket;
 
     /**
-     * URN of user.
-     */
-    private final transient String user;
-
-    /**
      * Doc name.
      */
     private final transient String label;
@@ -70,47 +65,37 @@ public final class AwsDoc implements Doc {
     /**
      * Ctor.
      * @param bkt Bucket
-     * @param urn User URN
      * @param doc Name of document
      */
-    public AwsDoc(final Bucket bkt, final String urn, final String doc) {
+    public AwsDoc(final Bucket bkt, final String doc) {
         this.bucket = bkt;
-        this.user = urn;
         this.label = doc;
     }
 
     @Override
     public boolean exists() throws IOException {
-        return this.ocket().exists();
+        final Ocket ocket = this.bucket.ocket(this.label);
+        return ocket.exists();
     }
 
     @Override
     public void delete() throws IOException {
-        this.bucket.remove(this.ocket().key());
+        final Ocket ocket = this.bucket.ocket(this.label);
+        this.bucket.remove(ocket.key());
     }
 
     @Override
     public void read(@NotNull final OutputStream output) throws IOException {
-        final Ocket ocket = this.ocket();
+        final Ocket ocket = this.bucket.ocket(this.label);
         ocket.read(output);
         Logger.info(this, "%s read", ocket);
     }
 
     @Override
     public void write(final InputStream input) throws IOException {
-        final Ocket ocket = this.ocket();
+        final Ocket ocket = this.bucket.ocket(this.label);
         ocket.write(input, new ObjectMetadata());
         Logger.info(this, "%s written", ocket);
-    }
-
-    /**
-     * Get ocket.
-     * @return Ocket
-     */
-    private Ocket ocket() {
-        return this.bucket.ocket(
-            String.format("%s/%s", this.user, this.label)
-        );
     }
 
 }

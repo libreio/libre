@@ -55,27 +55,20 @@ public final class AwsDocs implements Docs {
     private final transient Bucket bucket;
 
     /**
-     * URN of user.
-     */
-    private final transient String name;
-
-    /**
      * Ctor.
      * @param bkt Bucket
-     * @param urn User's URN
      */
-    public AwsDocs(final Bucket bkt, final String urn) {
+    public AwsDocs(final Bucket bkt) {
         this.bucket = bkt;
-        this.name = urn;
     }
 
     @Override
     public List<String> names() throws IOException {
-        return Lists.newArrayList(this.bucket.list(this.name));
+        return Lists.newArrayList(this.bucket.list(""));
     }
 
     @Override
     public Doc doc(final String doc) {
-        return new AwsDoc(this.bucket, this.name, doc);
+        return new AwsDoc(this.bucket, doc);
     }
 }
