@@ -109,7 +109,7 @@ public final class AwsDoc implements Doc {
      */
     private Ocket ocket() {
         return this.bucket.ocket(
-            String.format("/%s/%s", this.user, this.label)
+            String.format("%s/%s", this.user, this.label)
         );
     }
 
