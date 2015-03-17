@@ -80,8 +80,7 @@ public final class AwsDoc implements Doc {
 
     @Override
     public void delete() throws IOException {
-        final Ocket ocket = this.bucket.ocket(this.label);
-        this.bucket.remove(ocket.key());
+        this.bucket.remove(this.label);
     }
 
     @Override
