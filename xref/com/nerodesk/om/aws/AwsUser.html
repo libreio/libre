@@ -76,9 +76,11 @@
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>      @Override
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../com/nerodesk/om/Docs.html">Docs</a> docs() {
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../com/nerodesk/om/aws/AwsDocs.html">AwsDocs</a>(<strong class="jxr_keyword">new</strong> Bucket.Prefixed(<strong class="jxr_keyword">this</strong>.bucket, <strong class="jxr_keyword">this</strong>.name));
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>      }
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>  }
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../com/nerodesk/om/aws/AwsDocs.html">AwsDocs</a>(
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>              <strong class="jxr_keyword">new</strong> Bucket.Prefixed(<strong class="jxr_keyword">this</strong>.bucket, String.format(<span class="jxr_string">"%s/"</span>, <strong class="jxr_keyword">this</strong>.name))
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          );
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>      }
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2015 <a href="http://www.nerodesk.com">Nerodesk, Inc.</a>. All rights reserved.</div>

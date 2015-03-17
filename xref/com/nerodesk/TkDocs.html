@@ -103,12 +103,14 @@
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>              dirs.add(<span class="jxr_string">"doc"</span>).add(<span class="jxr_string">"name"</span>).set(name).up()
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>                  .add(<span class="jxr_string">"read"</span>)
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>                  .set(home.path(<span class="jxr_string">"r"</span>).with(<span class="jxr_string">"f"</span>, name).toString()).up()
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>                  .up();
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>          }
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>         <strong class="jxr_keyword">return</strong> dirs;
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>     }
-<a class="jxr_linenumber" name="L102" href="#L102">102</a> 
-<a class="jxr_linenumber" name="L103" href="#L103">103</a> }
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>                  .add(<span class="jxr_string">"delete"</span>)
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>                  .set(home.path(<span class="jxr_string">"d"</span>).with(<span class="jxr_string">"x"</span>, name).toString()).up()
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>                 .up();
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>         }
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>         <strong class="jxr_keyword">return</strong> dirs;
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>     }
+<a class="jxr_linenumber" name="L104" href="#L104">104</a> 
+<a class="jxr_linenumber" name="L105" href="#L105">105</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2015 <a href="http://www.nerodesk.com">Nerodesk, Inc.</a>. All rights reserved.</div>
