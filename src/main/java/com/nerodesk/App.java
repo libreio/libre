@@ -184,7 +184,7 @@ public final class App extends TsWrap {
                     public Take route(final Request req) throws IOException {
                         final String file =
                             new RqHref(req).href().param("x").iterator().next();
-                        return new TkRead(
+                        return new TkDelete(
                             base.user(
                                 new RqAuth(req).identity().urn()
                             ).docs().doc(file)
