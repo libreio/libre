@@ -39,7 +39,7 @@
     </xsl:template>
     <xsl:template match="page" mode="body">
         <p>
-            <xsl:text>Nerodesk is a cloud file storage</xsl:text>
+            <xsl:text>Nerodesk Open-Source Cloud Storage</xsl:text>
         </p>
     </xsl:template>
 </xsl:stylesheet>
