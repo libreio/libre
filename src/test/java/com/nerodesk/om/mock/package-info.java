@@ -27,28 +27,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
-
-import java.io.IOException;
 
 /**
- * Account docs.
+ * Nerodesk, tests.
  *
  * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-public interface Docs {
-
-    /**
-     * Total amount of bytes stored in my account. This information
-     * would be useful and should be present in the top line of every page.
-     * @return Size of storage in bytes.
-     * @throws java.io.IOException If fails.
-     * @todo #48:30min This method is able to return total amount of bytes
-     *  stored in account. There is already existing implementation for mocked
-     *  storage (this interface is implemented by MkStorage). What is still
-     *  missing here is that we should display this value somehow for user.
-     */
-    long size() throws IOException;
-}
+package com.nerodesk.om.mock;

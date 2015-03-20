@@ -29,74 +29,47 @@
  */
 package com.nerodesk.om.mock;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import com.nerodesk.om.Doc;
-import com.nerodesk.om.Docs;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
- * Mocked version of docs.
+ * This provides tests for {@link com.nerodesk.om.mock.MkDocs}
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @version $Id$
  * @since 0.2
  */
-@ToString
-@EqualsAndHashCode
-public final class MkDocs implements Docs {
+public final class MkDocsTest {
 
     /**
-     * Directory.
+     * Temp directory.
+     * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    private final transient File dir;
+    @Rule
+    public final transient TemporaryFolder temp = new TemporaryFolder();
 
     /**
-     * URN.
+     * MkDocs can calculate size of storage.
+     * @throws Exception If it fails.
      */
-    private final transient String name;
-
-    /**
-     * Ctor.
-     * @param file Directory
-     * @param urn URN
-     */
-    public MkDocs(final File file, final String urn) {
-        this.dir = file;
-        this.name = urn;
-        this.dir.mkdirs();
-    }
-
-    @Override
-    public List<String> names() {
-        return Lists.transform(
-            Lists.newArrayList(
-                FileUtils.listFiles(
-                    this.dir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE
-                )
-            ),
-            new Function<File, String>() {
-                @Override
-                public String apply(final File input) {
-                    return input.getName();
-                }
-            }
+    @Test
+    public void calculatesSize() throws Exception {
+        final MkDocs docs = new MkDocs(this.temp.getRoot(), "1");
+        MatcherAssert.assertThat(
+            docs.size(),
+            Matchers.equalTo(0L)
         );
-    }
-
-    @Override
-    public Doc doc(final String doc) {
-        return new MkDoc(this.dir, this.name, doc);
-    }
-
-    @Override
-    public long size() throws IOException {
-        return FileUtils.sizeOf(this.dir);
+        FileUtils.writeByteArrayToFile(
+            this.temp.newFile("test1"),
+            new byte[]{0}
+        );
+        MatcherAssert.assertThat(
+            docs.size(),
+            Matchers.equalTo(1L)
+        );
     }
 }
