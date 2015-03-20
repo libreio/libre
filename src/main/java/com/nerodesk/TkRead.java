@@ -29,40 +29,41 @@
  */
 package com.nerodesk;
 
+import com.nerodesk.om.Doc;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.rs.RsWithBody;
 
 /**
- * Index.
+ * Read file content.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-public final class TkIndex implements Take {
+public final class TkRead implements Take {
 
     /**
-     * Request.
+     * Doc.
      */
-    private final transient Request request;
+    private final transient Doc doc;
 
     /**
      * Ctor.
-     * @param req Request
+     * @param src Source document to read from
      */
-    public TkIndex(final Request req) {
-        this.request = req;
+    public TkRead(final Doc src) {
+        this.doc = src;
     }
 
     @Override
     public Response act() throws IOException {
-        return new RsPage(
-            "/xsl/home.xsl",
-            this.request
-        );
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        this.doc.read(baos);
+        return new RsWithBody(new ByteArrayInputStream(baos.toByteArray()));
     }
 
 }

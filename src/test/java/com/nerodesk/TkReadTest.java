@@ -29,39 +29,34 @@
  */
 package com.nerodesk;
 
-import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
+import com.nerodesk.om.Doc;
+import com.nerodesk.om.mock.MkBase;
+import org.apache.commons.io.IOUtils;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.takes.rs.RsPrint;
 
 /**
- * Index.
+ * Tests for {@code TkRead}.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-public final class TkIndex implements Take {
+public final class TkReadTest {
 
     /**
-     * Request.
+     * TkRead can read file content.
+     * @throws Exception If fails.
      */
-    private final transient Request request;
-
-    /**
-     * Ctor.
-     * @param req Request
-     */
-    public TkIndex(final Request req) {
-        this.request = req;
-    }
-
-    @Override
-    public Response act() throws IOException {
-        return new RsPage(
-            "/xsl/home.xsl",
-            this.request
+    @Test
+    public void readsFileContent() throws Exception {
+        final Doc doc = new MkBase().user("urn:test:1").docs().doc("hey");
+        doc.write(IOUtils.toInputStream("hello, world!"));
+        MatcherAssert.assertThat(
+            new RsPrint(new TkRead(doc).act()).printBody(),
+            Matchers.endsWith("world!")
         );
     }
 

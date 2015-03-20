@@ -29,20 +29,29 @@
  */
 package com.nerodesk;
 
+import com.nerodesk.om.Docs;
 import java.io.IOException;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.facets.flash.RsFlash;
+import org.takes.facets.forward.RsForward;
+import org.takes.rq.RqMultipart;
+import org.takes.rq.RqPrint;
 
 /**
- * Index.
+ * Write file content.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-public final class TkIndex implements Take {
+public final class TkWrite implements Take {
+
+    /**
+     * Docs.
+     */
+    private final transient Docs docs;
 
     /**
      * Request.
@@ -51,17 +60,23 @@ public final class TkIndex implements Take {
 
     /**
      * Ctor.
+     * @param dcs Docs
      * @param req Request
      */
-    public TkIndex(final Request req) {
+    public TkWrite(final Docs dcs, final Request req) {
+        this.docs = dcs;
         this.request = req;
     }
 
     @Override
     public Response act() throws IOException {
-        return new RsPage(
-            "/xsl/home.xsl",
-            this.request
+        final RqMultipart multi = new RqMultipart(this.request);
+        final String name = new RqPrint(
+            multi.part("name").iterator().next()
+        ).printBody();
+        this.docs.doc(name).write(multi.part("file").iterator().next().body());
+        return new RsForward(
+            new RsFlash("file uploaded")
         );
     }
 

@@ -27,42 +27,48 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om;
 
+import com.jcabi.aspects.Immutable;
 import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
- * Index.
+ * Document.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-public final class TkIndex implements Take {
+@Immutable
+public interface Doc {
 
     /**
-     * Request.
+     * Does it exist?
+     * @return TRUE if exists
+     * @throws IOException If fails
      */
-    private final transient Request request;
+    boolean exists() throws IOException;
 
     /**
-     * Ctor.
-     * @param req Request
+     * Delete it.
+     * @throws IOException If fails
      */
-    public TkIndex(final Request req) {
-        this.request = req;
-    }
+    void delete() throws IOException;
 
-    @Override
-    public Response act() throws IOException {
-        return new RsPage(
-            "/xsl/home.xsl",
-            this.request
-        );
-    }
+    /**
+     * Read its entire content into this output stream.
+     * @param output Output stream
+     * @throws IOException If fails
+     */
+    void read(OutputStream output) throws IOException;
+
+    /**
+     * Write its entire content from this input stream.
+     * @param input Input stream
+     * @throws IOException If fails
+     */
+    void write(InputStream input) throws IOException;
 
 }

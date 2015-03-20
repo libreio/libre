@@ -1,4 +1,5 @@
-/**
+<?xml version="1.0"?>
+<!--
  * Copyright (c) 2015, nerodesk.com
  * All rights reserved.
  *
@@ -26,43 +27,36 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-package com.nerodesk;
-
-import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
-
-/**
- * Index.
- *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
- * @author Yegor Bugayenko (yegor@teamed.io)
- * @version $Id$
- * @since 0.1
- */
-public final class TkIndex implements Take {
-
-    /**
-     * Request.
-     */
-    private final transient Request request;
-
-    /**
-     * Ctor.
-     * @param req Request
-     */
-    public TkIndex(final Request req) {
-        this.request = req;
-    }
-
-    @Override
-    public Response act() throws IOException {
-        return new RsPage(
-            "/xsl/home.xsl",
-            this.request
-        );
-    }
-
-}
+ -->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns="http://www.w3.org/1999/xhtml" version="1.0">
+    <xsl:output method="xml" omit-xml-declaration="yes"/>
+    <xsl:include href="/xsl/layout.xsl"/>
+    <xsl:template match="page" mode="head">
+        <title>
+            <xsl:text>docs</xsl:text>
+        </title>
+    </xsl:template>
+    <xsl:template match="page" mode="body">
+        <p>
+            <xsl:text>My docs:</xsl:text>
+        </p>
+        <form method="post" action="/w" enctype="multipart/form-data">
+            <input name="name"/>
+            <input name="file" type="file"/>
+            <input name="upload" type="submit"/>
+        </form>
+        <ul>
+            <xsl:apply-templates select="docs/doc"/>
+        </ul>
+    </xsl:template>
+    <xsl:template match="doc">
+        <li>
+            <xsl:value-of select="name"/>
+            <xsl:text> </xsl:text>
+            <a href="{read}">read</a>
+            <xsl:text> | </xsl:text>
+            <a href="{delete}">delete</a>
+        </li>
+    </xsl:template>
+</xsl:stylesheet>

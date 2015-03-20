@@ -29,11 +29,16 @@
  */
 package com.nerodesk;
 
-import com.jcabi.log.Logger;
+import com.jcabi.manifests.Manifests;
+import com.jcabi.s3.Region;
+import com.jcabi.s3.retry.ReBucket;
+import com.nerodesk.om.Base;
+import com.nerodesk.om.aws.AwsBase;
+import com.nerodesk.om.mock.MkBase;
 import java.io.IOException;
+import java.util.Arrays;
 import org.takes.http.Exit;
-import org.takes.http.FtBasic;
-import org.takes.ts.TsRegex;
+import org.takes.http.FtCLI;
 
 /**
  * Launch (used only for heroku).
@@ -41,45 +46,64 @@ import org.takes.ts.TsRegex;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.1
- * @checkstyle HideUtilityClassConstructorCheck (500 lines)
- * @todo #48:30min This is a utility class and should only launch the app. The
- *  web server code should be moved to its own class. Remove the checkstyle
- *  suppression above and also the PMD suppression below. This is continuation
- *  of task #48. I moved `TkIndex` to separate class but it's not enough.
+ * @todo #14:30min Add exception handling to return 404
+ *  when resource not available. Now we show not nice stacktrace.
+ *  Don't forget about unit tests.
  */
-@SuppressWarnings("PMD.UseUtilityClass")
 public final class Launch {
 
     /**
-     * Default port.
+     * Arguments.
      */
-    private static final int DEFAULT_PORT = 8080;
+    private final transient Iterable<String> arguments;
 
     /**
      * Ctor.
-     * @param port Port.
-     * @throws IOException If something goes wrong.
+     * @param args Command line args
      */
-    public Launch(final int port) throws IOException {
-        Logger.info(Launch.class, "HTTP server starting on port %d", port);
-        new FtBasic(
-            new TsRegex().with("/", new TkIndex()),
-            port
+    public Launch(final String[] args) {
+        this.arguments = Arrays.asList(args);
+    }
+
+    /**
+     * Main entry point.
+     * @param args Arguments
+     * @throws IOException If fails
+     */
+    public static void main(final String... args) throws IOException {
+        new Launch(args).exec();
+    }
+
+    /**
+     * Run it all.
+     * @throws IOException If fails
+     */
+    public void exec() throws IOException {
+        new FtCLI(
+            new App(Launch.base()),
+            this.arguments
         ).start(Exit.NEVER);
     }
 
     /**
-     * Entry point.
-     * @param args Command line args
-     * @throws IOException If fails
+     * Base.
+     * @return Base
      */
-    public static void main(final String... args) throws IOException {
-        // @checkstyle MagicNumberCheck (1 line)
-        int port = Launch.DEFAULT_PORT;
-        if (args.length > 0) {
-            port = Integer.parseInt(args[0]);
+    private static Base base() {
+        final String key = Manifests.read("Nerodesk-AwsKey");
+        final Base base;
+        if (key.startsWith("AAAA") || key.startsWith("${")) {
+            base = new MkBase();
+        } else {
+            base = new AwsBase(
+                new ReBucket(
+                    new Region.Simple(
+                        key, Manifests.read("Nerodesk-AwsSecret")
+                    ).bucket(Manifests.read("Nerodesk-Bucket"))
+                )
+            );
         }
-        new Launch(port);
+        return base;
     }
 
 }

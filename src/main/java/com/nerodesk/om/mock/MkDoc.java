@@ -27,42 +27,89 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om.mock;
 
+import com.jcabi.log.Logger;
+import com.nerodesk.om.Doc;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
+import java.io.InputStream;
+import java.io.OutputStream;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 /**
- * Index.
+ * Mocked version of doc.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-public final class TkIndex implements Take {
+@ToString
+@EqualsAndHashCode
+public final class MkDoc implements Doc {
 
     /**
-     * Request.
+     * Directory.
      */
-    private final transient Request request;
+    private final transient File dir;
+
+    /**
+     * URN.
+     */
+    private final transient String user;
+
+    /**
+     * Doc name.
+     */
+    private final transient String label;
 
     /**
      * Ctor.
-     * @param req Request
+     * @param file Directory
+     * @param urn URN
+     * @param name Document name
      */
-    public TkIndex(final Request req) {
-        this.request = req;
+    public MkDoc(final File file, final String urn, final String name) {
+        this.dir = file;
+        this.user = urn;
+        this.label = name;
     }
 
     @Override
-    public Response act() throws IOException {
-        return new RsPage(
-            "/xsl/home.xsl",
-            this.request
-        );
+    public boolean exists() {
+        return this.file().exists();
     }
 
+    @Override
+    public void delete() {
+        this.file().delete();
+    }
+
+    @Override
+    public void read(final OutputStream output) throws IOException {
+        final File file = this.file();
+        IOUtils.copy(new FileInputStream(this.file()), output);
+        Logger.info(this, "%s loaded", file);
+    }
+
+    @Override
+    public void write(final InputStream input) throws IOException {
+        final File file = this.file();
+        FileUtils.touch(file);
+        IOUtils.copy(input, new FileOutputStream(file));
+        Logger.info(this, "%s saved", file);
+    }
+
+    /**
+     * File.
+     * @return File
+     */
+    private File file() {
+        return new File(new File(this.dir, this.user), this.label);
+    }
 }

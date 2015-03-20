@@ -27,12 +27,49 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package com.nerodesk.om.aws;
+
+import com.jcabi.s3.Bucket;
+import com.nerodesk.om.Docs;
+import com.nerodesk.om.User;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
- * Nerodesk, tests.
+ * AWS-based version of User.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-package com.nerodesk.mock;
+@ToString
+@EqualsAndHashCode
+public final class AwsUser implements User {
+
+    /**
+     * Bucket.
+     */
+    private final transient Bucket bucket;
+
+    /**
+     * URN of user.
+     */
+    private final transient String name;
+
+    /**
+     * Ctor.
+     * @param bkt Bucket
+     * @param urn URN of the user
+     */
+    public AwsUser(final Bucket bkt, final String urn) {
+        this.bucket = bkt;
+        this.name = urn;
+    }
+
+    @Override
+    public Docs docs() {
+        return new AwsDocs(
+            new Bucket.Prefixed(this.bucket, String.format("%s/", this.name))
+        );
+    }
+}

@@ -27,43 +27,48 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om.aws;
 
-import com.jcabi.aspects.Immutable;
+import com.google.common.collect.Lists;
+import com.jcabi.s3.Bucket;
+import com.nerodesk.om.Doc;
+import com.nerodesk.om.Docs;
 import java.io.IOException;
-import java.io.InputStream;
-import javax.validation.constraints.NotNull;
+import java.util.List;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
- * File storage.
+ * AWS-based version of Docs.
  *
- * @author Paul Polishchuk (ppol@ua.fm)
+ * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-@Immutable
-public interface Storage {
+@ToString
+@EqualsAndHashCode
+public final class AwsDocs implements Docs {
 
     /**
-     * Get file from storage.
-     * @param path Path
-     * @throws IOException If fails
-     * @return InputStream
+     * Bucket.
      */
-    InputStream get(@NotNull String path) throws IOException;
+    private final transient Bucket bucket;
 
     /**
-     * Write file.
-     * @param path Path.
-     * @param input Input.
-     * @throws IOException If fails
+     * Ctor.
+     * @param bkt Bucket
      */
-    void put(@NotNull String path, InputStream input) throws IOException;
+    public AwsDocs(final Bucket bkt) {
+        this.bucket = bkt;
+    }
 
-    /**
-     * Delete file from storage.
-     * @param path Path
-     * @throws IOException If fails
-     */
-    void delete(@NotNull String path) throws IOException;
+    @Override
+    public List<String> names() throws IOException {
+        return Lists.newArrayList(this.bucket.list(""));
+    }
+
+    @Override
+    public Doc doc(final String doc) {
+        return new AwsDoc(this.bucket, doc);
+    }
 }

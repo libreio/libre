@@ -27,12 +27,43 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package com.nerodesk;
+
+import com.nerodesk.om.Doc;
+import java.io.IOException;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.facets.flash.RsFlash;
+import org.takes.facets.forward.RsForward;
 
 /**
- * Nerodesk.
+ * Delete file.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-package com.nerodesk.mock;
+public final class TkDelete implements Take {
+
+    /**
+     * Doc.
+     */
+    private final transient Doc doc;
+
+    /**
+     * Ctor.
+     * @param src Source document to delete
+     */
+    public TkDelete(final Doc src) {
+        this.doc = src;
+    }
+
+    @Override
+    public Response act() throws IOException {
+        this.doc.delete();
+        return new RsForward(
+            new RsFlash("file deleted")
+        );
+    }
+
+}

@@ -29,40 +29,46 @@
  */
 package com.nerodesk;
 
-import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
+import com.jcabi.matchers.XhtmlMatchers;
+import com.nerodesk.om.User;
+import com.nerodesk.om.mock.MkBase;
+import java.io.ByteArrayInputStream;
+import org.hamcrest.MatcherAssert;
+import org.junit.Test;
+import org.takes.rq.RqFake;
+import org.takes.rs.RsPrint;
 
 /**
- * Index.
+ * Tests for {@code TkDocs}.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-public final class TkIndex implements Take {
+public final class TkDocsTest {
 
     /**
-     * Request.
+     * TkDocs can return a list of docs.
+     * @throws Exception If fails.
      */
-    private final transient Request request;
-
-    /**
-     * Ctor.
-     * @param req Request
-     */
-    public TkIndex(final Request req) {
-        this.request = req;
-    }
-
-    @Override
-    public Response act() throws IOException {
-        return new RsPage(
-            "/xsl/home.xsl",
-            this.request
+    @Test
+    public void returnsListOfDocs() throws Exception {
+        final User user = new MkBase().user("urn:test:1");
+        user.docs().doc("test.txt").write(
+            new ByteArrayInputStream("hello, world!".getBytes())
+        );
+        user.docs().doc("test-2.txt").write(
+            new ByteArrayInputStream("hello!".getBytes())
+        );
+        MatcherAssert.assertThat(
+            new RsPrint(
+                new TkDocs(user.docs(), new RqFake()).act()
+            ).printBody(),
+            XhtmlMatchers.hasXPaths(
+                "/page/docs[count(doc)=2]",
+                "/page/docs/doc[name='test.txt']",
+                "/page/docs/doc/read"
+            )
         );
     }
-
 }

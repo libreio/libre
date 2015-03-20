@@ -27,42 +27,47 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om.mock;
 
-import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
+import com.nerodesk.om.Docs;
+import com.nerodesk.om.User;
+import java.io.File;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
- * Index.
+ * Mocked version of user.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-public final class TkIndex implements Take {
+@ToString
+@EqualsAndHashCode
+public final class MkUser implements User {
 
     /**
-     * Request.
+     * Directory.
      */
-    private final transient Request request;
+    private final transient File dir;
+
+    /**
+     * URN.
+     */
+    private final transient String name;
 
     /**
      * Ctor.
-     * @param req Request
+     * @param file Directory
+     * @param urn URN
      */
-    public TkIndex(final Request req) {
-        this.request = req;
+    public MkUser(final File file, final String urn) {
+        this.dir = file;
+        this.name = urn;
     }
 
     @Override
-    public Response act() throws IOException {
-        return new RsPage(
-            "/xsl/home.xsl",
-            this.request
-        );
+    public Docs docs() {
+        return new MkDocs(this.dir, this.name.replaceAll("[^a-z0-9]", "/"));
     }
-
 }
