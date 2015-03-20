@@ -77,7 +77,11 @@ public final class MkDocs implements Docs {
         return Lists.transform(
             Lists.newArrayList(
                 FileUtils.listFiles(
-                    this.dir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE
+                    new File(
+                        this.dir,
+                        this.name
+                    ),
+                    TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE
                 )
             ),
             new Function<File, String>() {
