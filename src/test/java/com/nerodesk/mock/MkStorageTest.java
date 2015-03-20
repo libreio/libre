@@ -29,6 +29,7 @@
  */
 package com.nerodesk.mock;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -128,6 +129,25 @@ public final class MkStorageTest {
         MatcherAssert.assertThat(
             file.exists(),
             Matchers.equalTo(false)
+        );
+    }
+
+    /**
+     * MkStorage can calculate size of storage.
+     * @throws Exception If it fails.
+     */
+    @Test
+    public void calculatesSize() throws Exception {
+        final String root = this.temp.getRoot().getAbsolutePath();
+        final MkStorage storage = new MkStorage(root);
+        MatcherAssert.assertThat(
+            storage.size(),
+            Matchers.equalTo(0L)
+        );
+        storage.put("test", new ByteArrayInputStream(new byte[]{0}));
+        MatcherAssert.assertThat(
+            storage.size(),
+            Matchers.equalTo(1L)
         );
     }
 

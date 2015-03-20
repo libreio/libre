@@ -27,73 +27,28 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.mock;
+package com.nerodesk;
 
-import com.jcabi.aspects.Immutable;
-import com.nerodesk.Docs;
-import com.nerodesk.Storage;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import javax.validation.constraints.NotNull;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 /**
- * Mock file storage backed by local filesystem.
+ * Account docs.
  *
- * @author Paul Polishchuk (ppol@ua.fm)
+ * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @version $Id$
  * @since 0.1
  */
-@Immutable
-public final class MkStorage implements Storage, Docs {
+public interface Docs {
 
     /**
-     * Root path for the storage.
+     * Total amount of bytes stored in my account. This information
+     * would be useful and should be present in the top line of every page.
+     * @return Size of storage in bytes.
+     * @throws java.io.IOException If fails.
+     * @todo #48:30min This method is able to return total amount of bytes
+     *  stored in account. There is already existing implementation for mocked
+     *  storage (this interface is implemented by MkStorage). What is still
+     *  missing here is that we should display this value somehow for user.
      */
-    private final transient String root;
-
-    /**
-     * Default constructor.
-     */
-    public MkStorage() {
-        this("~/.nerodesk/storage");
-    }
-
-    /**
-     * Constructor with custom root path.
-     * @param rpath Path
-     */
-    public MkStorage(final String rpath) {
-        this.root = rpath;
-    }
-
-    @Override
-    public InputStream get(@NotNull final String path) throws IOException {
-        return Files.newInputStream(
-            FileSystems.getDefault().getPath(this.root, path)
-        );
-    }
-
-    @Override
-    public void put(final String path, final InputStream input) throws
-        IOException {
-        Files.write(
-            FileSystems.getDefault().getPath(this.root, path),
-            IOUtils.toByteArray(input)
-        );
-    }
-
-    @Override
-    public void delete(@NotNull final String path) throws IOException {
-        Files.delete(FileSystems.getDefault().getPath(this.root, path));
-    }
-
-    @Override
-    public long size() throws IOException {
-        return FileUtils.sizeOf(new File(this.root));
-    }
+    long size() throws IOException;
 }
