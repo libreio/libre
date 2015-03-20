@@ -27,76 +27,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.mock;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import com.nerodesk.om.Doc;
-import com.nerodesk.om.Docs;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 
 /**
- * Mocked version of docs.
+ * Nerodesk, tests.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @version $Id$
  * @since 0.2
  */
-@ToString
-@EqualsAndHashCode
-public final class MkDocs implements Docs {
-
-    /**
-     * Directory.
-     */
-    private final transient File dir;
-
-    /**
-     * URN.
-     */
-    private final transient String name;
-
-    /**
-     * Ctor.
-     * @param file Directory
-     * @param urn URN
-     */
-    public MkDocs(final File file, final String urn) {
-        this.dir = file;
-        this.name = urn;
-        this.dir.mkdirs();
-    }
-
-    @Override
-    public List<String> names() {
-        return Lists.transform(
-            Lists.newArrayList(
-                FileUtils.listFiles(
-                    this.dir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE
-                )
-            ),
-            new Function<File, String>() {
-                @Override
-                public String apply(final File input) {
-                    return input.getName();
-                }
-            }
-        );
-    }
-
-    @Override
-    public Doc doc(final String doc) {
-        return new MkDoc(this.dir, this.name, doc);
-    }
-
-    @Override
-    public long size() throws IOException {
-        return FileUtils.sizeOf(this.dir);
-    }
-}
+package com.nerodesk.om.mock;
