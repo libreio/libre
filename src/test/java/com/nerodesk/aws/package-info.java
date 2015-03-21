@@ -35,4 +35,4 @@
  * @version $Id$
  * @since 0.3
  */
-package com.nerodesk;
+package com.nerodesk.aws;

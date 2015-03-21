@@ -40,7 +40,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 /**
- * Tests for AwsBase
+ * Tests for AwsBase.
  *
  * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
@@ -49,6 +49,7 @@ import org.mockito.Mockito;
 public final class AwsBaseTest {
     /**
      * AwsBase can have users.
+     * @throws Exception In case of error.
      */
     @Test
     public void hasUser() throws Exception {
