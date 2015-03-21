@@ -68,6 +68,6 @@ public final class MkUser implements User {
 
     @Override
     public Docs docs() {
-        return new MkDocs(this.dir, this.name.replaceAll("[^a-z0-9]", "/"));
+        return new MkDocs(this.dir, this.name.replaceAll("[^a-z0-9]", "_"));
     }
 }
