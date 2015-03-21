@@ -30,8 +30,6 @@
 package com.nerodesk.om.mock;
 
 import java.io.File;
-import java.util.Arrays;
-import org.apache.commons.collections4.CollectionUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
@@ -40,7 +38,7 @@ import org.junit.rules.TemporaryFolder;
 
 /**
  * Tests for {@code MkDocs}.
- * @author Yuriy Alevohin(alevohin@mail.ru)
+ * @author Yuriy Alevohin (alevohin@mail.ru)
  * @version $Id$
  * @since 0.2
  */
@@ -58,10 +56,11 @@ public final class MkDocsTest {
      * @throws Exception If fails.
      */
     @Test
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public void returnsNames() throws Exception {
         final String user = "user";
-        final String[] files = new String[] {"c.txt", "a.txt", "b.txt"};
-        final File root = temp.newFolder();
+        final String[] files = new String[] {"a.txt", "b.txt"};
+        final File root = this.temp.newFolder();
         final MkDocs docs = new MkDocs(root, user);
         final File dir = this.folder(root, user);
         for (final String file : files) {
@@ -71,11 +70,8 @@ public final class MkDocsTest {
             );
         }
         MatcherAssert.assertThat(
-            CollectionUtils.isEqualCollection(
-                docs.names(),
-                Arrays.asList(files)
-            ),
-            Matchers.is(true)
+            docs.names(),
+            Matchers.contains(files)
         );
     }
 
@@ -87,7 +83,7 @@ public final class MkDocsTest {
     public void returnsExistedDoc() throws Exception {
         final String user = "user2";
         final String filename = "text.txt";
-        final File root = temp.newFolder();
+        final File root = this.temp.newFolder();
         final MkDocs docs = new MkDocs(root, user);
         final File dir = this.folder(root, user);
         new File(dir, filename).createNewFile();

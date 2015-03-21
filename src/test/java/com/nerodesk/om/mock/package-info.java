@@ -27,41 +27,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
-
-import com.nerodesk.om.Doc;
-import com.nerodesk.om.Docs;
-import com.nerodesk.om.mock.MkBase;
-import org.apache.commons.io.IOUtils;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
-import org.takes.rs.RsPrint;
 
 /**
- * Tests for {@code TkDelete}.
+ * Nerodesk, tests for mocks.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Yuriy Alevohin (alevohin@mail.ru)
  * @version $Id$
  * @since 0.2
  */
-public final class TkDeleteTest {
-
-    /**
-     * TkDelete can delete file.
-     * @throws Exception If fails.
-     */
-    @Test
-    public void deletesFile() throws Exception {
-        final Docs docs = new MkBase().user("urn:test:1").docs();
-        final String filename = "hey.txt";
-        final Doc doc = docs.doc(filename);
-        doc.write(IOUtils.toInputStream("hello, world!"));
-        MatcherAssert.assertThat(docs.names(), Matchers.contains(filename));
-        MatcherAssert.assertThat(
-            new RsPrint(new TkDelete(doc).act()).print(),
-            Matchers.startsWith("HTTP/1.1 303")
-        );
-        MatcherAssert.assertThat(docs.names(), Matchers.emptyIterable());
-    }
-}
+package com.nerodesk.om.mock;

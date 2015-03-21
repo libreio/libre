@@ -86,8 +86,11 @@ public final class MkDoc implements Doc {
     }
 
     @Override
-    public void delete() {
-        this.file().delete();
+    public void delete() throws IOException {
+        final File file = this.file();
+        if (!file.delete()) {
+            throw new IOException(String.format("Failed to delete %s", file));
+        }
     }
 
     @Override
