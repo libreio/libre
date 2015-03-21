@@ -29,13 +29,11 @@
  */
 package com.nerodesk.aws;
 
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.s3.Bucket;
-import com.jcabi.s3.Ocket;
 import com.jcabi.s3.mock.MkBucket;
-import com.nerodesk.om.aws.AwsDoc;
-import java.io.InputStream;
-import java.io.OutputStream;
+import com.nerodesk.om.aws.AwsDocs;
+import java.util.Arrays;
+import java.util.List;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
@@ -48,13 +46,13 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 /**
- * Tests for AwsDoc
+ * Tests for AwsDocs
  *
  * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
  * @since 0.3
  */
-public final class AwsDocTest {
+public final class AwsDocsTest {
     /**
      * A Bucket mock.
      */
@@ -70,68 +68,36 @@ public final class AwsDocTest {
     }
     
     /**
-     * AwsDoc can verify if it exists.
+     * AwsDocs can list file names.
      */
     @Test
-    public void exists() throws Exception {
-        final Ocket ocket = Mockito.mock(Ocket.class);
-        Mockito.when(this.bucket.ocket("doc2")).thenReturn(ocket);
-        Mockito.when(ocket.exists()).thenReturn(true);
+    public void listsFilenames() throws Exception {
+        final List<String> names = Arrays.asList("a", "b", "c");
+        Mockito.when(this.bucket.list(""))
+            .thenReturn(names);
         MatcherAssert.assertThat(
-            new AwsDoc(this.bucket, "doc1").exists(),
-            Matchers.is(false)
-        );
-        MatcherAssert.assertThat(
-            new AwsDoc(this.bucket, "doc2").exists(),
-            Matchers.is(true)
+            new AwsDocs(this.bucket).names(),
+            Matchers.equalTo(names)
         );
     }
     
     /**
-     * AwsDoc can delete itself.
-     * @throws Exception In case of error.
+     * AwsDocs can obtain an AwsDoc.
      */
     @Test
-    public void deletes() throws Exception {
-        new AwsDoc(this.bucket, "doc3").delete();
-        Mockito.verify(this.bucket).remove("doc3");
+    public void obtainsDoc() throws Exception {
+        MatcherAssert.assertThat(
+            new AwsDocs(this.bucket).doc("doc1"),
+            Matchers.notNullValue()
+        );
     }
 
-    /**
-     * AwsDoc can read itself to a OutputStream.
-     * @throws Exception In case of error.
-     */
-    @Test
-    public void reads() throws Exception {
-        final OutputStream output = Mockito.mock(OutputStream.class);
-        final Ocket ocket = Mockito.mock(Ocket.class);
-        Mockito.when(this.bucket.ocket("doc4")).thenReturn(ocket);
-        new AwsDoc(this.bucket, "doc4").read(output);
-        Mockito.verify(ocket).read(output);
-    }
-    
-    /**
-     * AwsDoc can write itself to a InputStream.
-     * @throws Exception In case of error.
-     */
-    @Test
-    public void writes() throws Exception {
-        final InputStream input = Mockito.mock(InputStream.class);
-        final Ocket ocket = Mockito.mock(Ocket.class);
-        Mockito.when(this.bucket.ocket("doc5")).thenReturn(ocket);
-        new AwsDoc(this.bucket, "doc5").write(input);
-        Mockito.verify(ocket).write(
-            Mockito.eq(input),
-            Mockito.any(ObjectMetadata.class)
-        );
-    }
-    
     /**
      * AwsBase can conform to the equals and hashCode contract.
      */
     @Test
     public void verifyEquality() {
-        EqualsVerifier.forClass(AwsDoc.class)
+        EqualsVerifier.forClass(AwsDocs.class)
             .suppress(Warning.TRANSIENT_FIELDS)
             .withPrefabValues(
                 Bucket.class,
