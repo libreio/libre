@@ -63,7 +63,7 @@ public final class AwsDocsTest {
      * Setup mocks.
      */
     @Before
-    public void setup() {
+    public void init() {
         MockitoAnnotations.initMocks(this);
     }
 
