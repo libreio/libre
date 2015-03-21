@@ -27,47 +27,49 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.aws;
+package com.nerodesk.aws;
 
 import com.jcabi.s3.Bucket;
-import com.nerodesk.om.Docs;
-import com.nerodesk.om.User;
-import lombok.EqualsAndHashCode;
+import com.jcabi.s3.mock.MkBucket;
+import com.nerodesk.om.aws.AwsUser;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
- * AWS-based version of User.
+ * Tests for AwsUser
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
  */
-@EqualsAndHashCode(of = { "bucket", "name" })
-public final class AwsUser implements User {
-
+public final class AwsUserTest {
     /**
-     * Bucket.
+     * AwsUser can obtain its user documents.
+     * @throws Exception in case of error.
      */
-    private final transient Bucket bucket;
-
-    /**
-     * URN of user.
-     */
-    private final transient String name;
-
-    /**
-     * Ctor.
-     * @param bkt Bucket
-     * @param urn URN of the user
-     */
-    public AwsUser(final Bucket bkt, final String urn) {
-        this.bucket = bkt;
-        this.name = urn;
-    }
-
-    @Override
-    public Docs docs() {
-        return new AwsDocs(
-            new Bucket.Prefixed(this.bucket, String.format("%s/", this.name))
+    @Test
+    public void obtainsDocs() throws Exception {
+        MatcherAssert.assertThat(
+            new AwsUser(Mockito.mock(Bucket.class), "user1").docs(),
+            Matchers.notNullValue()
         );
+    }
+    
+    /**
+     * AwsUser can conform to the equals and hashCode contract.
+     */
+    @Test
+    public void verifyEquality() {
+        EqualsVerifier.forClass(AwsUser.class)
+            .suppress(Warning.TRANSIENT_FIELDS)
+            .withPrefabValues(
+                Bucket.class,
+                new MkBucket("bucket1"),
+                new MkBucket("bucket2")
+            ).verify();
     }
 }

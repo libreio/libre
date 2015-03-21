@@ -93,7 +93,7 @@ public final class AwsDocsTest {
     }
 
     /**
-     * AwsBase can conform to the equals and hashCode contract.
+     * AwsDocs can conform to the equals and hashCode contract.
      */
     @Test
     public void verifyEquality() {
