@@ -208,6 +208,12 @@
             <artifactId>jcabi-matchers</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>nl.jqno.equalsverifier</groupId>
+            <artifactId>equalsverifier</artifactId>
+            <version>1.5.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -375,12 +381,7 @@
                                  raise it back to 50.
                                 -->
                                 <totalBranchRate>5</totalBranchRate>
-                                <!--
-                                @todo #63:30min Line coverage is intentionally lowered here,
-                                 in order to get version 0.2 out of the door. Let's
-                                 raise it back to 75.
-                                -->
-                                <totalLineRate>40</totalLineRate>
+                                <totalLineRate>75</totalLineRate>
                             </check>
                         </configuration>
                         <executions>

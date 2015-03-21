@@ -27,38 +27,48 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.aws;
+package com.nerodesk.aws;
 
 import com.jcabi.s3.Bucket;
-import com.nerodesk.om.Base;
-import com.nerodesk.om.User;
-import lombok.EqualsAndHashCode;
+import com.jcabi.s3.mock.MkBucket;
+import com.nerodesk.om.aws.AwsBase;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
- * AWS-based version of Base.
+ * Tests for AwsBase
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
  */
-@EqualsAndHashCode(of = "bucket")
-public final class AwsBase implements Base {
-
+public class AwsBaseTest {
     /**
-     * Bucket.
+     * AwsBase can have users.
      */
-    private final transient Bucket bucket;
-
-    /**
-     * Ctor.
-     * @param bkt Bucket
-     */
-    public AwsBase(final Bucket bkt) {
-        this.bucket = bkt;
+    @Test
+    public void hasUser() throws Exception {
+        MatcherAssert.assertThat(
+            new AwsBase(Mockito.mock(Bucket.class)).user("urn"),
+            Matchers.notNullValue()
+        );
     }
 
-    @Override
-    public User user(final String urn) {
-        return new AwsUser(this.bucket, urn);
+    /**
+     * AwsBase can conform to the equals and hashCode contract.
+     */
+    @Test
+    public void verifyEquality() {
+        EqualsVerifier.forClass(AwsBase.class)
+            .suppress(Warning.TRANSIENT_FIELDS)
+            .withPrefabValues(
+                Bucket.class,
+                new MkBucket("bucket1"),
+                new MkBucket("bucket2")
+            ).verify();
     }
 }
