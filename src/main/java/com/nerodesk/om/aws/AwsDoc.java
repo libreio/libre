@@ -39,7 +39,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /**
  * AWS-based version of Doc.

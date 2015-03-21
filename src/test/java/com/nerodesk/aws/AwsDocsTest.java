@@ -46,7 +46,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 /**
- * Tests for AwsDocs
+ * Tests for AwsDocs.
  *
  * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
@@ -56,9 +56,9 @@ public final class AwsDocsTest {
     /**
      * A Bucket mock.
      */
-    @Mock(answer=Answers.RETURNS_MOCKS)
+    @Mock(answer = Answers.RETURNS_MOCKS)
     private transient Bucket bucket;
-    
+
     /**
      * Setup mocks.
      */
@@ -66,9 +66,10 @@ public final class AwsDocsTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
     }
-    
+
     /**
      * AwsDocs can list file names.
+     * @throws Exception in case of error.
      */
     @Test
     public void listsFilenames() throws Exception {
@@ -80,9 +81,10 @@ public final class AwsDocsTest {
             Matchers.equalTo(names)
         );
     }
-    
+
     /**
      * AwsDocs can obtain an AwsDoc.
+     * @throws Exception in case of error.
      */
     @Test
     public void obtainsDoc() throws Exception {

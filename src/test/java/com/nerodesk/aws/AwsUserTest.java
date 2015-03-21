@@ -40,7 +40,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 /**
- * Tests for AwsUser
+ * Tests for AwsUser.
  *
  * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
@@ -58,7 +58,7 @@ public final class AwsUserTest {
             Matchers.notNullValue()
         );
     }
-    
+
     /**
      * AwsUser can conform to the equals and hashCode contract.
      */

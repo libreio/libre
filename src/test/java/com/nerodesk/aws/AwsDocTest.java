@@ -48,7 +48,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 /**
- * Tests for AwsDoc
+ * Tests for AwsDoc.
  *
  * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
@@ -58,9 +58,9 @@ public final class AwsDocTest {
     /**
      * A Bucket mock.
      */
-    @Mock(answer=Answers.RETURNS_MOCKS)
+    @Mock(answer = Answers.RETURNS_MOCKS)
     private transient Bucket bucket;
-    
+
     /**
      * Setup mocks.
      */
@@ -68,33 +68,36 @@ public final class AwsDocTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
     }
-    
+
     /**
      * AwsDoc can verify if it exists.
+     * @throws Exception in case of error.
      */
     @Test
     public void exists() throws Exception {
         final Ocket ocket = Mockito.mock(Ocket.class);
-        Mockito.when(this.bucket.ocket("doc2")).thenReturn(ocket);
+        final String label = "document-label";
+        Mockito.when(this.bucket.ocket(label)).thenReturn(ocket);
         Mockito.when(ocket.exists()).thenReturn(true);
         MatcherAssert.assertThat(
-            new AwsDoc(this.bucket, "doc1").exists(),
+            new AwsDoc(this.bucket, "non-existant-document").exists(),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
-            new AwsDoc(this.bucket, "doc2").exists(),
+            new AwsDoc(this.bucket, label).exists(),
             Matchers.is(true)
         );
     }
-    
+
     /**
      * AwsDoc can delete itself.
      * @throws Exception In case of error.
      */
     @Test
     public void deletes() throws Exception {
-        new AwsDoc(this.bucket, "doc3").delete();
-        Mockito.verify(this.bucket).remove("doc3");
+        final String label = "document-to-delete";
+        new AwsDoc(this.bucket, label).delete();
+        Mockito.verify(this.bucket).remove(label);
     }
 
     /**
@@ -103,29 +106,31 @@ public final class AwsDocTest {
      */
     @Test
     public void reads() throws Exception {
+        final String label = "document-to-read";
         final OutputStream output = Mockito.mock(OutputStream.class);
         final Ocket ocket = Mockito.mock(Ocket.class);
-        Mockito.when(this.bucket.ocket("doc4")).thenReturn(ocket);
-        new AwsDoc(this.bucket, "doc4").read(output);
+        Mockito.when(this.bucket.ocket(label)).thenReturn(ocket);
+        new AwsDoc(this.bucket, label).read(output);
         Mockito.verify(ocket).read(output);
     }
-    
+
     /**
      * AwsDoc can write itself to a InputStream.
      * @throws Exception In case of error.
      */
     @Test
     public void writes() throws Exception {
+        final String label = "document-to-write";
         final InputStream input = Mockito.mock(InputStream.class);
         final Ocket ocket = Mockito.mock(Ocket.class);
-        Mockito.when(this.bucket.ocket("doc5")).thenReturn(ocket);
-        new AwsDoc(this.bucket, "doc5").write(input);
+        Mockito.when(this.bucket.ocket(label)).thenReturn(ocket);
+        new AwsDoc(this.bucket, label).write(input);
         Mockito.verify(ocket).write(
             Mockito.eq(input),
             Mockito.any(ObjectMetadata.class)
         );
     }
-    
+
     /**
      * AwsDoc can conform to the equals and hashCode contract.
      */
