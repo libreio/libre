@@ -27,40 +27,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.aws;
-
-import com.jcabi.s3.Bucket;
-import com.nerodesk.om.Base;
-import com.nerodesk.om.User;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /**
- * AWS-based version of Base.
+ * Nerodesk object model mock tests.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
  * @since 0.2
  */
-@ToString
-@EqualsAndHashCode(of = "bucket")
-public final class AwsBase implements Base {
-
-    /**
-     * Bucket.
-     */
-    private final transient Bucket bucket;
-
-    /**
-     * Ctor.
-     * @param bkt Bucket
-     */
-    public AwsBase(final Bucket bkt) {
-        this.bucket = bkt;
-    }
-
-    @Override
-    public User user(final String urn) {
-        return new AwsUser(this.bucket, urn);
-    }
-}
+package com.nerodesk.om.mock;

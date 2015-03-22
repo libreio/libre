@@ -29,38 +29,24 @@
  */
 package com.nerodesk.om.aws;
 
-import com.jcabi.s3.Bucket;
-import com.nerodesk.om.Base;
-import com.nerodesk.om.User;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
+import org.junit.Test;
 
 /**
- * AWS-based version of Base.
+ * Tests for {@link AwsDoc}.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
- * @since 0.2
  */
-@ToString
-@EqualsAndHashCode(of = "bucket")
-public final class AwsBase implements Base {
-
+public final class AwsDocTest {
     /**
-     * Bucket.
+     * AwsDoc conforms to equals and hashCode contract.
      */
-    private final transient Bucket bucket;
-
-    /**
-     * Ctor.
-     * @param bkt Bucket
-     */
-    public AwsBase(final Bucket bkt) {
-        this.bucket = bkt;
-    }
-
-    @Override
-    public User user(final String urn) {
-        return new AwsUser(this.bucket, urn);
+    @Test
+    public void conformsToEqualsHashCodeContract() {
+        EqualsVerifier.forClass(AwsDoc.class)
+            .suppress(Warning.TRANSIENT_FIELDS)
+            .verify();
     }
 }
