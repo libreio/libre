@@ -116,7 +116,7 @@ public final class MkDocTest {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         new MkDoc(file, "", "").read(stream);
         MatcherAssert.assertThat(
-            new String(stream.toByteArray()),
+            new String(stream.toByteArray(), StandardCharsets.UTF_8),
             Matchers.equalTo(content)
         );
     }
