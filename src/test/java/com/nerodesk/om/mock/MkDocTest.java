@@ -46,6 +46,7 @@ import org.junit.rules.TemporaryFolder;
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
+ * @since 0.3
  */
 public final class MkDocTest {
     /**
@@ -73,7 +74,7 @@ public final class MkDocTest {
      * @throws IOException In case of error
      */
     @Test
-    public void existsReturnsTrueForMissingFile() throws IOException {
+    public void existsReturnsTrueForExistingFile() throws IOException {
         final File file = new File(this.folder.newFolder(), "bar");
         MatcherAssert.assertThat(
             file.createNewFile(),
@@ -111,7 +112,7 @@ public final class MkDocTest {
     public void readsFromFile() throws IOException {
         final File file = new File(this.folder.newFolder(), "readable");
         final String content = "read";
-        Files.write(content.getBytes(), file);
+        Files.write(content.getBytes(StandardCharsets.UTF_8), file);
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         new MkDoc(file, "", "").read(stream);
         MatcherAssert.assertThat(
