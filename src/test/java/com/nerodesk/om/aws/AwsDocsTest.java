@@ -36,6 +36,8 @@ import com.nerodesk.om.Docs;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -44,11 +46,21 @@ import org.mockito.Mockito;
 /**
  * Tests for {@link AwsDocs}.
  *
- * @author Felipe Pina (felipe.pina@protonmail.com)
+ * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
  * @since 0.3
  */
 public final class AwsDocsTest {
+
+    /**
+     * AwsDocs conforms to equals and hashCode contract.
+     */
+    @Test
+    public void conformsToEqualsHashCodeContract() {
+        EqualsVerifier.forClass(AwsDocs.class)
+            .suppress(Warning.TRANSIENT_FIELDS)
+            .verify();
+    }
 
     /**
      * AwsDocs can list all docs.

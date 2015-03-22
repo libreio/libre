@@ -29,9 +29,9 @@
  */
 
 /**
- * Tests for Object model, AWS.
+ * Nerodesk object model AWS tests.
  *
- * @author Felipe Pina (felipe.pina@protonmail.com)
+ * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
  * @since 0.3
  */
