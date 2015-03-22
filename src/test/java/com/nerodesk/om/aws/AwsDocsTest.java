@@ -53,6 +53,16 @@ import org.mockito.Mockito;
 public final class AwsDocsTest {
 
     /**
+     * Doc that exists.
+     */
+    private static final String EXISTS = "EXISTS";
+
+    /**
+     * Doc that does not exist.
+     */
+    private static final String INEXISTENT = "INEXISTENT";
+
+    /**
      * AwsDocs conforms to equals and hashCode contract.
      */
     @Test
@@ -86,11 +96,11 @@ public final class AwsDocsTest {
         final Bucket bucket = this.mockBucket();
         final Docs docs = new AwsDocs(bucket);
         MatcherAssert.assertThat(
-            docs.doc("A").exists(),
+            docs.doc(AwsDocsTest.EXISTS).exists(),
             Matchers.equalTo(true)
         );
         MatcherAssert.assertThat(
-            docs.doc("C").exists(),
+            docs.doc(AwsDocsTest.INEXISTENT).exists(),
             Matchers.equalTo(false)
         );
     }
@@ -102,7 +112,7 @@ public final class AwsDocsTest {
      */
     private Bucket mockBucket() throws IOException {
         final Bucket bucket = Mockito.mock(Bucket.class);
-        final String[] docs = {"A", "B"};
+        final String[] docs = {AwsDocsTest.EXISTS};
         Mockito.doReturn(Arrays.asList(docs)).when(bucket)
             .list(org.mockito.Matchers.anyString());
         final Ocket exists = Mockito.mock(Ocket.class);
@@ -112,7 +122,7 @@ public final class AwsDocsTest {
         }
         final Ocket inexistent = Mockito.mock(Ocket.class);
         Mockito.doReturn(false).when(inexistent).exists();
-        Mockito.doReturn(inexistent).when(bucket).ocket("C");
+        Mockito.doReturn(inexistent).when(bucket).ocket(AwsDocsTest.INEXISTENT);
         return bucket;
     }
 
