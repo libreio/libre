@@ -46,9 +46,6 @@ import org.takes.http.FtCLI;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.1
- * @todo #14:30min Add exception handling to return 404
- *  when resource not available. Now we show not nice stacktrace.
- *  Don't forget about unit tests.
  */
 public final class Launch {
 

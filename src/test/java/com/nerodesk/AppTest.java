@@ -130,7 +130,14 @@ public final class AppTest {
                         .as(RestResponse.class)
                         .assertStatus(HttpURLConnection.HTTP_OK)
                         .assertBody(
-                            Matchers.startsWith("oops, something went wrong!")
+                            Matchers.allOf(
+                                Matchers.startsWith(
+                                    "oops, something went wrong!"
+                            ),
+                                Matchers.containsString(
+                                    "java.util.NoSuchElementException"
+                            )
+                        )
                     );
                 }
             }

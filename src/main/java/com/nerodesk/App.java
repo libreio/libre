@@ -29,12 +29,14 @@
  */
 package com.nerodesk;
 
+import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import com.jcabi.manifests.Manifests;
 import com.nerodesk.om.Base;
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.takes.Request;
 import org.takes.Take;
 import org.takes.Takes;
@@ -51,6 +53,8 @@ import org.takes.facets.auth.codecs.CcSafe;
 import org.takes.facets.auth.codecs.CcSalted;
 import org.takes.facets.auth.codecs.CcXOR;
 import org.takes.facets.auth.social.PsFacebook;
+import org.takes.facets.fallback.Fallback;
+import org.takes.facets.fallback.RqFallback;
 import org.takes.facets.fallback.TsFallback;
 import org.takes.facets.flash.TsFlash;
 import org.takes.facets.fork.FkAnonymous;
@@ -216,7 +220,18 @@ public final class App extends TsWrap {
                     }
                 )
             ),
-            new TkHTML("oops, something went wrong!")
+            new Fallback() {
+                @Override
+                public Take take(final RqFallback req) {
+                    final String exc = ExceptionUtils.getStackTrace(
+                        req.throwable()
+                    );
+                    Logger.info(this, "Exception thrown\n%s", exc);
+                    return new TkHTML(
+                        String.format("oops, something went wrong!\n%s", exc)
+                    );
+                }
+            }
         );
         return new TsFlash(App.auth(fork));
     }
