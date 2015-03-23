@@ -29,17 +29,30 @@
  */
 package com.nerodesk.om.aws;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.jcabi.s3.Bucket;
+import com.jcabi.s3.Ocket;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Tests for {@link AwsDoc}.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
+ * @since 0.3
  */
 public final class AwsDocTest {
+
     /**
      * AwsDoc conforms to equals and hashCode contract.
      */
@@ -49,4 +62,67 @@ public final class AwsDocTest {
             .suppress(Warning.TRANSIENT_FIELDS)
             .verify();
     }
+
+    /**
+     * AwsDoc can report its existence.
+     * @throws IOException If unsuccessful.
+     */
+    @Test
+    public void reportsExistence() throws IOException {
+        final Bucket bucket = Mockito.mock(Bucket.class);
+        final Ocket ocket = Mockito.mock(Ocket.class);
+        Mockito.doReturn(true).when(ocket).exists();
+        final String label = "exists";
+        Mockito.doReturn(ocket).when(bucket).ocket(label);
+        MatcherAssert.assertThat(
+            new AwsDoc(bucket, label).exists(),
+            Matchers.equalTo(ocket.exists())
+        );
+    }
+
+    /**
+     * AwsDoc can delete itself.
+     * @throws IOException If unsuccessful.
+     */
+    @Test
+    public void deletes() throws IOException {
+        final Bucket bucket = Mockito.mock(Bucket.class);
+        final String label = "deletes";
+        new AwsDoc(bucket, label).delete();
+        Mockito.verify(bucket).remove(label);
+    }
+
+    /**
+     * AwsDoc can read into an OutputStream.
+     * @throws IOException If unsuccessful.
+     */
+    @Test
+    public void reads() throws IOException {
+        final Bucket bucket = Mockito.mock(Bucket.class);
+        final Ocket ocket = Mockito.mock(Ocket.class);
+        final String label = "reads";
+        Mockito.doReturn(ocket).when(bucket).ocket(label);
+        final OutputStream out = new ByteArrayOutputStream();
+        new AwsDoc(bucket, label).read(out);
+        Mockito.verify(ocket).read(out);
+    }
+
+    /**
+     * AwsDoc can write from an InputStream.
+     * @throws IOException If unsuccessful.
+     */
+    @Test
+    public void writes() throws IOException {
+        final Bucket bucket = Mockito.mock(Bucket.class);
+        final Ocket ocket = Mockito.mock(Ocket.class);
+        final String label = "writes";
+        Mockito.doReturn(ocket).when(bucket).ocket(label);
+        final InputStream input = new ByteArrayInputStream(new byte[0]);
+        new AwsDoc(bucket, label).write(input);
+        Mockito.verify(ocket).write(
+            org.mockito.Matchers.eq(input),
+            org.mockito.Matchers.any(ObjectMetadata.class)
+        );
+    }
+
 }
