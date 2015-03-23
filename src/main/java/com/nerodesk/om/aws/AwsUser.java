@@ -43,7 +43,7 @@ import lombok.ToString;
  * @since 0.2
  */
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(of = { "bucket", "name" })
 public final class AwsUser implements User {
 
     /**

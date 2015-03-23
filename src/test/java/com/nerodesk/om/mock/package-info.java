@@ -29,7 +29,7 @@
  */
 
 /**
- * Nerodesk mock tests.
+ * Nerodesk object model mock tests.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
