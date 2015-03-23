@@ -85,6 +85,7 @@ public final class AppTest {
      * Launches web server on random port.
      * @throws Exception If fails
      */
+    @Ignore
     @Test
     public void launchesOnRandomPort() throws Exception {
         final App app = new App(new MkBase());
