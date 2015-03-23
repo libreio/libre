@@ -30,27 +30,71 @@
 package com.nerodesk.om.mock;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * This provides tests for {@link com.nerodesk.om.mock.MkDocs}
- *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
+ * Tests for {@code MkDocs}.
+ * @author Yuriy Alevohin (alevohin@mail.ru)
  * @version $Id$
  * @since 0.2
  */
 public final class MkDocsTest {
 
     /**
-     * Temp directory.
+     * Temporary folder.
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @Rule
     public final transient TemporaryFolder temp = new TemporaryFolder();
+
+    /**
+     * MkDocs can return a list of docs.
+     * @throws Exception If fails.
+     * @todo 90:30min MkDocs creates files in directory
+     *  `new File(this.dir, this.user)` (see MkDoc). Method `names`
+     *  receives file's list from another directory (just dir). Don't
+     *  forget remove @Ignore after fix.
+     * @todo 90:30min Add test for MkDocs.names() to check that files
+     *  from one user don't fall into the list of files of another user.
+     * @todo 90:30min Add test for MkDocs.names() for several files
+     *  in several folders. For example, urn/test/1/foo/1.txt and
+     *  urn/test/1/bar/1.txt should both fall into the result. Username
+     *  for test should be like "urn:test:1".
+     */
+    @Test
+    @Ignore
+    public void returnsNames() throws Exception {
+        final String[] files = new String[] {"a.txt", "b.txt"};
+        final MkDocs docs = new MkDocs(this.temp.newFolder(), "user1");
+        for (final String file : files) {
+            docs.doc(file).write(IOUtils.toInputStream("content1"));
+        }
+        MatcherAssert.assertThat(
+            docs.names(),
+            Matchers.contains(files)
+        );
+    }
+
+    /**
+     * MkDocs can return existing Doc.
+     * @throws Exception If fails.
+     */
+    @Test
+    public void returnsExistingDoc() throws Exception {
+        final MkDocs docs = new MkDocs(this.temp.newFolder(), "user2");
+        final String filename = "test2";
+        docs.doc(filename).write(IOUtils.toInputStream("content2"));
+        MatcherAssert.assertThat(
+            docs.doc(filename).exists(),
+            Matchers.is(true)
+        );
+    }
 
     /**
      * MkDocs can calculate size of storage.
