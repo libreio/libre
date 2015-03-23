@@ -29,7 +29,6 @@
  */
 package com.nerodesk.om.mock;
 
-import java.io.File;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -60,13 +59,18 @@ public final class MkDocsTest {
      *  `new File(this.dir, this.user)` (see MkDoc). Method `names`
      *  receives file's list from another directory (just dir). Don't
      *  forget remove @Ignore after fix.
+     * @todo 90:30min Add test for MkDocs.names() to check that files
+     *  from one user don't fall into the list of files of another user.
+     * @todo 90:30min Add test for MkDocs.names() for several files
+     *  in several folders. For example, urn/test/1/foo/1.txt and
+     *  urn/test/1/bar/1.txt should both fall into the result. Username
+     *  for test should be like "urn:test:1".
      */
     @Test
     @Ignore
     public void returnsNames() throws Exception {
         final String[] files = new String[] {"a.txt", "b.txt"};
-        final File root = this.temp.newFolder();
-        final MkDocs docs = new MkDocs(root, "user1");
+        final MkDocs docs = new MkDocs(this.temp.newFolder(), "user1");
         for (final String file : files) {
             docs.doc(file).write(IOUtils.toInputStream("content1"));
         }
@@ -77,13 +81,12 @@ public final class MkDocsTest {
     }
 
     /**
-     * MkDocs can return existed Doc.
+     * MkDocs can return existing Doc.
      * @throws Exception If fails.
      */
     @Test
-    public void returnsExistedDoc() throws Exception {
-        final File root = this.temp.newFolder();
-        final MkDocs docs = new MkDocs(root, "user2");
+    public void returnsExistingDoc() throws Exception {
+        final MkDocs docs = new MkDocs(this.temp.newFolder(), "user2");
         final String filename = "test2";
         docs.doc(filename).write(IOUtils.toInputStream("content2"));
         MatcherAssert.assertThat(
