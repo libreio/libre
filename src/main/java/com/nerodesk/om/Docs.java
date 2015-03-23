@@ -58,4 +58,15 @@ public interface Docs {
      */
     Doc doc(String name) throws IOException;
 
+    /**
+     * Total amount of bytes stored in my account. This information
+     * would be useful and should be present in the top line of every page.
+     * @return Size of storage in bytes.
+     * @throws java.io.IOException If fails.
+     * @todo #48:30min This method is able to return total amount of bytes
+     *  stored in account. There is already existing implementation for mocked
+     *  storage (this interface is implemented by MkStorage). What is still
+     *  missing here is that we should display this value somehow for user.
+     */
+    long size() throws IOException;
 }
