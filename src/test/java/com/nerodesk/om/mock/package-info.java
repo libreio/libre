@@ -29,10 +29,10 @@
  */
 
 /**
- * Nerodesk, tests for mocks.
+ * Nerodesk object model mock tests.
  *
- * @author Yuriy Alevohin (alevohin@mail.ru)
+ * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
  */
 package com.nerodesk.om.mock;

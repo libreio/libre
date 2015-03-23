@@ -46,7 +46,7 @@ import lombok.ToString;
  * @since 0.2
  */
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "bucket")
 public final class AwsDocs implements Docs {
 
     /**
