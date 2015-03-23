@@ -73,6 +73,7 @@ import org.takes.http.FtRemote;
  *  Let's start from proper tests. See example for partitioned write
  *  AppTest.uploadsBigFile()
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class AppTest {
 
     /**
