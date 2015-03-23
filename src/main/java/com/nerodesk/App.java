@@ -82,6 +82,10 @@ import org.takes.ts.TsWrap;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @checkstyle ExcessiveMethodLength (500 lines)
+ * @todo #68:30min Error page should be an HTML page with stacktrace.
+ *  See how it's done in Rultor (com.rultor.web.App.fallback).
+ *  This implies adding velocity template and some styles.
+ *  More details available in PR #99
  */
 @SuppressWarnings({
     "PMD.UseUtilityClass", "PMD.ExcessiveImports",
