@@ -74,6 +74,7 @@ import org.takes.http.FtRemote;
  *  Let's start from proper tests. See example for partitioned write
  *  AppTest.uploadsBigFile()
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class AppTest {
 
     /**
@@ -229,6 +230,38 @@ public final class AppTest {
     }
 
     /**
+     * Application can show error page.
+     * @throws Exception If fails
+     */
+    @Test
+    public void showsErrorPage() throws Exception {
+        final Base base = new MkBase();
+        final App app = new App(base);
+        new FtRemote(app).exec(
+            new FtRemote.Script() {
+                @Override
+                public void exec(final URI home) throws IOException {
+                    new JdkRequest(home)
+                        .uri().path("/d").back()
+                        .fetch()
+                        .as(RestResponse.class)
+                        .assertStatus(HttpURLConnection.HTTP_OK)
+                        .assertBody(
+                            Matchers.allOf(
+                                Matchers.startsWith(
+                                    "oops, something went wrong!"
+                            ),
+                                Matchers.containsString(
+                                    "java.util.NoSuchElementException"
+                            )
+                        )
+                    );
+                }
+            }
+        );
+    }
+
+    /**
      * Create request to add a file.
      * @param home URI home
      * @return Request
@@ -261,38 +294,6 @@ public final class AppTest {
             "",
             content,
             "--AaB03x--"
-        );
-    }
-
-    /**
-     * Application can show error page.
-     * @throws Exception If fails
-     */
-    @Test
-    public void showsErrorPage() throws Exception {
-        final Base base = new MkBase();
-        final App app = new App(base);
-        new FtRemote(app).exec(
-            new FtRemote.Script() {
-                @Override
-                public void exec(final URI home) throws IOException {
-                    new JdkRequest(home)
-                        .uri().path("/d").back()
-                        .fetch()
-                        .as(RestResponse.class)
-                        .assertStatus(HttpURLConnection.HTTP_OK)
-                        .assertBody(
-                            Matchers.allOf(
-                                Matchers.startsWith(
-                                    "oops, something went wrong!"
-                            ),
-                                Matchers.containsString(
-                                    "java.util.NoSuchElementException"
-                            )
-                        )
-                    );
-                }
-            }
         );
     }
 
