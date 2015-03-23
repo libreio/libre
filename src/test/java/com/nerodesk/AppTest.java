@@ -146,7 +146,7 @@ public final class AppTest {
     public void returnsBinaryContent() throws Exception {
         final Base base = new MkBase();
         final String name = "test.dat";
-        final byte[] content = new byte[]{'t', 'e', 's', 't'};
+        final byte[] content = new byte[]{0x00, 0x0a, (byte) 0xff, (byte) 0xfe};
         base.user(AppTest.FAKE_URN).docs().doc(name).write(
             new ByteArrayInputStream(content)
         );
