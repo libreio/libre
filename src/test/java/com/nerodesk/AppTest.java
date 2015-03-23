@@ -39,6 +39,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.http.FtRemote;
@@ -50,8 +51,7 @@ import org.takes.http.FtRemote;
  * @version $Id$
  * @since 0.2
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @todo #14:15min Application should be able to get binary file properly.
- *  Add a test to check it works and fix if doesn't.
+ * @checkstyle MultipleStringLiterals (500 lines)
  */
 public final class AppTest {
 
@@ -112,4 +112,33 @@ public final class AppTest {
         );
     }
 
+    /**
+     * Application can return file content in binary form.
+     * @throws Exception If something goes wrong
+     */
+    @Test
+    public void returnsBinaryContent() throws Exception {
+        final Base base = new MkBase();
+        final String name = "test.dat";
+        final byte[] content = new byte[]{'t', 'e', 's', 't'};
+        base.user("urn:test:1").docs().doc(name).write(
+            new ByteArrayInputStream(content)
+        );
+        new FtRemote(new App(base)).exec(
+            new FtRemote.Script() {
+                @Override
+                public void exec(final URI home) throws IOException {
+                    MatcherAssert.assertThat(
+                        new JdkRequest(home)
+                            .uri().path("/r").queryParam("f", name).back()
+                            .fetch()
+                            .as(RestResponse.class)
+                            .assertStatus(HttpURLConnection.HTTP_OK)
+                            .binary(),
+                        Matchers.is(content)
+                    );
+                }
+            }
+        );
+    }
 }
