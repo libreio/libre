@@ -221,7 +221,7 @@ public final class TsApp extends TsWrap {
         return new TsAuth(
             takes,
             new PsChain(
-                new PsFake(key.startsWith("XXXX")),
+                new PsFake(key.startsWith("XXXX") || key.startsWith("${")),
                 new PsByFlag(
                     new PsByFlag.Pair(
                         PsFacebook.class.getSimpleName(),
