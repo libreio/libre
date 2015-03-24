@@ -74,7 +74,7 @@ import org.takes.http.FtRemote;
  *  Let's start from proper tests. See example for partitioned write
  *  AppTest.uploadsBigFile()
  */
-public final class AppTest {
+public final class TsAppTest {
 
     /**
      * Fake URN.
@@ -87,7 +87,7 @@ public final class AppTest {
      */
     @Test
     public void launchesOnRandomPort() throws Exception {
-        final App app = new App(new MkBase());
+        final TsApp app = new TsApp(new MkBase());
         new FtRemote(app).exec(
             new FtRemote.Script() {
                 @Override
@@ -119,10 +119,10 @@ public final class AppTest {
     public void returnsFileContent() throws Exception {
         final Base base = new MkBase();
         final String name = "test.txt";
-        base.user(AppTest.FAKE_URN).docs().doc(name).write(
+        base.user(TsAppTest.FAKE_URN).docs().doc(name).write(
             new ByteArrayInputStream("hello, world!".getBytes())
         );
-        final App app = new App(base);
+        final TsApp app = new TsApp(base);
         new FtRemote(app).exec(
             new FtRemote.Script() {
                 @Override
@@ -147,14 +147,14 @@ public final class AppTest {
         final Base base = new MkBase();
         final String name = "small.txt";
         final String file = "uploaded by client";
-        new FtRemote(new App(base)).exec(
+        new FtRemote(new TsApp(base)).exec(
             new FtRemote.Script() {
                 @Override
                 public void exec(final URI home) throws IOException {
-                    AppTest.write(home)
+                    TsAppTest.write(home)
                         .fetch(
                             new ByteArrayInputStream(
-                                AppTest.multipart(name, file).getBytes()
+                                TsAppTest.multipart(name, file).getBytes()
                             )
                         )
                         .as(RestResponse.class)
@@ -163,7 +163,7 @@ public final class AppTest {
             }
         );
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        base.user(AppTest.FAKE_URN).docs().doc(name).read(stream);
+        base.user(TsAppTest.FAKE_URN).docs().doc(name).read(stream);
         MatcherAssert.assertThat(
             IOUtils.toString(stream.toByteArray(), Charsets.UTF_8.name()),
             Matchers.containsString(file)
@@ -193,14 +193,14 @@ public final class AppTest {
         final Base base = new MkBase();
         final String name = "large.txt";
         final String file = "123451234512345";
-        new FtRemote(new App(base)).exec(
+        new FtRemote(new TsApp(base)).exec(
             // @checkstyle AnonInnerLengthCheck (30 lines)
             new FtRemote.Script() {
                 @Override
                 public void exec(final URI home) throws IOException {
                     int pos = 0;
                     while (pos < file.length() - 1) {
-                        AppTest.write(home)
+                        TsAppTest.write(home)
                             .header(
                                 HttpHeaders.CONTENT_RANGE,
                                 String.format(
@@ -210,7 +210,7 @@ public final class AppTest {
                             )
                             .fetch(
                                 new ByteArrayInputStream(
-                                    AppTest.multipart(name, file).getBytes()
+                                    TsAppTest.multipart(name, file).getBytes()
                                 )
                             )
                             .as(RestResponse.class)
@@ -221,7 +221,7 @@ public final class AppTest {
             }
         );
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        base.user(AppTest.FAKE_URN).docs().doc(name).read(stream);
+        base.user(TsAppTest.FAKE_URN).docs().doc(name).read(stream);
         MatcherAssert.assertThat(
             IOUtils.toString(stream.toByteArray(), Charsets.UTF_8.name()),
             Matchers.containsString(file)

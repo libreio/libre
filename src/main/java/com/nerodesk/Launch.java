@@ -80,7 +80,7 @@ public final class Launch {
      */
     public void exec() throws IOException {
         new FtCLI(
-            new App(Launch.base()),
+            new TsApp(Launch.base()),
             this.arguments
         ).start(Exit.NEVER);
     }
