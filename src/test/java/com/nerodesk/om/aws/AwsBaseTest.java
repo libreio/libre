@@ -29,24 +29,47 @@
  */
 package com.nerodesk.om.aws;
 
+import com.jcabi.s3.Bucket;
+import com.jcabi.s3.mock.MkBucket;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
- * Tests for {@link AwsBase}.
+ * Tests for AwsBase.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
+ * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
+ * @since 0.3
  */
 public final class AwsBaseTest {
     /**
-     * AwsBase conforms to equals and hashCode contract.
+     * AwsBase can have users.
+     * @throws Exception In case of error.
      */
     @Test
-    public void conformsToEqualsHashCodeContract() {
+    public void hasUser() throws Exception {
+        MatcherAssert.assertThat(
+            new AwsBase(Mockito.mock(Bucket.class)).user("urn"),
+            Matchers.notNullValue()
+        );
+    }
+
+    /**
+     * AwsBase can conform to the equals and hashCode contract.
+     */
+    @Test
+    public void verifyEquality() {
         EqualsVerifier.forClass(AwsBase.class)
             .suppress(Warning.TRANSIENT_FIELDS)
-            .verify();
+            .withPrefabValues(
+                Bucket.class,
+                new MkBucket("bucket1"),
+                new MkBucket("bucket2")
+            ).verify();
     }
 }

@@ -29,24 +29,82 @@
  */
 package com.nerodesk.om.aws;
 
+import com.jcabi.s3.Bucket;
+import com.jcabi.s3.mock.MkBucket;
+import java.util.Arrays;
+import java.util.List;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Answers;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 /**
- * Tests for {@link AwsDocs}.
+ * Tests for AwsDocs.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
+ * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
+ * @since 0.3
  */
 public final class AwsDocsTest {
     /**
-     * AwsDocs conforms to equals and hashCode contract.
+     * A Bucket mock.
+     */
+    @Mock(answer = Answers.RETURNS_MOCKS)
+    private transient Bucket bucket;
+
+    /**
+     * Setup mocks.
+     */
+    @Before
+    public void init() {
+        MockitoAnnotations.initMocks(this);
+    }
+
+    /**
+     * AwsDocs can list file names.
+     * @throws Exception in case of error.
      */
     @Test
-    public void conformsToEqualsHashCodeContract() {
+    public void listsFilenames() throws Exception {
+        final List<String> names = Arrays.asList("a", "b", "c");
+        Mockito.when(this.bucket.list(""))
+            .thenReturn(names);
+        MatcherAssert.assertThat(
+            new AwsDocs(this.bucket).names(),
+            Matchers.equalTo(names)
+        );
+    }
+
+    /**
+     * AwsDocs can obtain an AwsDoc.
+     * @throws Exception in case of error.
+     */
+    @Test
+    public void obtainsDoc() throws Exception {
+        MatcherAssert.assertThat(
+            new AwsDocs(this.bucket).doc("doc1"),
+            Matchers.notNullValue()
+        );
+    }
+
+    /**
+     * AwsDocs can conform to the equals and hashCode contract.
+     */
+    @Test
+    public void verifyEquality() {
         EqualsVerifier.forClass(AwsDocs.class)
             .suppress(Warning.TRANSIENT_FIELDS)
-            .verify();
+            .withPrefabValues(
+                Bucket.class,
+                new MkBucket("bucket1"),
+                new MkBucket("bucket2")
+            ).verify();
     }
 }
