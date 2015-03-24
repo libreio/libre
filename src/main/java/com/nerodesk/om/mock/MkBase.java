@@ -45,7 +45,7 @@ import lombok.ToString;
  * @since 0.2
  */
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "dir")
 public final class MkBase implements Base {
 
     /**

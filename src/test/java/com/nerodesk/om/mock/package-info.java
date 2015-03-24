@@ -27,54 +27,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.aws;
-
-import com.google.common.collect.Lists;
-import com.jcabi.s3.Bucket;
-import com.nerodesk.om.Doc;
-import com.nerodesk.om.Docs;
-import java.io.IOException;
-import java.util.List;
-import lombok.EqualsAndHashCode;
 
 /**
- * AWS-based version of Docs.
+ * Nerodesk object model mock tests.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
  */
-@EqualsAndHashCode(of = "bucket")
-public final class AwsDocs implements Docs {
-
-    /**
-     * Bucket.
-     */
-    private final transient Bucket bucket;
-
-    /**
-     * Ctor.
-     * @param bkt Bucket
-     */
-    public AwsDocs(final Bucket bkt) {
-        this.bucket = bkt;
-    }
-
-    @Override
-    public List<String> names() throws IOException {
-        return Lists.newArrayList(this.bucket.list(""));
-    }
-
-    @Override
-    public Doc doc(final String doc) {
-        return new AwsDoc(this.bucket, doc);
-    }
-
-    // @todo #48:30min This method should return valid size of aws document
-    //  storage. Currently is returning just dummy value. Remember to provide
-    //  test case for that also.
-    @Override
-    public long size() throws IOException {
-        return 0;
-    }
-}
+package com.nerodesk.om.mock;
