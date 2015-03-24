@@ -29,6 +29,7 @@
  */
 package com.nerodesk.om.mock;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -92,6 +93,27 @@ public final class MkDocsTest {
         MatcherAssert.assertThat(
             docs.doc(filename).exists(),
             Matchers.is(true)
+        );
+    }
+
+    /**
+     * MkDocs can calculate size of storage.
+     * @throws Exception If it fails.
+     */
+    @Test
+    public void calculatesSize() throws Exception {
+        final MkDocs docs = new MkDocs(this.temp.getRoot(), "1");
+        MatcherAssert.assertThat(
+            docs.size(),
+            Matchers.equalTo(0L)
+        );
+        FileUtils.writeByteArrayToFile(
+            this.temp.newFile("test1"),
+            new byte[]{0}
+        );
+        MatcherAssert.assertThat(
+            docs.size(),
+            Matchers.equalTo(1L)
         );
     }
 }

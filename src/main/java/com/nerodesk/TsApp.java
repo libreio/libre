@@ -91,15 +91,15 @@ import org.takes.ts.TsWrap;
     "PMD.UseUtilityClass", "PMD.ExcessiveImports",
     "PMD.ExcessiveMethodLength"
 })
-public final class App extends TsWrap {
+public final class TsApp extends TsWrap {
 
     /**
      * Ctor.
      * @param base Base
      * @throws IOException If something goes wrong.
      */
-    public App(final Base base) throws IOException {
-        super(App.make(base));
+    public TsApp(final Base base) throws IOException {
+        super(TsApp.make(base));
     }
 
     /**
@@ -237,7 +237,7 @@ public final class App extends TsWrap {
                 }
             }
         );
-        return new TsFlash(App.auth(fork));
+        return new TsFlash(TsApp.auth(fork));
     }
 
     /**
@@ -250,7 +250,7 @@ public final class App extends TsWrap {
         return new TsAuth(
             takes,
             new PsChain(
-                new PsFake(key.startsWith("XXXX")),
+                new PsFake(key.startsWith("XXXX") || key.startsWith("${")),
                 new PsByFlag(
                     new PsByFlag.Pair(
                         PsFacebook.class.getSimpleName(),

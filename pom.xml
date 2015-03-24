@@ -168,7 +168,7 @@
         <dependency>
             <groupId>org.takes</groupId>
             <artifactId>takes</artifactId>
-            <version>0.9.3</version>
+            <version>0.9.6</version>
         </dependency>
         <dependency>
             <groupId>com.restfb</groupId>

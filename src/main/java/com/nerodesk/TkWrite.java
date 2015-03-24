@@ -76,7 +76,7 @@ public final class TkWrite implements Take {
         ).printBody();
         this.docs.doc(name).write(multi.part("file").iterator().next().body());
         return new RsForward(
-            new RsFlash("file uploaded")
+            new RsFlash(String.format("file \"%s\" uploaded", name))
         );
     }
 
