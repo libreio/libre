@@ -80,7 +80,7 @@ public final class AwsDocTest {
         Mockito.when(this.bucket.ocket(label)).thenReturn(ocket);
         Mockito.when(ocket.exists()).thenReturn(true);
         MatcherAssert.assertThat(
-            new AwsDoc(this.bucket, "non-existant-document").exists(),
+            new AwsDoc(this.bucket, "non-existent-document").exists(),
             Matchers.is(false)
         );
         MatcherAssert.assertThat(
@@ -101,7 +101,7 @@ public final class AwsDocTest {
     }
 
     /**
-     * AwsDoc can read itself to a OutputStream.
+     * AwsDoc can read itself from an OutputStream.
      * @throws Exception In case of error.
      */
     @Test
@@ -115,7 +115,7 @@ public final class AwsDocTest {
     }
 
     /**
-     * AwsDoc can write itself to a InputStream.
+     * AwsDoc can write itself to an InputStream.
      * @throws Exception In case of error.
      */
     @Test
