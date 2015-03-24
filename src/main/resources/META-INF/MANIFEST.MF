@@ -1,5 +1,5 @@
 Main-Class: com.nerodesk.Launch
-Nerodesk-Revision: BUILD
+Nerodesk-Revision: ec31193
 Nerodesk-Version: ${project.version}
 Nerodesk-Date: ${timestamp}
 Nerodesk-FacebookId: ${fb.app}
