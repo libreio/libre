@@ -47,7 +47,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 /**
- * Tests for AwsDoc.
+ * Tests for {@link AwsDoc}.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @author Carlos Alexandro Becker (caarlos0@gmail.com)

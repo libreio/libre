@@ -39,7 +39,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 /**
- * Tests for AwsBase.
+ * Tests for {@link AwsBase}.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @author Carlos Alexandro Becker (caarlos0@gmail.com)
