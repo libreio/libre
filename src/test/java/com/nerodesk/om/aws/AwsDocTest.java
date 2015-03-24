@@ -32,7 +32,6 @@ package com.nerodesk.om.aws;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
-import com.jcabi.s3.mock.MkBucket;
 import java.io.InputStream;
 import java.io.OutputStream;
 import nl.jqno.equalsverifier.EqualsVerifier;
@@ -132,16 +131,12 @@ public final class AwsDocTest {
     }
 
     /**
-     * AwsDoc can conform to the equals and hashCode contract.
+     * AwsDoc conforms to equals and hashCode contract.
      */
     @Test
-    public void verifyEquality() {
+    public void conformsToEqualsHashCodeContract() {
         EqualsVerifier.forClass(AwsDoc.class)
             .suppress(Warning.TRANSIENT_FIELDS)
-            .withPrefabValues(
-                Bucket.class,
-                new MkBucket("bucket1"),
-                new MkBucket("bucket2")
-            ).verify();
+            .verify();
     }
 }

@@ -30,7 +30,6 @@
 package com.nerodesk.om.aws;
 
 import com.jcabi.s3.Bucket;
-import com.jcabi.s3.mock.MkBucket;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
@@ -60,16 +59,12 @@ public final class AwsBaseTest {
     }
 
     /**
-     * AwsBase can conform to the equals and hashCode contract.
+     * AwsBase conforms to equals and hashCode contract.
      */
     @Test
-    public void verifyEquality() {
+    public void conformsToEqualsHashCodeContract() {
         EqualsVerifier.forClass(AwsBase.class)
             .suppress(Warning.TRANSIENT_FIELDS)
-            .withPrefabValues(
-                Bucket.class,
-                new MkBucket("bucket1"),
-                new MkBucket("bucket2")
-            ).verify();
+            .verify();
     }
 }
