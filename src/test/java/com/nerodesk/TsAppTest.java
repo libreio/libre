@@ -236,8 +236,7 @@ public final class TsAppTest {
     @Test
     public void showsErrorPage() throws Exception {
         final Base base = new MkBase();
-        final App app = new App(base);
-        new FtRemote(app).exec(
+        new FtRemote(new TsApp(base)).exec(
             new FtRemote.Script() {
                 @Override
                 public void exec(final URI home) throws IOException {
