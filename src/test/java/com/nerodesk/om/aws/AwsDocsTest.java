@@ -31,17 +31,17 @@ package com.nerodesk.om.aws;
 
 import com.google.common.collect.Lists;
 import com.jcabi.s3.Bucket;
-import com.jcabi.s3.Ocket;
+import com.jcabi.s3.mock.MkBucket;
 import com.nerodesk.om.Docs;
+import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * Tests for {@link AwsDocs}.
@@ -51,16 +51,6 @@ import org.mockito.Mockito;
  * @since 0.3
  */
 public final class AwsDocsTest {
-
-    /**
-     * Doc that exists.
-     */
-    private static final String EXISTS = "EXISTS";
-
-    /**
-     * Doc that does not exist.
-     */
-    private static final String INEXISTENT = "INEXISTENT";
 
     /**
      * AwsDocs conforms to equals and hashCode contract.
@@ -78,11 +68,10 @@ public final class AwsDocsTest {
      */
     @Test
     public void listsDocs() throws IOException {
-        final Bucket bucket = this.mockBucket();
-        final Docs docs = new AwsDocs(bucket);
+        final Bucket bucket = this.mockBucket("lists", "lists-exists");
         final List<String> expected = Lists.newArrayList(bucket.list(""));
         MatcherAssert.assertThat(
-            docs.names(),
+            new AwsDocs(bucket).names(),
             Matchers.equalTo(expected)
         );
     }
@@ -93,37 +82,34 @@ public final class AwsDocsTest {
      */
     @Test
     public void findsDoc() throws IOException {
-        final Bucket bucket = this.mockBucket();
+        final String exists = "finds-exists";
+        final Bucket bucket = this.mockBucket("finds", exists);
         final Docs docs = new AwsDocs(bucket);
         MatcherAssert.assertThat(
-            docs.doc(AwsDocsTest.EXISTS).exists(),
+            docs.doc(exists).exists(),
             Matchers.equalTo(true)
         );
         MatcherAssert.assertThat(
-            docs.doc(AwsDocsTest.INEXISTENT).exists(),
+            docs.doc("xyz").exists(),
             Matchers.equalTo(false)
         );
     }
 
     /**
      * Builds a mock Bucket.
+     * @param name Bucket name.
+     * @param exists Name of Ocket that exists.
      * @return The mock bucket.
      * @throws IOException If something goes wrong.
      */
-    private Bucket mockBucket() throws IOException {
-        final Bucket bucket = Mockito.mock(Bucket.class);
-        final String[] docs = {AwsDocsTest.EXISTS};
-        Mockito.doReturn(Arrays.asList(docs)).when(bucket)
-            .list(org.mockito.Matchers.anyString());
-        final Ocket exists = Mockito.mock(Ocket.class);
-        Mockito.doReturn(true).when(exists).exists();
-        for (final String label : docs) {
-            Mockito.doReturn(exists).when(bucket).ocket(label);
-        }
-        final Ocket inexistent = Mockito.mock(Ocket.class);
-        Mockito.doReturn(false).when(inexistent).exists();
-        Mockito.doReturn(inexistent).when(bucket).ocket(AwsDocsTest.INEXISTENT);
-        return bucket;
+    private Bucket mockBucket(final String name, final String exists)
+        throws IOException {
+        final TemporaryFolder folder = new TemporaryFolder();
+        folder.create();
+        final File sub = new File(folder.getRoot(), name);
+        assert sub.mkdir();
+        assert new File(sub, exists).createNewFile();
+        return new MkBucket(folder.getRoot(), name);
     }
 
 }
