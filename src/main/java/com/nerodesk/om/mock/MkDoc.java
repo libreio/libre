@@ -31,6 +31,7 @@ package com.nerodesk.om.mock;
 
 import com.jcabi.log.Logger;
 import com.nerodesk.om.Doc;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -48,10 +49,20 @@ import org.apache.commons.io.IOUtils;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
+ * @todo #89:30min Find a better way to check the file size to be written.
+ *  Now we have to copy bytes one by one (not a block copy) which is slow.
+ *  In future, server will receive big file sliced on partitions
+ *  from the client. In that case, the check for max size will be kind of
+ *  safe belt to don't get OOM on the server.
  */
 @ToString
 @EqualsAndHashCode
 public final class MkDoc implements Doc {
+
+    /**
+     * Maximum file/partition size.
+     */
+    private static final long MAX_FILE_SIZE = 10_000_000;
 
     /**
      * Directory.
@@ -101,7 +112,27 @@ public final class MkDoc implements Doc {
     public void write(final InputStream input) throws IOException {
         final File file = this.file();
         FileUtils.touch(file);
-        IOUtils.copy(input, new FileOutputStream(file));
+        try (
+            final OutputStream buffer = new BufferedOutputStream(
+                new FileOutputStream(file)
+            )
+        ) {
+            long written = 0L;
+            while (input.available() > 0) {
+                buffer.write(input.read());
+                ++written;
+                if (written > MkDoc.MAX_FILE_SIZE) {
+                    file.delete();
+                    throw new IllegalArgumentException(
+                        String.format(
+                            // @checkstyle LineLengthCheck (1 line)
+                            "Now you can't upload a file that is larger than %s bytes",
+                            MkDoc.MAX_FILE_SIZE
+                        )
+                    );
+                }
+            }
+        }
         Logger.info(this, "%s saved", file);
     }
 

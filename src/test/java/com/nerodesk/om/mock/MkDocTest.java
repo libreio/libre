@@ -35,6 +35,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
@@ -129,6 +130,25 @@ public final class MkDocTest {
     public void writesToFile() throws IOException {
         final File file = new File(this.folder.newFolder(), "writable");
         final String content = "store";
+        new MkDoc(file, "", "").write(
+            new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
+        );
+        MatcherAssert.assertThat(
+            Files.toString(file, StandardCharsets.UTF_8),
+            Matchers.equalTo(content)
+        );
+    }
+
+    /**
+     * MkDoc can throw exception if file is too big.
+     * @throws IOException In case of error
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void failsToWriteBigFile() throws IOException {
+        final File file = new File(
+            this.folder.newFolder(), "bif_file"
+        );
+        final String content = StringUtils.repeat('b', 10_000_001);
         new MkDoc(file, "", "").write(
             new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
         );
