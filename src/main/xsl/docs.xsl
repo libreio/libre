@@ -46,8 +46,11 @@
             <input name="file" type="file"/>
             <input name="upload" type="submit"/>
         </form>
+        <xsl:apply-templates select="docs"/>
+    </xsl:template>
+    <xsl:template match="docs[doc]">
         <ul>
-            <xsl:apply-templates select="docs/doc"/>
+            <xsl:apply-templates select="doc"/>
         </ul>
     </xsl:template>
     <xsl:template match="doc">
@@ -57,6 +60,25 @@
             <a href="{read}">read</a>
             <xsl:text> | </xsl:text>
             <a href="{delete}">delete</a>
+            <xsl:apply-templates select="friends"/>
+        </li>
+    </xsl:template>
+    <xsl:template match="friends[friend]">
+        <ul>
+            <xsl:apply-templates select="friend"/>
+            <li>
+                <form action="{../add-friend}" method="get">
+                    <input name="friend" placeholder="share with..."/>
+                    <input type="submit"/>
+                </form>
+            </li>
+        </ul>
+    </xsl:template>
+    <xsl:template match="friend">
+        <li>
+            <xsl:value-of select="name"/>
+            <xsl:text> </xsl:text>
+            <a href="{eject}">eject</a>
         </li>
     </xsl:template>
 </xsl:stylesheet>

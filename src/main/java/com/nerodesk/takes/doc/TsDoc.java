@@ -39,6 +39,7 @@ import org.takes.Takes;
 import org.takes.facets.auth.RqAuth;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TsFork;
+import org.takes.misc.Href;
 import org.takes.rq.RqHref;
 import org.takes.rq.RqMultipart;
 import org.takes.rq.RqPrint;
@@ -50,6 +51,9 @@ import org.takes.rq.RqPrint;
  * @version $Id$
  * @since 0.3
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @todo #103:30m/DEV Friend ejection is not implemented now. Let's create
+ *  new "take" TkEjectFriend and implement ejection there. Also, let's not
+ *  forget to create a unit test for it.
  */
 public final class TsDoc implements Takes {
 
@@ -69,8 +73,8 @@ public final class TsDoc implements Takes {
     @Override
     public Take route(final Request req) throws IOException {
         final String file;
-        final Iterator<String> param = new RqHref(req).href()
-            .param("file").iterator();
+        final Href href = new RqHref(req).href();
+        final Iterator<String> param = href.param("file").iterator();
         if (param.hasNext()) {
             file = param.next();
         } else {
@@ -90,6 +94,17 @@ public final class TsDoc implements Takes {
                     @Override
                     public Take route(final Request request) {
                         return new TkWrite(doc, req);
+                    }
+                }
+            ),
+            new FkRegex(
+                "/doc/add-friend",
+                new Takes() {
+                    @Override
+                    public Take route(final Request request) {
+                        return new TkAddFriend(
+                            doc, href.param("friend").iterator().next()
+                        );
                     }
                 }
             )
