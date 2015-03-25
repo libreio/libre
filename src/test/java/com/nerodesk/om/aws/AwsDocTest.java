@@ -29,20 +29,17 @@
  */
 package com.nerodesk.om.aws;
 
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.s3.Bucket;
-import com.jcabi.s3.Ocket;
+import com.jcabi.s3.mock.MkBucket;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * Tests for {@link AwsDoc}.
@@ -69,15 +66,9 @@ public final class AwsDocTest {
      */
     @Test
     public void reportsExistence() throws IOException {
-        final Bucket bucket = Mockito.mock(Bucket.class);
-        final Ocket ocket = Mockito.mock(Ocket.class);
-        Mockito.doReturn(true).when(ocket).exists();
         final String label = "exists";
-        Mockito.doReturn(ocket).when(bucket).ocket(label);
-        MatcherAssert.assertThat(
-            new AwsDoc(bucket, label).exists(),
-            Matchers.equalTo(ocket.exists())
-        );
+        final AwsDoc doc = this.createDoc(label, label);
+        MatcherAssert.assertThat(doc.exists(), Matchers.equalTo(true));
     }
 
     /**
@@ -86,10 +77,11 @@ public final class AwsDocTest {
      */
     @Test
     public void deletes() throws IOException {
-        final Bucket bucket = Mockito.mock(Bucket.class);
         final String label = "deletes";
-        new AwsDoc(bucket, label).delete();
-        Mockito.verify(bucket).remove(label);
+        final AwsDoc doc = this.createDoc(label, label);
+        MatcherAssert.assertThat(doc.exists(), Matchers.equalTo(true));
+        doc.delete();
+        MatcherAssert.assertThat(doc.exists(), Matchers.equalTo(false));
     }
 
     /**
@@ -98,13 +90,14 @@ public final class AwsDocTest {
      */
     @Test
     public void reads() throws IOException {
-        final Bucket bucket = Mockito.mock(Bucket.class);
-        final Ocket ocket = Mockito.mock(Ocket.class);
         final String label = "reads";
-        Mockito.doReturn(ocket).when(bucket).ocket(label);
-        final OutputStream out = new ByteArrayOutputStream();
-        new AwsDoc(bucket, label).read(out);
-        Mockito.verify(ocket).read(out);
+        final AwsDoc doc = this.createDoc(label, label);
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        doc.read(out);
+        MatcherAssert.assertThat(
+            new String(out.toByteArray()),
+            Matchers.equalTo(label)
+        );
     }
 
     /**
@@ -113,16 +106,35 @@ public final class AwsDocTest {
      */
     @Test
     public void writes() throws IOException {
-        final Bucket bucket = Mockito.mock(Bucket.class);
-        final Ocket ocket = Mockito.mock(Ocket.class);
         final String label = "writes";
-        Mockito.doReturn(ocket).when(bucket).ocket(label);
-        final InputStream input = new ByteArrayInputStream(new byte[0]);
-        new AwsDoc(bucket, label).write(input);
-        Mockito.verify(ocket).write(
-            org.mockito.Matchers.eq(input),
-            org.mockito.Matchers.any(ObjectMetadata.class)
-        );
+        final AwsDoc doc = this.createDoc(label, label);
+        MatcherAssert.assertThat(doc.exists(), Matchers.equalTo(true));
+    }
+
+    /**
+     * Constructs a mock bucket.
+     * @param name Bucket name.
+     * @throws IOException In case of failure.
+     */
+    private MkBucket mockBucket(final String name) throws IOException {
+        final TemporaryFolder folder = new TemporaryFolder();
+        folder.create();
+        return new MkBucket(folder.getRoot(), name);
+    }
+
+    /**
+     * Creates an AwsDoc with given contents inside of a mock bucket .
+     * @param name Doc name.
+     * @param contents Doc contents.
+     * @return The new AwsDoc.
+     * @throws IOException In case of failure.
+     */
+    private AwsDoc createDoc(final String name, final String contents)
+        throws IOException {
+        final Bucket bucket = this.mockBucket(name);
+        final AwsDoc doc = new AwsDoc(bucket, name);
+        doc.write(new ByteArrayInputStream(contents.getBytes()));
+        return doc;
     }
 
 }
