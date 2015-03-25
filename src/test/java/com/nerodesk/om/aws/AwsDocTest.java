@@ -29,17 +29,27 @@
  */
 package com.nerodesk.om.aws;
 
+import com.jcabi.s3.Bucket;
+import com.jcabi.s3.mock.MkBucket;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * Tests for {@link AwsDoc}.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
+ * @since 0.3
  */
 public final class AwsDocTest {
+
     /**
      * AwsDoc conforms to equals and hashCode contract.
      */
@@ -49,4 +59,83 @@ public final class AwsDocTest {
             .suppress(Warning.TRANSIENT_FIELDS)
             .verify();
     }
+
+    /**
+     * AwsDoc can report its existence.
+     * @throws IOException If unsuccessful.
+     */
+    @Test
+    public void reportsExistence() throws IOException {
+        final String label = "exists";
+        final AwsDoc doc = this.createDoc(label, label);
+        MatcherAssert.assertThat(doc.exists(), Matchers.equalTo(true));
+    }
+
+    /**
+     * AwsDoc can delete itself.
+     * @throws IOException If unsuccessful.
+     */
+    @Test
+    public void deletes() throws IOException {
+        final String label = "deletes";
+        final AwsDoc doc = this.createDoc(label, label);
+        MatcherAssert.assertThat(doc.exists(), Matchers.equalTo(true));
+        doc.delete();
+        MatcherAssert.assertThat(doc.exists(), Matchers.equalTo(false));
+    }
+
+    /**
+     * AwsDoc can read into an OutputStream.
+     * @throws IOException If unsuccessful.
+     */
+    @Test
+    public void reads() throws IOException {
+        final String label = "reads";
+        final AwsDoc doc = this.createDoc(label, label);
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        doc.read(out);
+        MatcherAssert.assertThat(
+            new String(out.toByteArray()),
+            Matchers.equalTo(label)
+        );
+    }
+
+    /**
+     * AwsDoc can write from an InputStream.
+     * @throws IOException If unsuccessful.
+     */
+    @Test
+    public void writes() throws IOException {
+        final String label = "writes";
+        final AwsDoc doc = this.createDoc(label, label);
+        MatcherAssert.assertThat(doc.exists(), Matchers.equalTo(true));
+    }
+
+    /**
+     * Constructs a mock bucket.
+     * @param name Bucket name.
+     * @throws IOException In case of failure.
+     * @return The mock bucket.
+     */
+    private MkBucket mockBucket(final String name) throws IOException {
+        final TemporaryFolder folder = new TemporaryFolder();
+        folder.create();
+        return new MkBucket(folder.getRoot(), name);
+    }
+
+    /**
+     * Creates an AwsDoc with given contents inside of a mock bucket .
+     * @param name Doc name.
+     * @param contents Doc contents.
+     * @return The new AwsDoc.
+     * @throws IOException In case of failure.
+     */
+    private AwsDoc createDoc(final String name, final String contents)
+        throws IOException {
+        final Bucket bucket = this.mockBucket(name);
+        final AwsDoc doc = new AwsDoc(bucket, name);
+        doc.write(new ByteArrayInputStream(contents.getBytes()));
+        return doc;
+    }
+
 }

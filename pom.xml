@@ -130,6 +130,10 @@
             <version>2.4</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
             <scope>runtime</scope>
@@ -150,11 +154,12 @@
         <dependency>
             <groupId>com.jcabi</groupId>
             <artifactId>jcabi-s3</artifactId>
+            <version>0.9</version>
         </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk</artifactId>
-            <version>1.7.13</version>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>1.9.8</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

@@ -74,6 +74,7 @@ import org.takes.http.FtRemote;
  *  Let's start from proper tests. See example for partitioned write
  *  AppTest.uploadsBigFile()
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class TsAppTest {
 
     /**
@@ -225,6 +226,28 @@ public final class TsAppTest {
         MatcherAssert.assertThat(
             IOUtils.toString(stream.toByteArray(), Charsets.UTF_8.name()),
             Matchers.containsString(file)
+        );
+    }
+
+    /**
+     * Application can show error page.
+     * @throws Exception If fails
+     */
+    @Test
+    public void showsErrorPage() throws Exception {
+        final Base base = new MkBase();
+        new FtRemote(new TsApp(base)).exec(
+            new FtRemote.Script() {
+                @Override
+                public void exec(final URI home) throws IOException {
+                    new JdkRequest(home)
+                        .uri().path("/page-is-absent").back()
+                        .fetch()
+                        .as(RestResponse.class)
+                        .assertStatus(HttpURLConnection.HTTP_OK)
+                        .assertBody(Matchers.startsWith("oops, something "));
+                }
+            }
         );
     }
 

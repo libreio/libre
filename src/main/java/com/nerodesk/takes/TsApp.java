@@ -29,6 +29,7 @@
  */
 package com.nerodesk.takes;
 
+import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import com.jcabi.manifests.Manifests;
 import com.nerodesk.om.Base;
@@ -36,6 +37,7 @@ import com.nerodesk.takes.doc.TsDoc;
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.takes.Request;
 import org.takes.Take;
 import org.takes.Takes;
@@ -53,6 +55,9 @@ import org.takes.facets.auth.codecs.CcSafe;
 import org.takes.facets.auth.codecs.CcSalted;
 import org.takes.facets.auth.codecs.CcXOR;
 import org.takes.facets.auth.social.PsFacebook;
+import org.takes.facets.fallback.Fallback;
+import org.takes.facets.fallback.RqFallback;
+import org.takes.facets.fallback.TsFallback;
 import org.takes.facets.flash.TsFlash;
 import org.takes.facets.fork.FkAnonymous;
 import org.takes.facets.fork.FkAuthenticated;
@@ -62,6 +67,7 @@ import org.takes.facets.fork.FkParams;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.Target;
 import org.takes.facets.fork.TsFork;
+import org.takes.tk.TkHTML;
 import org.takes.tk.TkRedirect;
 import org.takes.ts.TsClasspath;
 import org.takes.ts.TsFiles;
@@ -78,6 +84,10 @@ import org.takes.ts.TsWrap;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @checkstyle ExcessiveMethodLength (500 lines)
+ * @todo #68:30min Error page should be an HTML page with stacktrace.
+ *  See how it's done in Rultor (com.rultor.web.App.fallback).
+ *  This implies adding velocity template and some styles.
+ *  More details available in PR #99
  */
 @SuppressWarnings({
     "PMD.UseUtilityClass", "PMD.ExcessiveImports",
@@ -170,7 +180,30 @@ public final class TsApp extends TsWrap {
                 new TsSecure(new TsGreedy(new TsDoc(base)))
             )
         );
-        return new TsFlash(TsApp.auth(fork));
+        return TsApp.fallback(new TsFlash(TsApp.auth(fork)));
+    }
+
+    /**
+     * Fallback.
+     * @param takes Original takes
+     * @return Takes with fallback
+     */
+    private static Takes fallback(final Takes takes) {
+        return new TsFallback(
+            takes,
+            new Fallback() {
+                @Override
+                public Take take(final RqFallback req) {
+                    final String exc = ExceptionUtils.getStackTrace(
+                        req.throwable()
+                    );
+                    Logger.info(this, "Exception thrown\n%s", exc);
+                    return new TkHTML(
+                        String.format("oops, something went wrong!\n%s", exc)
+                    );
+                }
+            }
+        );
     }
 
     /**
