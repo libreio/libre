@@ -37,6 +37,7 @@ import org.takes.Response;
 import org.takes.Take;
 import org.takes.misc.Href;
 import org.takes.rq.RqHref;
+import org.takes.rs.xe.XeLink;
 import org.takes.rs.xe.XeSource;
 import org.xembly.Directive;
 import org.xembly.Directives;
@@ -76,6 +77,7 @@ public final class TkDocs implements Take {
         return new RsPage(
             "/xsl/docs.xsl",
             this.request,
+            new XeLink("upload", "/doc/write"),
             new XeSource() {
                 @Override
                 public Iterable<Directive> toXembly() throws IOException {

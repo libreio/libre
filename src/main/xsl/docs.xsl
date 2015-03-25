@@ -41,7 +41,8 @@
         <p>
             <xsl:text>My docs:</xsl:text>
         </p>
-        <form method="post" action="/w" enctype="multipart/form-data">
+        <form method="post" action="{links/link[@rel='upload']/@href}"
+            enctype="multipart/form-data">
             <input name="name"/>
             <input name="file" type="file"/>
             <input name="upload" type="submit"/>
@@ -63,7 +64,7 @@
             <xsl:apply-templates select="friends"/>
         </li>
     </xsl:template>
-    <xsl:template match="friends[friend]">
+    <xsl:template match="friends">
         <ul>
             <xsl:apply-templates select="friend"/>
             <li>
