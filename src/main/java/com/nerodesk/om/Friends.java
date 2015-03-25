@@ -27,40 +27,47 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om;
 
-import com.nerodesk.om.Doc;
-import com.nerodesk.om.Docs;
-import com.nerodesk.om.mock.MkBase;
-import org.apache.commons.io.IOUtils;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
-import org.takes.rs.RsPrint;
+import com.jcabi.aspects.Immutable;
+import java.io.IOException;
 
 /**
- * Tests for {@code TkDelete}.
+ * Friends.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
  */
-public final class TkDeleteTest {
+@Immutable
+public interface Friends {
 
     /**
-     * TkDelete can delete file.
-     * @throws Exception If fails.
+     * I'm the leader?
+     * @return TRUE if I'm the leader of the group
+     * @throws IOException If fails
      */
-    @Test
-    public void deletesFile() throws Exception {
-        final Docs docs = new MkBase().user("urn:test:1").docs();
-        final Doc doc = docs.doc("hey");
-        doc.write(IOUtils.toInputStream("hello, world!"));
-        MatcherAssert.assertThat(
-            new RsPrint(new TkDelete(doc).act()).print(),
-            Matchers.startsWith("HTTP/1.1 303")
-        );
-        MatcherAssert.assertThat(docs.names(), Matchers.emptyIterable());
-    }
+    boolean leader() throws IOException;
+
+    /**
+     * Everybody who has access to the document.
+     * @return URNs of them
+     * @throws IOException If fails
+     */
+    Iterable<String> names() throws IOException;
+
+    /**
+     * Add new friend (fails if I'm not a leader).
+     * @param name Name of friend
+     * @throws IOException If fails
+     */
+    void add(String name) throws IOException;
+
+    /**
+     * Eject a friend (fails if I'm not a leader).
+     * @param name Name of friend
+     * @throws IOException If fails
+     */
+    void eject(String name) throws IOException;
 
 }

@@ -27,55 +27,43 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om;
+package com.nerodesk.takes.doc;
 
-import com.jcabi.aspects.Immutable;
+import com.nerodesk.om.Doc;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.rs.RsWithBody;
 
 /**
- * Document.
+ * Read file content.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
-@Immutable
-public interface Doc {
+final class TkRead implements Take {
 
     /**
-     * Does it exist?
-     * @return TRUE if exists
-     * @throws IOException If fails
+     * Doc.
      */
-    boolean exists() throws IOException;
+    private final transient Doc doc;
 
     /**
-     * Delete it (fails if the document is not mine).
-     * @throws IOException If fails
+     * Ctor.
+     * @param src Source document to read from
      */
-    void delete() throws IOException;
+    TkRead(final Doc src) {
+        this.doc = src;
+    }
 
-    /**
-     * Everybody who has access to this document.
-     * @return Friends
-     * @throws IOException If fails
-     */
-    Friends friends() throws IOException;
-
-    /**
-     * Read its entire content into this output stream.
-     * @param output Output stream
-     * @throws IOException If fails
-     */
-    void read(OutputStream output) throws IOException;
-
-    /**
-     * Write its entire content from this input stream.
-     * @param input Input stream
-     * @throws IOException If fails
-     */
-    void write(InputStream input) throws IOException;
+    @Override
+    public Response act() throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        this.doc.read(baos);
+        return new RsWithBody(new ByteArrayInputStream(baos.toByteArray()));
+    }
 
 }

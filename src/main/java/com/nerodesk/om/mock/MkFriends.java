@@ -29,30 +29,23 @@
  */
 package com.nerodesk.om.mock;
 
-import com.jcabi.log.Logger;
-import com.nerodesk.om.Doc;
 import com.nerodesk.om.Friends;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.util.Collections;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 /**
- * Mocked version of doc.
+ * Mocked version of friends.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
  */
 @ToString
 @EqualsAndHashCode
-public final class MkDoc implements Doc {
+public final class MkFriends implements Friends {
 
     /**
      * Directory.
@@ -75,47 +68,32 @@ public final class MkDoc implements Doc {
      * @param urn URN
      * @param name Document name
      */
-    public MkDoc(final File file, final String urn, final String name) {
+    public MkFriends(final File file, final String urn, final String name) {
         this.dir = file;
         this.user = urn;
         this.label = name;
     }
 
     @Override
-    public boolean exists() {
-        return this.file().exists();
+    public boolean leader() throws IOException {
+        return true;
     }
 
     @Override
-    public void delete() {
-        this.file().delete();
+    public Iterable<String> names() throws IOException {
+        assert this.dir != null;
+        assert this.user != null;
+        assert this.label != null;
+        return Collections.emptyList();
     }
 
     @Override
-    public Friends friends() {
-        return new MkFriends(this.dir, this.user, this.label);
+    public void add(final String name) throws IOException {
+        // nothing
     }
 
     @Override
-    public void read(final OutputStream output) throws IOException {
-        final File file = this.file();
-        IOUtils.copy(new FileInputStream(this.file()), output);
-        Logger.info(this, "%s loaded", file);
-    }
-
-    @Override
-    public void write(final InputStream input) throws IOException {
-        final File file = this.file();
-        FileUtils.touch(file);
-        IOUtils.copy(input, new FileOutputStream(file));
-        Logger.info(this, "%s saved", file);
-    }
-
-    /**
-     * File.
-     * @return File
-     */
-    private File file() {
-        return new File(new File(this.dir, this.user), this.label);
+    public void eject(final String name) throws IOException {
+        // nothing
     }
 }

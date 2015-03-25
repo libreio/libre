@@ -27,11 +27,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes;
 
 import com.jcabi.log.VerboseProcess;
 import com.jcabi.manifests.Manifests;
 import com.nerodesk.om.Base;
+import com.nerodesk.takes.doc.TsDoc;
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -45,6 +46,7 @@ import org.takes.facets.auth.PsFake;
 import org.takes.facets.auth.PsLogout;
 import org.takes.facets.auth.RqAuth;
 import org.takes.facets.auth.TsAuth;
+import org.takes.facets.auth.TsSecure;
 import org.takes.facets.auth.codecs.CcCompact;
 import org.takes.facets.auth.codecs.CcHex;
 import org.takes.facets.auth.codecs.CcSafe;
@@ -60,10 +62,10 @@ import org.takes.facets.fork.FkParams;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.Target;
 import org.takes.facets.fork.TsFork;
-import org.takes.rq.RqHref;
 import org.takes.tk.TkRedirect;
 import org.takes.ts.TsClasspath;
 import org.takes.ts.TsFiles;
+import org.takes.ts.TsGreedy;
 import org.takes.ts.TsWithType;
 import org.takes.ts.TsWrap;
 
@@ -164,48 +166,8 @@ public final class TsApp extends TsWrap {
                 )
             ),
             new FkRegex(
-                "/r",
-                new Takes() {
-                    @Override
-                    public Take route(final Request req) throws IOException {
-                        final String file =
-                            new RqHref(req).href().param("f").iterator().next();
-                        return new TkRead(
-                            base.user(
-                                new RqAuth(req).identity().urn()
-                            ).docs().doc(file)
-                        );
-                    }
-                }
-            ),
-            new FkRegex(
-                "/d",
-                new Takes() {
-                    @Override
-                    public Take route(final Request req) throws IOException {
-                        final String file =
-                            new RqHref(req).href().param("x").iterator().next();
-                        return new TkDelete(
-                            base.user(
-                                new RqAuth(req).identity().urn()
-                            ).docs().doc(file)
-                        );
-                    }
-                }
-            ),
-            new FkRegex(
-                "/w",
-                new Takes() {
-                    @Override
-                    public Take route(final Request req) throws IOException {
-                        return new TkWrite(
-                            base.user(
-                                new RqAuth(req).identity().urn()
-                            ).docs(),
-                            req
-                        );
-                    }
-                }
+                "/doc/.*",
+                new TsSecure(new TsGreedy(new TsDoc(base)))
             )
         );
         return new TsFlash(TsApp.auth(fork));

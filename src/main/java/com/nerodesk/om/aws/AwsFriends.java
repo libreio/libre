@@ -27,37 +27,65 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om.aws;
 
-import com.nerodesk.om.Doc;
-import com.nerodesk.om.mock.MkBase;
-import org.apache.commons.io.IOUtils;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
-import org.takes.rs.RsPrint;
+import com.jcabi.s3.Bucket;
+import com.nerodesk.om.Friends;
+import java.io.IOException;
+import java.util.Collections;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
- * Tests for {@code TkRead}.
+ * AWS-based version of Doc.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
  */
-public final class TkReadTest {
+@ToString
+@EqualsAndHashCode(of = { "bucket", "label" })
+public final class AwsFriends implements Friends {
 
     /**
-     * TkRead can read file content.
-     * @throws Exception If fails.
+     * Bucket.
      */
-    @Test
-    public void readsFileContent() throws Exception {
-        final Doc doc = new MkBase().user("urn:test:1").docs().doc("hey");
-        doc.write(IOUtils.toInputStream("hello, world!"));
-        MatcherAssert.assertThat(
-            new RsPrint(new TkRead(doc).act()).printBody(),
-            Matchers.endsWith("world!")
-        );
+    private final transient Bucket bucket;
+
+    /**
+     * Doc name.
+     */
+    private final transient String label;
+
+    /**
+     * Ctor.
+     * @param bkt Bucket
+     * @param doc Name of document
+     */
+    public AwsFriends(final Bucket bkt, final String doc) {
+        this.bucket = bkt;
+        this.label = doc;
     }
 
+    @Override
+    public boolean leader() throws IOException {
+        return true;
+    }
+
+    @Override
+    public Iterable<String> names() throws IOException {
+        assert this.bucket != null;
+        assert this.label != null;
+        return Collections.emptyList();
+    }
+
+    @Override
+    public void add(final String name) throws IOException {
+        // nothing
+    }
+
+    @Override
+    public void eject(final String name) throws IOException {
+        // nothing
+    }
 }

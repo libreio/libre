@@ -27,55 +27,72 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om;
+package com.nerodesk.takes.doc;
 
-import com.jcabi.aspects.Immutable;
+import com.nerodesk.om.Base;
+import com.nerodesk.om.Doc;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.util.Iterator;
+import org.takes.Request;
+import org.takes.Take;
+import org.takes.Takes;
+import org.takes.facets.auth.RqAuth;
+import org.takes.facets.fork.FkRegex;
+import org.takes.facets.fork.TsFork;
+import org.takes.rq.RqHref;
+import org.takes.rq.RqMultipart;
+import org.takes.rq.RqPrint;
 
 /**
- * Document.
+ * Takes for a specific document.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@Immutable
-public interface Doc {
+public final class TsDoc implements Takes {
 
     /**
-     * Does it exist?
-     * @return TRUE if exists
-     * @throws IOException If fails
+     * Base.
      */
-    boolean exists() throws IOException;
+    private final transient Base base;
 
     /**
-     * Delete it (fails if the document is not mine).
-     * @throws IOException If fails
+     * Ctor.
+     * @param bse Base
      */
-    void delete() throws IOException;
+    public TsDoc(final Base bse) {
+        this.base = bse;
+    }
 
-    /**
-     * Everybody who has access to this document.
-     * @return Friends
-     * @throws IOException If fails
-     */
-    Friends friends() throws IOException;
-
-    /**
-     * Read its entire content into this output stream.
-     * @param output Output stream
-     * @throws IOException If fails
-     */
-    void read(OutputStream output) throws IOException;
-
-    /**
-     * Write its entire content from this input stream.
-     * @param input Input stream
-     * @throws IOException If fails
-     */
-    void write(InputStream input) throws IOException;
-
+    @Override
+    public Take route(final Request req) throws IOException {
+        final String file;
+        final Iterator<String> param = new RqHref(req).href()
+            .param("file").iterator();
+        if (param.hasNext()) {
+            file = param.next();
+        } else {
+            file = new RqPrint(
+                new RqMultipart(req).part("name").iterator().next()
+            ).printBody();
+        }
+        final Doc doc = this.base.user(
+            new RqAuth(req).identity().urn()
+        ).docs().doc(file);
+        return new TsFork(
+            new FkRegex("/doc/read", new TkRead(doc)),
+            new FkRegex("/doc/delete", new TkDelete(doc)),
+            new FkRegex(
+                "/doc/write",
+                new Takes() {
+                    @Override
+                    public Take route(final Request request) {
+                        return new TkWrite(doc, req);
+                    }
+                }
+            )
+        ).route(req);
+    }
 }

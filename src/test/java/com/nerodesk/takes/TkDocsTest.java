@@ -27,55 +27,48 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om;
+package com.nerodesk.takes;
 
-import com.jcabi.aspects.Immutable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import com.jcabi.matchers.XhtmlMatchers;
+import com.nerodesk.om.User;
+import com.nerodesk.om.mock.MkBase;
+import java.io.ByteArrayInputStream;
+import org.hamcrest.MatcherAssert;
+import org.junit.Test;
+import org.takes.rq.RqFake;
+import org.takes.rs.RsPrint;
 
 /**
- * Document.
+ * Tests for {@code TkDocs}.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
-@Immutable
-public interface Doc {
+public final class TkDocsTest {
 
     /**
-     * Does it exist?
-     * @return TRUE if exists
-     * @throws IOException If fails
+     * TkDocs can return a list of docs.
+     * @throws Exception If fails.
      */
-    boolean exists() throws IOException;
-
-    /**
-     * Delete it (fails if the document is not mine).
-     * @throws IOException If fails
-     */
-    void delete() throws IOException;
-
-    /**
-     * Everybody who has access to this document.
-     * @return Friends
-     * @throws IOException If fails
-     */
-    Friends friends() throws IOException;
-
-    /**
-     * Read its entire content into this output stream.
-     * @param output Output stream
-     * @throws IOException If fails
-     */
-    void read(OutputStream output) throws IOException;
-
-    /**
-     * Write its entire content from this input stream.
-     * @param input Input stream
-     * @throws IOException If fails
-     */
-    void write(InputStream input) throws IOException;
-
+    @Test
+    public void returnsListOfDocs() throws Exception {
+        final User user = new MkBase().user("urn:test:1");
+        user.docs().doc("test.txt").write(
+            new ByteArrayInputStream("hello, world!".getBytes())
+        );
+        user.docs().doc("test-2.txt").write(
+            new ByteArrayInputStream("hello!".getBytes())
+        );
+        MatcherAssert.assertThat(
+            new RsPrint(
+                new TkDocs(user.docs(), new RqFake()).act()
+            ).printBody(),
+            XhtmlMatchers.hasXPaths(
+                "/page/docs[count(doc)=2]",
+                "/page/docs/doc[name='test.txt']",
+                "/page/docs/doc/read"
+            )
+        );
+    }
 }

@@ -27,7 +27,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
@@ -128,7 +128,7 @@ public final class TsAppTest {
                 @Override
                 public void exec(final URI home) throws IOException {
                     new JdkRequest(home)
-                        .uri().path("/r").queryParam("f", name).back()
+                        .uri().path("/doc/read").queryParam("file", name).back()
                         .fetch()
                         .as(RestResponse.class)
                         .assertStatus(HttpURLConnection.HTTP_OK)
@@ -236,7 +236,7 @@ public final class TsAppTest {
     private static Request write(final URI home) {
         return new JdkRequest(home)
             .method("POST")
-            .uri().path("/w").back()
+            .uri().path("/doc/write").back()
             .header(
                 HttpHeaders.CONTENT_TYPE,
                 "multipart/form-data; boundary=AaB03x"

@@ -27,43 +27,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
-
-import com.nerodesk.om.Doc;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import org.takes.Response;
-import org.takes.Take;
-import org.takes.rs.RsWithBody;
 
 /**
- * Read file content.
+ * Document management.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
  */
-public final class TkRead implements Take {
-
-    /**
-     * Doc.
-     */
-    private final transient Doc doc;
-
-    /**
-     * Ctor.
-     * @param src Source document to read from
-     */
-    public TkRead(final Doc src) {
-        this.doc = src;
-    }
-
-    @Override
-    public Response act() throws IOException {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        this.doc.read(baos);
-        return new RsWithBody(new ByteArrayInputStream(baos.toByteArray()));
-    }
-
-}
+package com.nerodesk.takes.doc;

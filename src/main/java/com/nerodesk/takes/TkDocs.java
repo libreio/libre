@@ -27,8 +27,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes;
 
+import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
 import java.io.IOException;
 import org.takes.Request;
@@ -46,6 +47,7 @@ import org.xembly.Directives;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
+ * @checkstyle MultipleStringLiteralsCheck (500 lines)
  */
 public final class TkDocs implements Take {
 
@@ -92,12 +94,25 @@ public final class TkDocs implements Take {
         final Directives dirs = new Directives().add("docs");
         final Href home = new RqHref(this.request).href();
         for (final String name : this.docs.names()) {
-            dirs.add("doc").add("name").set(name).up()
-                .add("read")
-                .set(home.path("r").with("f", name).toString()).up()
-                .add("delete")
-                .set(home.path("d").with("x", name).toString()).up()
-                .up();
+            final Doc doc = this.docs.doc(name);
+            final Href href = home.path("doc").with("file", name);
+            dirs.add("doc")
+                .add("name").set(name).up()
+                .add("read").set(href.path("read").toString()).up()
+                .add("delete").set(href.path("delete").toString()).up()
+                .add("add-friend").set(href.path("add-friend").toString()).up()
+                .add("friends");
+            for (final String friend : doc.friends().names()) {
+                dirs.add("friend")
+                    .add("name").set(friend).up()
+                    .add("eject")
+                    .set(
+                        href.path("eject-friend")
+                            .with("friend", friend).toString()
+                    )
+                    .up();
+            }
+            dirs.up().up();
         }
         return dirs;
     }

@@ -27,95 +27,51 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.mock;
+package com.nerodesk.takes.doc;
 
-import com.jcabi.log.Logger;
 import com.nerodesk.om.Doc;
-import com.nerodesk.om.Friends;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+import org.takes.Request;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.facets.flash.RsFlash;
+import org.takes.facets.forward.RsForward;
+import org.takes.rq.RqMultipart;
 
 /**
- * Mocked version of doc.
+ * Write file content.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
-@ToString
-@EqualsAndHashCode
-public final class MkDoc implements Doc {
+final class TkWrite implements Take {
 
     /**
-     * Directory.
+     * Doc.
      */
-    private final transient File dir;
+    private final transient Doc doc;
 
     /**
-     * URN.
+     * Request.
      */
-    private final transient String user;
-
-    /**
-     * Doc name.
-     */
-    private final transient String label;
+    private final transient Request request;
 
     /**
      * Ctor.
-     * @param file Directory
-     * @param urn URN
-     * @param name Document name
+     * @param document Document
+     * @param req Request
      */
-    public MkDoc(final File file, final String urn, final String name) {
-        this.dir = file;
-        this.user = urn;
-        this.label = name;
+    TkWrite(final Doc document, final Request req) {
+        this.doc = document;
+        this.request = req;
     }
 
     @Override
-    public boolean exists() {
-        return this.file().exists();
+    public Response act() throws IOException {
+        final RqMultipart multi = new RqMultipart(this.request);
+        this.doc.write(multi.part("file").iterator().next().body());
+        return new RsForward(new RsFlash("file uploaded"));
     }
 
-    @Override
-    public void delete() {
-        this.file().delete();
-    }
-
-    @Override
-    public Friends friends() {
-        return new MkFriends(this.dir, this.user, this.label);
-    }
-
-    @Override
-    public void read(final OutputStream output) throws IOException {
-        final File file = this.file();
-        IOUtils.copy(new FileInputStream(this.file()), output);
-        Logger.info(this, "%s loaded", file);
-    }
-
-    @Override
-    public void write(final InputStream input) throws IOException {
-        final File file = this.file();
-        FileUtils.touch(file);
-        IOUtils.copy(input, new FileOutputStream(file));
-        Logger.info(this, "%s saved", file);
-    }
-
-    /**
-     * File.
-     * @return File
-     */
-    private File file() {
-        return new File(new File(this.dir, this.user), this.label);
-    }
 }

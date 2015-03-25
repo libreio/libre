@@ -27,7 +27,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes.doc;
 
 import com.nerodesk.om.Doc;
 import java.io.IOException;
@@ -43,7 +43,7 @@ import org.takes.facets.forward.RsForward;
  * @version $Id$
  * @since 0.2
  */
-public final class TkDelete implements Take {
+final class TkDelete implements Take {
 
     /**
      * Doc.
@@ -54,7 +54,7 @@ public final class TkDelete implements Take {
      * Ctor.
      * @param src Source document to delete
      */
-    public TkDelete(final Doc src) {
+    TkDelete(final Doc src) {
         this.doc = src;
     }
 

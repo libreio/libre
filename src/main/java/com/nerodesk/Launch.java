@@ -35,6 +35,7 @@ import com.jcabi.s3.retry.ReBucket;
 import com.nerodesk.om.Base;
 import com.nerodesk.om.aws.AwsBase;
 import com.nerodesk.om.mock.MkBase;
+import com.nerodesk.takes.TsApp;
 import java.io.IOException;
 import java.util.Arrays;
 import org.takes.http.Exit;
