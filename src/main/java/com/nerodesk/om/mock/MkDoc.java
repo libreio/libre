@@ -56,6 +56,7 @@ import org.apache.commons.io.IOUtils;
  *  safe belt to don't get OOM on the server.
  * @todo #89:30min Show meaningful error when the client is trying
  *  to write big file. Consider using RsFlash with red colored message.
+ *  The format can be discussed additionally.
  */
 @ToString
 @EqualsAndHashCode
