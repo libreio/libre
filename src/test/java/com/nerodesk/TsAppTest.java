@@ -58,7 +58,7 @@ import org.takes.http.FtRemote;
  * @version $Id$
  * @since 0.2
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @checkstyle MultipleStringLietrals (500 lines)
+ * @checkstyle MultipleStringLiterals (500 lines)
  * @todo #89:1h Doc should support partitioned read.
  *  If file is too big to fit in one read request it should be split
  *  by the Doc on parts and returned to the client one-by-one.
