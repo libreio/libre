@@ -70,10 +70,9 @@ public final class AwsDocsTest {
     public void listsDocs() throws IOException {
         final Bucket bucket = this.mockBucket("lists", "lists-exists");
         final List<String> expected = Lists.newArrayList(bucket.list(""));
-        MatcherAssert.assertThat(
-            new AwsDocs(bucket).names(),
-            Matchers.equalTo(expected)
-        );
+        final List<String> names = new AwsDocs(bucket).names();
+        MatcherAssert.assertThat(names, Matchers.equalTo(expected));
+        MatcherAssert.assertThat(names, Matchers.hasItem("sub/test"));
     }
 
     /**
@@ -106,9 +105,12 @@ public final class AwsDocsTest {
         throws IOException {
         final TemporaryFolder folder = new TemporaryFolder();
         folder.create();
-        final File sub = new File(folder.getRoot(), name);
+        final File bucket = new File(folder.getRoot(), name);
+        assert bucket.mkdir();
+        assert new File(bucket, exists).createNewFile();
+        final File sub = new File(bucket, "sub");
         assert sub.mkdir();
-        assert new File(sub, exists).createNewFile();
+        assert new File(sub, "test").createNewFile();
         return new MkBucket(folder.getRoot(), name);
     }
 
