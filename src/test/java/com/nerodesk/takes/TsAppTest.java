@@ -156,7 +156,8 @@ public final class TsAppTest {
                 public void exec(final URI home) throws IOException {
                     MatcherAssert.assertThat(
                         new JdkRequest(home)
-                            .uri().path("/r").queryParam("f", name).back()
+                            .uri().path("/doc/read")
+                            .queryParam("file", name).back()
                             .fetch()
                             .as(RestResponse.class)
                             .assertStatus(HttpURLConnection.HTTP_OK)
