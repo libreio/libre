@@ -47,6 +47,7 @@ import org.junit.rules.TemporaryFolder;
  * Tests for {@link AwsDocs}.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
+ * @author Felipe Pina (felipe.pina@protonmail.com)
  * @version $Id$
  * @since 0.3
  */
