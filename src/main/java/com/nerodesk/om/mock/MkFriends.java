@@ -42,6 +42,9 @@ import lombok.ToString;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.3
+ * @todo #103:30min/DEV This class is not implemented and doesn't work. Let's
+ *  implement it and test in a unit test. Let's use some primitive mechanism,
+ *  based on file names.
  */
 @ToString
 @EqualsAndHashCode

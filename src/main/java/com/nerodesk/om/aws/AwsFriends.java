@@ -42,6 +42,9 @@ import lombok.ToString;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.3
+ * @todo #103:30m/DEV This class is not implemented and we can't really share
+ *  documents between users. Let's implement it using DynamoDB or some
+ *  more simple S3-only based mechanism.
  */
 @ToString
 @EqualsAndHashCode(of = { "bucket", "label" })
