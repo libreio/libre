@@ -54,6 +54,8 @@ import org.apache.commons.io.IOUtils;
  *  In future, server will receive big file sliced on partitions
  *  from the client. In that case, the check for max size will be kind of
  *  safe belt to don't get OOM on the server.
+ * @todo #89:30min Show meaningful error when the client is trying
+ *  to write big file. Consider using RsFlash with red colored message.
  */
 @ToString
 @EqualsAndHashCode
