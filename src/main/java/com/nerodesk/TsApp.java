@@ -35,8 +35,10 @@ import com.jcabi.manifests.Manifests;
 import com.nerodesk.om.Base;
 import java.io.File;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.takes.NotFoundException;
 import org.takes.Request;
 import org.takes.Take;
 import org.takes.Takes;
@@ -94,6 +96,11 @@ import org.takes.ts.TsWrap;
 public final class TsApp extends TsWrap {
 
     /**
+     * Application root.
+     */
+    private static final String ROOT = "/";
+
+    /**
      * Ctor.
      * @param base Base
      * @throws IOException If something goes wrong.
@@ -148,7 +155,7 @@ public final class TsApp extends TsWrap {
                 ),
                 new FkRegex("/robots.txt", ""),
                 new FkRegex(
-                    "/",
+                    TsApp.ROOT,
                     new TsFork(
                         new FkAuthenticated(
                             new Target<Request>() {
@@ -224,18 +231,7 @@ public final class TsApp extends TsWrap {
                     }
                 )
             ),
-            new Fallback() {
-                @Override
-                public Take take(final RqFallback req) {
-                    final String exc = ExceptionUtils.getStackTrace(
-                        req.throwable()
-                    );
-                    Logger.info(this, "Exception thrown\n%s", exc);
-                    return new TkHTML(
-                        String.format("oops, something went wrong!\n%s", exc)
-                    );
-                }
-            }
+            TsApp.fallback()
         );
         return new TsFlash(TsApp.auth(fork));
     }
@@ -276,6 +272,32 @@ public final class TsApp extends TsWrap {
                 )
             )
         );
+    }
+
+    /**
+     * Fallback.
+     * Handles application exceptions.
+     * @return Fallback
+     */
+    private static Fallback fallback() {
+        return new Fallback() {
+            @Override
+            public Take take(final RqFallback req) {
+                final Throwable thr = req.throwable();
+                if (thr instanceof NoSuchElementException
+                    || thr instanceof NotFoundException) {
+                    return new TkRedirect(TsApp.ROOT);
+                }
+                Logger.info(
+                    this,
+                    "Exception thrown\n%s",
+                    ExceptionUtils.getStackTrace(thr)
+                );
+                return new TkHTML(
+                    "Something went wrong! Please, try again later"
+                );
+            }
+        };
     }
 
 }

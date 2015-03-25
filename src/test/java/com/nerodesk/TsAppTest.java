@@ -259,31 +259,21 @@ public final class TsAppTest {
     }
 
     /**
-     * Application can show error page.
+     * Application can redirect on bad request.
      * @throws Exception If fails
      */
     @Test
-    public void showsErrorPage() throws Exception {
+    public void redirectsOnBadRequest() throws Exception {
         final Base base = new MkBase();
         new FtRemote(new TsApp(base)).exec(
             new FtRemote.Script() {
                 @Override
                 public void exec(final URI home) throws IOException {
                     new JdkRequest(home)
-                        .uri().path("/d").back()
+                        .uri().path("/really_bad").back()
                         .fetch()
                         .as(RestResponse.class)
-                        .assertStatus(HttpURLConnection.HTTP_OK)
-                        .assertBody(
-                            Matchers.allOf(
-                                Matchers.startsWith(
-                                    "oops, something went wrong!"
-                            ),
-                                Matchers.containsString(
-                                    "java.util.NoSuchElementException"
-                            )
-                        )
-                    );
+                        .assertStatus(HttpURLConnection.HTTP_SEE_OTHER);
                 }
             }
         );
