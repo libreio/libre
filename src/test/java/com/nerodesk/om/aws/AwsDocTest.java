@@ -115,6 +115,7 @@ public final class AwsDocTest {
      * Constructs a mock bucket.
      * @param name Bucket name.
      * @throws IOException In case of failure.
+     * @return The mock bucket.
      */
     private MkBucket mockBucket(final String name) throws IOException {
         final TemporaryFolder folder = new TemporaryFolder();
