@@ -30,7 +30,7 @@
  -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://www.w3.org/1999/xhtml" version="1.0">
-    <xsl:output method="xml" omit-xml-declaration="yes"/>
+    <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes" />
     <xsl:include href="/xsl/layout.xsl"/>
     <xsl:template match="page" mode="head">
         <title>
@@ -41,13 +41,17 @@
         <p>
             <xsl:text>My docs:</xsl:text>
         </p>
-        <form method="post" action="/w" enctype="multipart/form-data">
+        <form method="post" action="{links/link[@rel='upload']/@href}"
+            enctype="multipart/form-data">
             <input name="name"/>
             <input name="file" type="file"/>
             <input name="upload" type="submit"/>
         </form>
+        <xsl:apply-templates select="docs"/>
+    </xsl:template>
+    <xsl:template match="docs[doc]">
         <ul>
-            <xsl:apply-templates select="docs/doc"/>
+            <xsl:apply-templates select="doc"/>
         </ul>
     </xsl:template>
     <xsl:template match="doc">
@@ -57,6 +61,25 @@
             <a href="{read}">read</a>
             <xsl:text> | </xsl:text>
             <a href="{delete}">delete</a>
+            <xsl:apply-templates select="friends"/>
+        </li>
+    </xsl:template>
+    <xsl:template match="friends">
+        <ul>
+            <xsl:apply-templates select="friend"/>
+            <li>
+                <form action="{../add-friend}" method="get">
+                    <input name="friend" placeholder="share with..."/>
+                    <input type="submit"/>
+                </form>
+            </li>
+        </ul>
+    </xsl:template>
+    <xsl:template match="friend">
+        <li>
+            <xsl:value-of select="name"/>
+            <xsl:text> </xsl:text>
+            <a href="{eject}">eject</a>
         </li>
     </xsl:template>
 </xsl:stylesheet>

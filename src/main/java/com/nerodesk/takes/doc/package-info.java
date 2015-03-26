@@ -27,49 +27,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
-
-import com.jcabi.matchers.XhtmlMatchers;
-import org.hamcrest.MatcherAssert;
-import org.junit.Test;
-import org.takes.rq.RqFake;
-import org.takes.rq.RqWithHeader;
-import org.takes.rs.RsPrint;
 
 /**
- * Tests for {@code TkIndex}.
+ * Document management.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
+ * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
  */
-public final class TkIndexTest {
-
-    /**
-     * TkIndex can return XML.
-     * @throws Exception If fails.
-     */
-    @Test
-    public void returnsXml() throws Exception {
-        MatcherAssert.assertThat(
-            new RsPrint(new TkIndex(new RqFake()).act()).printBody(),
-            XhtmlMatchers.hasXPath("/page/millis")
-        );
-    }
-
-    /**
-     * TkIndex can return HTML.
-     * @throws Exception If fails.
-     */
-    @Test
-    public void returnsHtml() throws Exception {
-        MatcherAssert.assertThat(
-            new RsPrint(
-                new TkIndex(
-                    new RqWithHeader(new RqFake(), "Accept: text/html")
-                ).act()
-            ).printBody(),
-            XhtmlMatchers.hasXPath("/xhtml:html")
-        );
-    }
-}
+package com.nerodesk.takes.doc;

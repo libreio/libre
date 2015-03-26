@@ -27,81 +27,43 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes.doc;
 
-import com.jcabi.manifests.Manifests;
-import com.jcabi.s3.Region;
-import com.jcabi.s3.retry.ReBucket;
-import com.nerodesk.om.Base;
-import com.nerodesk.om.aws.AwsBase;
-import com.nerodesk.om.mock.MkBase;
-import com.nerodesk.takes.TsApp;
+import com.nerodesk.om.Doc;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import org.takes.http.Exit;
-import org.takes.http.FtCLI;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.rs.RsWithBody;
 
 /**
- * Launch (used only for heroku).
+ * Read file content.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-public final class Launch {
+final class TkRead implements Take {
 
     /**
-     * Arguments.
+     * Doc.
      */
-    private final transient Iterable<String> arguments;
+    private final transient Doc doc;
 
     /**
      * Ctor.
-     * @param args Command line args
+     * @param src Source document to read from
      */
-    public Launch(final String[] args) {
-        this.arguments = Arrays.asList(args);
+    TkRead(final Doc src) {
+        this.doc = src;
     }
 
-    /**
-     * Main entry point.
-     * @param args Arguments
-     * @throws IOException If fails
-     */
-    public static void main(final String... args) throws IOException {
-        new Launch(args).exec();
-    }
-
-    /**
-     * Run it all.
-     * @throws IOException If fails
-     */
-    public void exec() throws IOException {
-        new FtCLI(
-            new TsApp(Launch.base()),
-            this.arguments
-        ).start(Exit.NEVER);
-    }
-
-    /**
-     * Base.
-     * @return Base
-     */
-    private static Base base() {
-        final String key = Manifests.read("Nerodesk-AwsKey");
-        final Base base;
-        if (key.startsWith("AAAA") || key.startsWith("${")) {
-            base = new MkBase();
-        } else {
-            base = new AwsBase(
-                new ReBucket(
-                    new Region.Simple(
-                        key, Manifests.read("Nerodesk-AwsSecret")
-                    ).bucket(Manifests.read("Nerodesk-Bucket"))
-                )
-            );
-        }
-        return base;
+    @Override
+    public Response act() throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        this.doc.read(baos);
+        return new RsWithBody(new ByteArrayInputStream(baos.toByteArray()));
     }
 
 }

@@ -27,56 +27,42 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes.doc;
 
-import com.nerodesk.om.Docs;
+import com.nerodesk.om.Doc;
 import java.io.IOException;
-import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
 import org.takes.facets.flash.RsFlash;
 import org.takes.facets.forward.RsForward;
-import org.takes.rq.RqMultipart;
-import org.takes.rq.RqPrint;
 
 /**
- * Write file content.
+ * Delete file.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
-public final class TkWrite implements Take {
+final class TkDelete implements Take {
 
     /**
-     * Docs.
+     * Doc.
      */
-    private final transient Docs docs;
-
-    /**
-     * Request.
-     */
-    private final transient Request request;
+    private final transient Doc doc;
 
     /**
      * Ctor.
-     * @param dcs Docs
-     * @param req Request
+     * @param src Source document to delete
      */
-    public TkWrite(final Docs dcs, final Request req) {
-        this.docs = dcs;
-        this.request = req;
+    TkDelete(final Doc src) {
+        this.doc = src;
     }
 
     @Override
     public Response act() throws IOException {
-        final RqMultipart multi = new RqMultipart(this.request);
-        final String name = new RqPrint(
-            multi.part("name").iterator().next()
-        ).printBody();
-        this.docs.doc(name).write(multi.part("file").iterator().next().body());
+        this.doc.delete();
         return new RsForward(
-            new RsFlash("file uploaded")
+            new RsFlash("file deleted")
         );
     }
 

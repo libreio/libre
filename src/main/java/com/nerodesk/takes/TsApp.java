@@ -27,14 +27,17 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes;
 
+import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import com.jcabi.manifests.Manifests;
 import com.nerodesk.om.Base;
+import com.nerodesk.takes.doc.TsDoc;
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.takes.Request;
 import org.takes.Take;
 import org.takes.Takes;
@@ -45,12 +48,16 @@ import org.takes.facets.auth.PsFake;
 import org.takes.facets.auth.PsLogout;
 import org.takes.facets.auth.RqAuth;
 import org.takes.facets.auth.TsAuth;
+import org.takes.facets.auth.TsSecure;
 import org.takes.facets.auth.codecs.CcCompact;
 import org.takes.facets.auth.codecs.CcHex;
 import org.takes.facets.auth.codecs.CcSafe;
 import org.takes.facets.auth.codecs.CcSalted;
 import org.takes.facets.auth.codecs.CcXOR;
 import org.takes.facets.auth.social.PsFacebook;
+import org.takes.facets.fallback.Fallback;
+import org.takes.facets.fallback.RqFallback;
+import org.takes.facets.fallback.TsFallback;
 import org.takes.facets.flash.TsFlash;
 import org.takes.facets.fork.FkAnonymous;
 import org.takes.facets.fork.FkAuthenticated;
@@ -60,10 +67,11 @@ import org.takes.facets.fork.FkParams;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.Target;
 import org.takes.facets.fork.TsFork;
-import org.takes.rq.RqHref;
+import org.takes.tk.TkHTML;
 import org.takes.tk.TkRedirect;
 import org.takes.ts.TsClasspath;
 import org.takes.ts.TsFiles;
+import org.takes.ts.TsGreedy;
 import org.takes.ts.TsWithType;
 import org.takes.ts.TsWrap;
 
@@ -76,20 +84,24 @@ import org.takes.ts.TsWrap;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @checkstyle ExcessiveMethodLength (500 lines)
+ * @todo #68:30min Error page should be an HTML page with stacktrace.
+ *  See how it's done in Rultor (com.rultor.web.App.fallback).
+ *  This implies adding velocity template and some styles.
+ *  More details available in PR #99
  */
 @SuppressWarnings({
     "PMD.UseUtilityClass", "PMD.ExcessiveImports",
     "PMD.ExcessiveMethodLength"
 })
-public final class App extends TsWrap {
+public final class TsApp extends TsWrap {
 
     /**
      * Ctor.
      * @param base Base
      * @throws IOException If something goes wrong.
      */
-    public App(final Base base) throws IOException {
-        super(App.make(base));
+    public TsApp(final Base base) throws IOException {
+        super(TsApp.make(base));
     }
 
     /**
@@ -164,51 +176,34 @@ public final class App extends TsWrap {
                 )
             ),
             new FkRegex(
-                "/r",
-                new Takes() {
-                    @Override
-                    public Take route(final Request req) throws IOException {
-                        final String file =
-                            new RqHref(req).href().param("f").iterator().next();
-                        return new TkRead(
-                            base.user(
-                                new RqAuth(req).identity().urn()
-                            ).docs().doc(file)
-                        );
-                    }
-                }
-            ),
-            new FkRegex(
-                "/d",
-                new Takes() {
-                    @Override
-                    public Take route(final Request req) throws IOException {
-                        final String file =
-                            new RqHref(req).href().param("x").iterator().next();
-                        return new TkDelete(
-                            base.user(
-                                new RqAuth(req).identity().urn()
-                            ).docs().doc(file)
-                        );
-                    }
-                }
-            ),
-            new FkRegex(
-                "/w",
-                new Takes() {
-                    @Override
-                    public Take route(final Request req) throws IOException {
-                        return new TkWrite(
-                            base.user(
-                                new RqAuth(req).identity().urn()
-                            ).docs(),
-                            req
-                        );
-                    }
-                }
+                "/doc/.*",
+                new TsSecure(new TsGreedy(new TsDoc(base)))
             )
         );
-        return new TsFlash(App.auth(fork));
+        return TsApp.fallback(new TsFlash(TsApp.auth(fork)));
+    }
+
+    /**
+     * Fallback.
+     * @param takes Original takes
+     * @return Takes with fallback
+     */
+    private static Takes fallback(final Takes takes) {
+        return new TsFallback(
+            takes,
+            new Fallback() {
+                @Override
+                public Take take(final RqFallback req) {
+                    final String exc = ExceptionUtils.getStackTrace(
+                        req.throwable()
+                    );
+                    Logger.info(this, "Exception thrown\n%s", exc);
+                    return new TkHTML(
+                        String.format("oops, something went wrong!\n%s", exc)
+                    );
+                }
+            }
+        );
     }
 
     /**
@@ -221,7 +216,7 @@ public final class App extends TsWrap {
         return new TsAuth(
             takes,
             new PsChain(
-                new PsFake(key.startsWith("XXXX")),
+                new PsFake(key.startsWith("XXXX") || key.startsWith("${")),
                 new PsByFlag(
                     new PsByFlag.Pair(
                         PsFacebook.class.getSimpleName(),

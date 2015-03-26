@@ -27,24 +27,25 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes.doc;
 
 import com.nerodesk.om.Doc;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.rs.RsWithBody;
+import org.takes.facets.flash.RsFlash;
+import org.takes.facets.forward.RsForward;
+import org.takes.rq.RqMultipart;
 
 /**
- * Read file content.
+ * Write file content.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
-public final class TkRead implements Take {
+final class TkWrite implements Take {
 
     /**
      * Doc.
@@ -52,18 +53,25 @@ public final class TkRead implements Take {
     private final transient Doc doc;
 
     /**
-     * Ctor.
-     * @param src Source document to read from
+     * Request.
      */
-    public TkRead(final Doc src) {
-        this.doc = src;
+    private final transient Request request;
+
+    /**
+     * Ctor.
+     * @param document Document
+     * @param req Request
+     */
+    TkWrite(final Doc document, final Request req) {
+        this.doc = document;
+        this.request = req;
     }
 
     @Override
     public Response act() throws IOException {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        this.doc.read(baos);
-        return new RsWithBody(new ByteArrayInputStream(baos.toByteArray()));
+        final RqMultipart multi = new RqMultipart(this.request);
+        this.doc.write(multi.part("file").iterator().next().body());
+        return new RsForward(new RsFlash("file uploaded"));
     }
 
 }

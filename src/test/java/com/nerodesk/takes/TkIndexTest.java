@@ -27,40 +27,49 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes;
 
-import com.nerodesk.om.Doc;
-import com.nerodesk.om.Docs;
-import com.nerodesk.om.mock.MkBase;
-import org.apache.commons.io.IOUtils;
+import com.jcabi.matchers.XhtmlMatchers;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.takes.rq.RqFake;
+import org.takes.rq.RqWithHeader;
 import org.takes.rs.RsPrint;
 
 /**
- * Tests for {@code TkDelete}.
+ * Tests for {@code TkIndex}.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @version $Id$
  * @since 0.2
  */
-public final class TkDeleteTest {
+public final class TkIndexTest {
 
     /**
-     * TkDelete can delete file.
+     * TkIndex can return XML.
      * @throws Exception If fails.
      */
     @Test
-    public void deletesFile() throws Exception {
-        final Docs docs = new MkBase().user("urn:test:1").docs();
-        final Doc doc = docs.doc("hey");
-        doc.write(IOUtils.toInputStream("hello, world!"));
+    public void returnsXml() throws Exception {
         MatcherAssert.assertThat(
-            new RsPrint(new TkDelete(doc).act()).print(),
-            Matchers.startsWith("HTTP/1.1 303")
+            new RsPrint(new TkIndex(new RqFake()).act()).printBody(),
+            XhtmlMatchers.hasXPath("/page/millis")
         );
-        MatcherAssert.assertThat(docs.names(), Matchers.emptyIterable());
     }
 
+    /**
+     * TkIndex can return HTML.
+     * @throws Exception If fails.
+     */
+    @Test
+    public void returnsHtml() throws Exception {
+        MatcherAssert.assertThat(
+            new RsPrint(
+                new TkIndex(
+                    new RqWithHeader(new RqFake(), "Accept: text/html")
+                ).act()
+            ).printBody(),
+            XhtmlMatchers.hasXPath("/xhtml:html")
+        );
+    }
 }

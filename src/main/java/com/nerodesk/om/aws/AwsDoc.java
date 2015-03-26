@@ -34,6 +34,7 @@ import com.jcabi.log.Logger;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
 import com.nerodesk.om.Doc;
+import com.nerodesk.om.Friends;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -81,6 +82,11 @@ public final class AwsDoc implements Doc {
     @Override
     public void delete() throws IOException {
         this.bucket.remove(this.label);
+    }
+
+    @Override
+    public Friends friends() {
+        return new AwsFriends(this.bucket, this.label);
     }
 
     @Override
