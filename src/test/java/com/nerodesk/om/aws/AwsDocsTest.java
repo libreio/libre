@@ -29,9 +29,17 @@
  */
 package com.nerodesk.om.aws;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.jcabi.aspects.Tv;
+import com.jcabi.s3.Bucket;
+import com.jcabi.s3.Ocket;
+import java.util.Collections;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Tests for {@link AwsDocs}.
@@ -40,6 +48,34 @@ import org.junit.Test;
  * @version $Id$
  */
 public final class AwsDocsTest {
+
+    /**
+     * AwsDoc can return the size of its contents.
+     * @throws Exception If something goes wrong.
+     * @todo #131:30min Ideally we should be using mock classes from jcabi-s3 in
+     *  this test. However, the ObjectMetadata that is returned by the mocking
+     *  framework does not show an accurate contentLength. This is the reason
+     *  we're using Mockito. When jcabi-s3 supports this feature (see
+     *  https://github.com/jcabi/jcabi-s3/issues/25), let's migrate this test
+     *  to com.jcabi.s3.mock classes.
+     */
+    @Test
+    public void fetchesSize() throws Exception {
+        final long size = Tv.THOUSAND;
+        final Bucket bucket = Mockito.mock(Bucket.class);
+        final Ocket ocket = Mockito.mock(Ocket.class);
+        Mockito.doReturn(ocket).when(bucket).ocket(Mockito.anyString());
+        Mockito.doReturn(Collections.singleton("test"))
+            .when(bucket).list(Mockito.anyString());
+        final ObjectMetadata meta = new ObjectMetadata();
+        meta.setContentLength(size);
+        Mockito.doReturn(meta).when(ocket).meta();
+        MatcherAssert.assertThat(
+            new AwsDocs(bucket).size(),
+            Matchers.is(size)
+        );
+    }
+
     /**
      * AwsDocs conforms to equals and hashCode contract.
      */
