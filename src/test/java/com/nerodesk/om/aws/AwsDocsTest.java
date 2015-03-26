@@ -29,27 +29,25 @@
  */
 package com.nerodesk.om.aws;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.google.common.collect.Lists;
+import com.jcabi.aspects.Tv;
 import com.jcabi.s3.Bucket;
+import com.jcabi.s3.Ocket;
 import com.jcabi.s3.mock.MkBucket;
 import com.nerodesk.om.Docs;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.jcabi.aspects.Tv;
-import com.jcabi.s3.Bucket;
-import com.jcabi.s3.Ocket;
 import java.util.Collections;
+import java.util.List;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Test;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 
@@ -65,9 +63,10 @@ public final class AwsDocsTest {
 
     /**
      * Temporary folder.
+     * @checkstyle VisibilityModifierCheck (3 lines)
      */
     @Rule
-    public final TemporaryFolder folder = new TemporaryFolder();
+    public final transient TemporaryFolder folder = new TemporaryFolder();
 
     /**
      * AwsDoc can return the size of its contents.
@@ -116,7 +115,7 @@ public final class AwsDocsTest {
         final List<String> expected = Lists.newArrayList(bucket.list(""));
         final List<String> names = new AwsDocs(bucket).names();
         MatcherAssert.assertThat(names, Matchers.equalTo(expected));
-        MatcherAssert.assertThat(names, Matchers.hasItem("sub/test"));
+        MatcherAssert.assertThat(names, Matchers.hasItem("sub/file"));
     }
 
     /**
@@ -151,8 +150,9 @@ public final class AwsDocsTest {
             Paths.get(this.folder.getRoot().getAbsolutePath(), name)
         );
         Files.createFile(bucket.resolve(exists));
-        final Path sub = Files.createDirectories(bucket.resolve("sub"));
-        Files.createFile(sub.resolve("test"));
+        Files.createFile(
+            Files.createDirectories(bucket.resolve("sub")).resolve("file")
+        );
         return new MkBucket(this.folder.getRoot(), name);
     }
 
