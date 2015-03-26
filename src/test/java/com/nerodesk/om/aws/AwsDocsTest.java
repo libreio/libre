@@ -35,12 +35,16 @@ import com.jcabi.s3.mock.MkBucket;
 import com.nerodesk.om.Docs;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
 /**
@@ -52,6 +56,12 @@ import org.junit.rules.TemporaryFolder;
  * @since 0.3
  */
 public final class AwsDocsTest {
+
+    /**
+     * Temporary folder.
+     */
+    @Rule
+    public final TemporaryFolder folder = new TemporaryFolder();
 
     /**
      * AwsDocs conforms to equals and hashCode contract.
@@ -104,15 +114,13 @@ public final class AwsDocsTest {
      */
     private Bucket mockBucket(final String name, final String exists)
         throws IOException {
-        final TemporaryFolder folder = new TemporaryFolder();
-        folder.create();
-        final File bucket = new File(folder.getRoot(), name);
-        bucket.mkdir();
-        new File(bucket, exists).createNewFile();
-        final File sub = new File(bucket, "sub");
-        sub.mkdir();
-        new File(sub, "test").createNewFile();
-        return new MkBucket(folder.getRoot(), name);
+        final Path bucket = Files.createDirectories(
+            Paths.get(this.folder.getRoot().getAbsolutePath(), name)
+        );
+        Files.createFile(bucket.resolve(exists));
+        final Path sub = Files.createDirectories(bucket.resolve("sub"));
+        Files.createFile(sub.resolve("test"));
+        return new MkBucket(this.folder.getRoot(), name);
     }
 
 }
