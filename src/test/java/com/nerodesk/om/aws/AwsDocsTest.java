@@ -29,9 +29,24 @@
  */
 package com.nerodesk.om.aws;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.jcabi.aspects.Tv;
+import com.jcabi.s3.Bucket;
+import com.jcabi.s3.Ocket;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Answers;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 
 /**
  * Tests for {@link AwsDocs}.

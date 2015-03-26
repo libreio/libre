@@ -29,9 +29,23 @@
  */
 package com.nerodesk.om.aws;
 
+import com.jcabi.s3.Bucket;
+import com.jcabi.s3.Ocket;
+import com.jcabi.s3.mock.MkBucket;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+import org.mockito.Answers;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /**
  * Tests for {@link AwsDoc}.
@@ -74,48 +88,6 @@ public final class AwsDocTest {
         MatcherAssert.assertThat(
             new AwsDoc(this.bucket, label).exists(),
             Matchers.is(true)
-        );
-    }
-
-    /**
-     * AwsDoc can delete itself.
-     * @throws Exception In case of error.
-     */
-    @Test
-    public void deletes() throws Exception {
-        final String label = "document-to-delete";
-        new AwsDoc(this.bucket, label).delete();
-        Mockito.verify(this.bucket).remove(label);
-    }
-
-    /**
-     * AwsDoc can read itself from an OutputStream.
-     * @throws Exception In case of error.
-     */
-    @Test
-    public void reads() throws Exception {
-        final String label = "document-to-read";
-        final OutputStream output = Mockito.mock(OutputStream.class);
-        final Ocket ocket = Mockito.mock(Ocket.class);
-        Mockito.when(this.bucket.ocket(label)).thenReturn(ocket);
-        new AwsDoc(this.bucket, label).read(output);
-        Mockito.verify(ocket).read(output);
-    }
-
-    /**
-     * AwsDoc can write itself to an InputStream.
-     * @throws Exception In case of error.
-     */
-    @Test
-    public void writes() throws Exception {
-        final String label = "document-to-write";
-        final InputStream input = Mockito.mock(InputStream.class);
-        final Ocket ocket = Mockito.mock(Ocket.class);
-        Mockito.when(this.bucket.ocket(label)).thenReturn(ocket);
-        new AwsDoc(this.bucket, label).write(input);
-        Mockito.verify(ocket).write(
-            Mockito.eq(input),
-            Mockito.any(ObjectMetadata.class)
         );
     }
 
