@@ -107,11 +107,11 @@ public final class AwsDocsTest {
         final TemporaryFolder folder = new TemporaryFolder();
         folder.create();
         final File bucket = new File(folder.getRoot(), name);
-        assert bucket.mkdir();
-        assert new File(bucket, exists).createNewFile();
+        bucket.mkdir();
+        new File(bucket, exists).createNewFile();
         final File sub = new File(bucket, "sub");
-        assert sub.mkdir();
-        assert new File(sub, "test").createNewFile();
+        sub.mkdir();
+        new File(sub, "test").createNewFile();
         return new MkBucket(folder.getRoot(), name);
     }
 
