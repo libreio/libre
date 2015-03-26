@@ -33,6 +33,7 @@ import com.nerodesk.om.Base;
 import com.nerodesk.om.Doc;
 import java.io.IOException;
 import java.util.Iterator;
+import org.apache.commons.lang3.StringUtils;
 import org.takes.Request;
 import org.takes.Take;
 import org.takes.Takes;
@@ -40,9 +41,9 @@ import org.takes.facets.auth.RqAuth;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TsFork;
 import org.takes.misc.Href;
+import org.takes.rq.RqHeaders;
 import org.takes.rq.RqHref;
 import org.takes.rq.RqMultipart;
-import org.takes.rq.RqPrint;
 
 /**
  * Takes for a specific document.
@@ -70,17 +71,26 @@ public final class TsDoc implements Takes {
         this.base = bse;
     }
 
+    // @todo #94:30min I tried to get filename from file meta data and it
+    //  doesn't look clean but works for now. We have to either wait for impl.
+    //  from `Takes` framework or implement in this project class that is going
+    //  to do this in clean way.
     @Override
     public Take route(final Request req) throws IOException {
         final String file;
         final Href href = new RqHref(req).href();
-        final Iterator<String> param = href.param("file").iterator();
+        final String key = "file";
+        final Iterator<String> param = href.param(key).iterator();
         if (param.hasNext()) {
             file = param.next();
         } else {
-            file = new RqPrint(
-                new RqMultipart(req).part("name").iterator().next()
-            ).printBody();
+            final String disposition = new RqHeaders(
+                new RqMultipart(req).part(key).iterator().next()
+            ).header("Content-Disposition").iterator().next();
+            file = StringUtils.substringBefore(
+                StringUtils.substringAfter(disposition, "filename=\""),
+                "\""
+            );
         }
         final Doc doc = this.base.user(
             new RqAuth(req).identity().urn()

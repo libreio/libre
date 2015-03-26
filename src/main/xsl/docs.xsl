@@ -43,7 +43,6 @@
         </p>
         <form method="post" action="{links/link[@rel='upload']/@href}"
             enctype="multipart/form-data">
-            <input name="name"/>
             <input name="file" type="file"/>
             <input name="upload" type="submit"/>
         </form>
