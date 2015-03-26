@@ -27,12 +27,13 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes;
 
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import com.jcabi.manifests.Manifests;
 import com.nerodesk.om.Base;
+import com.nerodesk.takes.doc.TsDoc;
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -47,6 +48,7 @@ import org.takes.facets.auth.PsFake;
 import org.takes.facets.auth.PsLogout;
 import org.takes.facets.auth.RqAuth;
 import org.takes.facets.auth.TsAuth;
+import org.takes.facets.auth.TsSecure;
 import org.takes.facets.auth.codecs.CcCompact;
 import org.takes.facets.auth.codecs.CcHex;
 import org.takes.facets.auth.codecs.CcSafe;
@@ -65,11 +67,11 @@ import org.takes.facets.fork.FkParams;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.Target;
 import org.takes.facets.fork.TsFork;
-import org.takes.rq.RqHref;
 import org.takes.tk.TkHTML;
 import org.takes.tk.TkRedirect;
 import org.takes.ts.TsClasspath;
 import org.takes.ts.TsFiles;
+import org.takes.ts.TsGreedy;
 import org.takes.ts.TsWithType;
 import org.takes.ts.TsWrap;
 
@@ -110,120 +112,85 @@ public final class TsApp extends TsWrap {
      */
     @SuppressWarnings("PMD.DoNotUseThreads")
     public static Takes make(final Base base) throws IOException {
-        final Takes fork = new TsFallback(
-            new TsFork(
-                new FkParams(
-                    PsByFlag.class.getSimpleName(),
-                    Pattern.compile(".+"),
-                    new TkRedirect()
-                ),
-                new FkRegex(
-                    "/xsl/.*",
-                    new TsWithType(new TsClasspath(), "text/xsl")
-                ),
-                new FkRegex(
-                    "/css/.*",
-                    new TsWithType(
-                        new TsFork(
-                            new FkHitRefresh(
-                                new File("./src/main/scss"),
-                                new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        new VerboseProcess(
-                                            new ProcessBuilder(
-                                                "mvn",
-                                                "sass:update-stylesheets",
-                                                "minify:minify"
-                                            )
-                                        ).stdout();
-                                    }
-                                },
-                                new TsFiles("./target/classes")
-                            ),
-                            new FkFixed(new TsClasspath())
-                        ),
-                        "text/css"
-                    )
-                ),
-                new FkRegex("/robots.txt", ""),
-                new FkRegex(
-                    "/",
+        final Takes fork = new TsFork(
+            new FkParams(
+                PsByFlag.class.getSimpleName(),
+                Pattern.compile(".+"),
+                new TkRedirect()
+            ),
+            new FkRegex(
+                "/xsl/.*",
+                new TsWithType(new TsClasspath(), "text/xsl")
+            ),
+            new FkRegex(
+                "/css/.*",
+                new TsWithType(
                     new TsFork(
-                        new FkAuthenticated(
-                            new Target<Request>() {
+                        new FkHitRefresh(
+                            new File("./src/main/scss"),
+                            new Runnable() {
                                 @Override
-                                public Take route(final Request req)
-                                    throws IOException {
-                                    return new TkDocs(
-                                        base.user(
-                                            new RqAuth(req).identity().urn()
-                                        ).docs(),
-                                        req
-                                    );
+                                public void run() {
+                                    new VerboseProcess(
+                                        new ProcessBuilder(
+                                            "mvn",
+                                            "sass:update-stylesheets",
+                                            "minify:minify"
+                                        )
+                                    ).stdout();
                                 }
-                            }
+                            },
+                            new TsFiles("./target/classes")
                         ),
-                        new FkAnonymous(
-                            new Target<Request>() {
-                                @Override
-                                public Take route(final Request req) {
-                                    return new TkIndex(req);
-                                }
-                            }
-                        )
-                    )
-                ),
-                new FkRegex(
-                    "/r",
-                    new Takes() {
-                        @Override
-                        public Take route(final Request req)
-                            throws IOException {
-                            final String file =
-                                new RqHref(req).href()
-                                    .param("f").iterator().next();
-                            return new TkRead(
-                                base.user(
-                                    new RqAuth(req).identity().urn()
-                                ).docs().doc(file)
-                            );
-                        }
-                    }
-                ),
-                new FkRegex(
-                    "/d",
-                    new Takes() {
-                        @Override
-                        public Take route(final Request req)
-                            throws IOException {
-                            final String file =
-                                new RqHref(req).href().param("x")
-                                    .iterator().next();
-                            return new TkDelete(
-                                base.user(
-                                    new RqAuth(req).identity().urn()
-                                ).docs().doc(file)
-                            );
-                        }
-                    }
-                ),
-                new FkRegex(
-                    "/w",
-                    new Takes() {
-                        @Override
-                        public Take route(final Request req)
-                            throws IOException {
-                            return new TkWrite(
-                                base.user(
-                                    new RqAuth(req).identity().urn()
-                                ).docs(),
-                                req
-                            );
-                        }
-                    }
+                        new FkFixed(new TsClasspath())
+                    ),
+                    "text/css"
                 )
             ),
+            new FkRegex("/robots.txt", ""),
+            new FkRegex(
+                "/",
+                new TsFork(
+                    new FkAuthenticated(
+                        new Target<Request>() {
+                            @Override
+                            public Take route(final Request req)
+                                throws IOException {
+                                return new TkDocs(
+                                    base.user(
+                                        new RqAuth(req).identity().urn()
+                                    ).docs(),
+                                    req
+                                );
+                            }
+                        }
+                    ),
+                    new FkAnonymous(
+                        new Target<Request>() {
+                            @Override
+                            public Take route(final Request req) {
+                                return new TkIndex(req);
+                            }
+                        }
+                    )
+                )
+            ),
+            new FkRegex(
+                "/doc/.*",
+                new TsSecure(new TsGreedy(new TsDoc(base)))
+            )
+        );
+        return TsApp.fallback(new TsFlash(TsApp.auth(fork)));
+    }
+
+    /**
+     * Fallback.
+     * @param takes Original takes
+     * @return Takes with fallback
+     */
+    private static Takes fallback(final Takes takes) {
+        return new TsFallback(
+            takes,
             new Fallback() {
                 @Override
                 public Take take(final RqFallback req) {
@@ -237,7 +204,6 @@ public final class TsApp extends TsWrap {
                 }
             }
         );
-        return new TsFlash(TsApp.auth(fork));
     }
 
     /**

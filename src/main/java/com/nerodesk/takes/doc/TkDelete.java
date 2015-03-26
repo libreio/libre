@@ -27,36 +27,42 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes.doc;
 
 import com.nerodesk.om.Doc;
-import com.nerodesk.om.mock.MkBase;
-import org.apache.commons.io.IOUtils;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
-import org.takes.rs.RsPrint;
+import java.io.IOException;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.facets.flash.RsFlash;
+import org.takes.facets.forward.RsForward;
 
 /**
- * Tests for {@code TkRead}.
+ * Delete file.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
-public final class TkReadTest {
+final class TkDelete implements Take {
 
     /**
-     * TkRead can read file content.
-     * @throws Exception If fails.
+     * Doc.
      */
-    @Test
-    public void readsFileContent() throws Exception {
-        final Doc doc = new MkBase().user("urn:test:1").docs().doc("hey");
-        doc.write(IOUtils.toInputStream("hello, world!"));
-        MatcherAssert.assertThat(
-            new RsPrint(new TkRead(doc).act()).printBody(),
-            Matchers.endsWith("world!")
+    private final transient Doc doc;
+
+    /**
+     * Ctor.
+     * @param src Source document to delete
+     */
+    TkDelete(final Doc src) {
+        this.doc = src;
+    }
+
+    @Override
+    public Response act() throws IOException {
+        this.doc.delete();
+        return new RsForward(
+            new RsFlash("file deleted")
         );
     }
 

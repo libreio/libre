@@ -52,10 +52,17 @@ public interface Doc {
     boolean exists() throws IOException;
 
     /**
-     * Delete it.
+     * Delete it (fails if the document is not mine).
      * @throws IOException If fails
      */
     void delete() throws IOException;
+
+    /**
+     * Everybody who has access to this document.
+     * @return Friends
+     * @throws IOException If fails
+     */
+    Friends friends() throws IOException;
 
     /**
      * Read its entire content into this output stream.

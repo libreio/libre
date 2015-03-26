@@ -27,42 +27,40 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes.doc;
 
-import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
+import com.nerodesk.om.Doc;
+import com.nerodesk.om.Docs;
+import com.nerodesk.om.mock.MkBase;
+import org.apache.commons.io.IOUtils;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.takes.rs.RsPrint;
 
 /**
- * Index.
+ * Tests for {@code TkDelete}.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-public final class TkIndex implements Take {
+public final class TkDeleteTest {
 
     /**
-     * Request.
+     * TkDelete can delete file.
+     * @throws Exception If fails.
      */
-    private final transient Request request;
-
-    /**
-     * Ctor.
-     * @param req Request
-     */
-    public TkIndex(final Request req) {
-        this.request = req;
-    }
-
-    @Override
-    public Response act() throws IOException {
-        return new RsPage(
-            "/xsl/home.xsl",
-            this.request
+    @Test
+    public void deletesFile() throws Exception {
+        final Docs docs = new MkBase().user("urn:test:1").docs();
+        final Doc doc = docs.doc("hey");
+        doc.write(IOUtils.toInputStream("hello, world!"));
+        MatcherAssert.assertThat(
+            new RsPrint(new TkDelete(doc).act()).print(),
+            Matchers.startsWith("HTTP/1.1 303")
         );
+        MatcherAssert.assertThat(docs.names(), Matchers.emptyIterable());
     }
 
 }

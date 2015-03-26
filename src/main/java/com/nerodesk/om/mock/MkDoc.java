@@ -31,6 +31,7 @@ package com.nerodesk.om.mock;
 
 import com.jcabi.log.Logger;
 import com.nerodesk.om.Doc;
+import com.nerodesk.om.Friends;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -102,6 +103,11 @@ public final class MkDoc implements Doc {
     @Override
     public void delete() {
         this.file().delete();
+    }
+
+    @Override
+    public Friends friends() {
+        return new MkFriends(this.dir, this.user, this.label);
     }
 
     @Override

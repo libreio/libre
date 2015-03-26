@@ -27,32 +27,22 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes;
 
-import com.nerodesk.om.Docs;
 import java.io.IOException;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.misc.Href;
-import org.takes.rq.RqHref;
-import org.takes.rs.xe.XeSource;
-import org.xembly.Directive;
-import org.xembly.Directives;
 
 /**
- * List of docs.
+ * Index.
  *
+ * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.2
+ * @since 0.1
  */
-public final class TkDocs implements Take {
-
-    /**
-     * Docs.
-     */
-    private final transient Docs docs;
+public final class TkIndex implements Take {
 
     /**
      * Request.
@@ -61,45 +51,18 @@ public final class TkDocs implements Take {
 
     /**
      * Ctor.
-     * @param dcs Docs
      * @param req Request
      */
-    public TkDocs(final Docs dcs, final Request req) {
-        this.docs = dcs;
+    public TkIndex(final Request req) {
         this.request = req;
     }
 
     @Override
     public Response act() throws IOException {
         return new RsPage(
-            "/xsl/docs.xsl",
-            this.request,
-            new XeSource() {
-                @Override
-                public Iterable<Directive> toXembly() throws IOException {
-                    return TkDocs.this.list();
-                }
-            }
+            "/xsl/home.xsl",
+            this.request
         );
-    }
-
-    /**
-     * Convert docs into directives.
-     * @return Directives
-     * @throws IOException If fails
-     */
-    private Iterable<Directive> list() throws IOException {
-        final Directives dirs = new Directives().add("docs");
-        final Href home = new RqHref(this.request).href();
-        for (final String name : this.docs.names()) {
-            dirs.add("doc").add("name").set(name).up()
-                .add("read")
-                .set(home.path("r").with("f", name).toString()).up()
-                .add("delete")
-                .set(home.path("d").with("x", name).toString()).up()
-                .up();
-        }
-        return dirs;
     }
 
 }

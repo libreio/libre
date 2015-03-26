@@ -27,7 +27,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes.doc;
 
 import com.nerodesk.om.Doc;
 import java.io.IOException;
@@ -37,13 +37,16 @@ import org.takes.facets.flash.RsFlash;
 import org.takes.facets.forward.RsForward;
 
 /**
- * Delete file.
+ * Add friend.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
+ * @todo #103:30m/DEV There is no unit test for this class. Let's create one.
+ *  Also let's create an integration test, to check how this document
+ *  sharing works.
  */
-public final class TkDelete implements Take {
+final class TkAddFriend implements Take {
 
     /**
      * Doc.
@@ -51,19 +54,24 @@ public final class TkDelete implements Take {
     private final transient Doc doc;
 
     /**
-     * Ctor.
-     * @param src Source document to delete
+     * Name of friend (URN).
      */
-    public TkDelete(final Doc src) {
+    private final transient String friend;
+
+    /**
+     * Ctor.
+     * @param src Source document to read from
+     * @param name Name of Friend
+     */
+    TkAddFriend(final Doc src, final String name) {
         this.doc = src;
+        this.friend = name;
     }
 
     @Override
     public Response act() throws IOException {
-        this.doc.delete();
-        return new RsForward(
-            new RsFlash("file deleted")
-        );
+        this.doc.friends().add(this.friend);
+        return new RsForward(new RsFlash("document shared"));
     }
 
 }

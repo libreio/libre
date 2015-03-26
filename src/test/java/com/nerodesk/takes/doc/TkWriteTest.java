@@ -27,48 +27,68 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes.doc;
 
-import com.jcabi.matchers.XhtmlMatchers;
-import com.nerodesk.om.User;
+import com.google.common.base.Joiner;
+import com.nerodesk.om.Docs;
 import com.nerodesk.om.mock.MkBase;
-import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.rq.RqFake;
+import org.takes.rq.RqWithHeader;
 import org.takes.rs.RsPrint;
 
 /**
- * Tests for {@code TkDocs}.
+ * Tests for {@code TkWrite}.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
-public final class TkDocsTest {
+public final class TkWriteTest {
 
     /**
-     * TkDocs can return a list of docs.
+     * TkWrite can write file content.
      * @throws Exception If fails.
      */
     @Test
-    public void returnsListOfDocs() throws Exception {
-        final User user = new MkBase().user("urn:test:1");
-        user.docs().doc("test.txt").write(
-            new ByteArrayInputStream("hello, world!".getBytes())
-        );
-        user.docs().doc("test-2.txt").write(
-            new ByteArrayInputStream("hello!".getBytes())
-        );
+    public void writesFileContent() throws Exception {
+        final Docs docs = new MkBase().user("urn:test:1").docs();
+        final String file = "hey.txt";
         MatcherAssert.assertThat(
             new RsPrint(
-                new TkDocs(user.docs(), new RqFake()).act()
-            ).printBody(),
-            XhtmlMatchers.hasXPaths(
-                "/page/docs[count(doc)=2]",
-                "/page/docs/doc[name='test.txt']",
-                "/page/docs/doc/read"
-            )
+                new TkWrite(
+                    docs.doc(file),
+                    new RqWithHeader(
+                        new RqFake(
+                            "POST", "/",
+                            Joiner.on("\r\n").join(
+                                " --AaB03x",
+                                "Content-Disposition: form-data; name=\"name\"",
+                                "",
+                                file,
+                                "--AaB03x",
+                                "Content-Disposition: form-data; name=\"file\"",
+                                "Content-Transfer-Encoding: utf-8",
+                                "",
+                                "hello, world!",
+                                "--AaB03x--"
+                            )
+                        ),
+                        "Content-Type: multipart/form-data; boundary=AaB03x"
+                    )
+                ).act()
+            ).print(),
+            Matchers.startsWith("HTTP/1.1 303 See Other")
+        );
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        docs.doc(file).read(baos);
+        MatcherAssert.assertThat(
+            new String(baos.toByteArray()),
+            Matchers.endsWith("world!")
         );
     }
+
 }

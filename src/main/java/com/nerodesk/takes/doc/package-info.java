@@ -27,57 +27,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
-
-import com.nerodesk.om.Docs;
-import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
-import org.takes.facets.flash.RsFlash;
-import org.takes.facets.forward.RsForward;
-import org.takes.rq.RqMultipart;
-import org.takes.rq.RqPrint;
 
 /**
- * Write file content.
+ * Document management.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
  */
-public final class TkWrite implements Take {
-
-    /**
-     * Docs.
-     */
-    private final transient Docs docs;
-
-    /**
-     * Request.
-     */
-    private final transient Request request;
-
-    /**
-     * Ctor.
-     * @param dcs Docs
-     * @param req Request
-     */
-    public TkWrite(final Docs dcs, final Request req) {
-        this.docs = dcs;
-        this.request = req;
-    }
-
-    @Override
-    public Response act() throws IOException {
-        final RqMultipart multi = new RqMultipart(this.request);
-        final String name = new RqPrint(
-            multi.part("name").iterator().next()
-        ).printBody();
-        this.docs.doc(name).write(multi.part("file").iterator().next().body());
-        return new RsForward(
-            new RsFlash(String.format("file \"%s\" uploaded", name))
-        );
-    }
-
-}
+package com.nerodesk.takes.doc;
