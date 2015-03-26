@@ -27,7 +27,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
@@ -58,8 +58,7 @@ import org.takes.http.FtRemote;
  * @version $Id$
  * @since 0.2
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @todo #14:15min Application should be able to get binary file properly.
- *  Add a test to check it works and fix if doesn't.
+ * @checkstyle MultipleStringLiterals (500 lines)
  * @todo #89:1h Doc should support partitioned read.
  *  If file is too big to fit in one read request it should be split
  *  by the Doc on parts and returned to the client one-by-one.
@@ -74,7 +73,8 @@ import org.takes.http.FtRemote;
  *  Let's start from proper tests. See example for partitioned write
  *  AppTest.uploadsBigFile()
  */
-public final class AppTest {
+@SuppressWarnings("PMD.TooManyMethods")
+public final class TsAppTest {
 
     /**
      * Fake URN.
@@ -87,7 +87,7 @@ public final class AppTest {
      */
     @Test
     public void launchesOnRandomPort() throws Exception {
-        final App app = new App(new MkBase());
+        final TsApp app = new TsApp(new MkBase());
         new FtRemote(app).exec(
             new FtRemote.Script() {
                 @Override
@@ -119,20 +119,51 @@ public final class AppTest {
     public void returnsFileContent() throws Exception {
         final Base base = new MkBase();
         final String name = "test.txt";
-        base.user(AppTest.FAKE_URN).docs().doc(name).write(
+        base.user(TsAppTest.FAKE_URN).docs().doc(name).write(
             new ByteArrayInputStream("hello, world!".getBytes())
         );
-        final App app = new App(base);
+        final TsApp app = new TsApp(base);
         new FtRemote(app).exec(
             new FtRemote.Script() {
                 @Override
                 public void exec(final URI home) throws IOException {
                     new JdkRequest(home)
-                        .uri().path("/r").queryParam("f", name).back()
+                        .uri().path("/doc/read").queryParam("file", name).back()
                         .fetch()
                         .as(RestResponse.class)
                         .assertStatus(HttpURLConnection.HTTP_OK)
                         .assertBody(Matchers.startsWith("hello, world"));
+                }
+            }
+        );
+    }
+
+    /**
+     * Application can return file content in binary form.
+     * @throws Exception If something goes wrong
+     */
+    @Test
+    public void returnsBinaryContent() throws Exception {
+        final Base base = new MkBase();
+        final String name = "test.dat";
+        final byte[] content = new byte[]{0x00, 0x0a, (byte) 0xff, (byte) 0xfe};
+        base.user(TsAppTest.FAKE_URN).docs().doc(name).write(
+            new ByteArrayInputStream(content)
+        );
+        new FtRemote(new TsApp(base)).exec(
+            new FtRemote.Script() {
+                @Override
+                public void exec(final URI home) throws IOException {
+                    MatcherAssert.assertThat(
+                        new JdkRequest(home)
+                            .uri().path("/doc/read")
+                            .queryParam("file", name).back()
+                            .fetch()
+                            .as(RestResponse.class)
+                            .assertStatus(HttpURLConnection.HTTP_OK)
+                            .binary(),
+                        Matchers.is(content)
+                    );
                 }
             }
         );
@@ -147,14 +178,14 @@ public final class AppTest {
         final Base base = new MkBase();
         final String name = "small.txt";
         final String file = "uploaded by client";
-        new FtRemote(new App(base)).exec(
+        new FtRemote(new TsApp(base)).exec(
             new FtRemote.Script() {
                 @Override
                 public void exec(final URI home) throws IOException {
-                    AppTest.write(home)
+                    TsAppTest.write(home)
                         .fetch(
                             new ByteArrayInputStream(
-                                AppTest.multipart(name, file).getBytes()
+                                TsAppTest.multipart(name, file).getBytes()
                             )
                         )
                         .as(RestResponse.class)
@@ -163,7 +194,7 @@ public final class AppTest {
             }
         );
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        base.user(AppTest.FAKE_URN).docs().doc(name).read(stream);
+        base.user(TsAppTest.FAKE_URN).docs().doc(name).read(stream);
         MatcherAssert.assertThat(
             IOUtils.toString(stream.toByteArray(), Charsets.UTF_8.name()),
             Matchers.containsString(file)
@@ -193,14 +224,14 @@ public final class AppTest {
         final Base base = new MkBase();
         final String name = "large.txt";
         final String file = "123451234512345";
-        new FtRemote(new App(base)).exec(
+        new FtRemote(new TsApp(base)).exec(
             // @checkstyle AnonInnerLengthCheck (30 lines)
             new FtRemote.Script() {
                 @Override
                 public void exec(final URI home) throws IOException {
                     int pos = 0;
                     while (pos < file.length() - 1) {
-                        AppTest.write(home)
+                        TsAppTest.write(home)
                             .header(
                                 HttpHeaders.CONTENT_RANGE,
                                 String.format(
@@ -210,7 +241,7 @@ public final class AppTest {
                             )
                             .fetch(
                                 new ByteArrayInputStream(
-                                    AppTest.multipart(name, file).getBytes()
+                                    TsAppTest.multipart(name, file).getBytes()
                                 )
                             )
                             .as(RestResponse.class)
@@ -221,10 +252,32 @@ public final class AppTest {
             }
         );
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        base.user(AppTest.FAKE_URN).docs().doc(name).read(stream);
+        base.user(TsAppTest.FAKE_URN).docs().doc(name).read(stream);
         MatcherAssert.assertThat(
             IOUtils.toString(stream.toByteArray(), Charsets.UTF_8.name()),
             Matchers.containsString(file)
+        );
+    }
+
+    /**
+     * Application can show error page.
+     * @throws Exception If fails
+     */
+    @Test
+    public void showsErrorPage() throws Exception {
+        final Base base = new MkBase();
+        new FtRemote(new TsApp(base)).exec(
+            new FtRemote.Script() {
+                @Override
+                public void exec(final URI home) throws IOException {
+                    new JdkRequest(home)
+                        .uri().path("/page-is-absent").back()
+                        .fetch()
+                        .as(RestResponse.class)
+                        .assertStatus(HttpURLConnection.HTTP_OK)
+                        .assertBody(Matchers.startsWith("oops, something "));
+                }
+            }
         );
     }
 
@@ -236,7 +289,7 @@ public final class AppTest {
     private static Request write(final URI home) {
         return new JdkRequest(home)
             .method("POST")
-            .uri().path("/w").back()
+            .uri().path("/doc/write").back()
             .header(
                 HttpHeaders.CONTENT_TYPE,
                 "multipart/form-data; boundary=AaB03x"

@@ -27,81 +27,68 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om.aws;
 
-import com.jcabi.manifests.Manifests;
-import com.jcabi.s3.Region;
-import com.jcabi.s3.retry.ReBucket;
-import com.nerodesk.om.Base;
-import com.nerodesk.om.aws.AwsBase;
-import com.nerodesk.om.mock.MkBase;
-import com.nerodesk.takes.TsApp;
+import com.jcabi.s3.Bucket;
+import com.nerodesk.om.Friends;
 import java.io.IOException;
-import java.util.Arrays;
-import org.takes.http.Exit;
-import org.takes.http.FtCLI;
+import java.util.Collections;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
- * Launch (used only for heroku).
+ * AWS-based version of Doc.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.3
+ * @todo #103:30m/DEV This class is not implemented and we can't really share
+ *  documents between users. Let's implement it using DynamoDB or some
+ *  more simple S3-only based mechanism.
  */
-public final class Launch {
+@ToString
+@EqualsAndHashCode(of = { "bucket", "label" })
+public final class AwsFriends implements Friends {
 
     /**
-     * Arguments.
+     * Bucket.
      */
-    private final transient Iterable<String> arguments;
+    private final transient Bucket bucket;
+
+    /**
+     * Doc name.
+     */
+    private final transient String label;
 
     /**
      * Ctor.
-     * @param args Command line args
+     * @param bkt Bucket
+     * @param doc Name of document
      */
-    public Launch(final String[] args) {
-        this.arguments = Arrays.asList(args);
+    public AwsFriends(final Bucket bkt, final String doc) {
+        this.bucket = bkt;
+        this.label = doc;
     }
 
-    /**
-     * Main entry point.
-     * @param args Arguments
-     * @throws IOException If fails
-     */
-    public static void main(final String... args) throws IOException {
-        new Launch(args).exec();
+    @Override
+    public boolean leader() throws IOException {
+        return true;
     }
 
-    /**
-     * Run it all.
-     * @throws IOException If fails
-     */
-    public void exec() throws IOException {
-        new FtCLI(
-            new TsApp(Launch.base()),
-            this.arguments
-        ).start(Exit.NEVER);
+    @Override
+    public Iterable<String> names() throws IOException {
+        assert this.bucket != null;
+        assert this.label != null;
+        return Collections.emptyList();
     }
 
-    /**
-     * Base.
-     * @return Base
-     */
-    private static Base base() {
-        final String key = Manifests.read("Nerodesk-AwsKey");
-        final Base base;
-        if (key.startsWith("AAAA") || key.startsWith("${")) {
-            base = new MkBase();
-        } else {
-            base = new AwsBase(
-                new ReBucket(
-                    new Region.Simple(
-                        key, Manifests.read("Nerodesk-AwsSecret")
-                    ).bucket(Manifests.read("Nerodesk-Bucket"))
-                )
-            );
-        }
-        return base;
+    @Override
+    public void add(final String name) throws IOException {
+        // nothing
     }
 
+    @Override
+    public void eject(final String name) throws IOException {
+        // nothing
+    }
 }

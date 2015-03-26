@@ -31,7 +31,6 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://www.w3.org/1999/xhtml" version="1.0">
     <xsl:template match="/page">
-        <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html&gt;</xsl:text>
         <html lang="en">
             <head>
                 <meta charset="UTF-8"/>
@@ -97,6 +96,10 @@
                 </xsl:choose>
             </xsl:attribute>
             <xsl:value-of select="/page/@sla"/>
+        </span>
+        <span title="total amount of bytes stored in your account">
+            <!-- @todo #102:30min This value is hardcoded for now but should be connected to Docs.size() value and present total amount of bytes in user friendly form stored in account. -->
+            <xsl:text>[47 mb]</xsl:text>
         </span>
     </xsl:template>
     <xsl:template match="flash">

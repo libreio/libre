@@ -27,79 +27,47 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.om;
 
-import com.nerodesk.om.Docs;
+import com.jcabi.aspects.Immutable;
 import java.io.IOException;
-import org.takes.Href;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
-import org.takes.rq.RqHref;
-import org.takes.rs.xe.XeSource;
-import org.xembly.Directive;
-import org.xembly.Directives;
 
 /**
- * List of docs.
+ * Friends.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
  */
-public final class TkDocs implements Take {
+@Immutable
+public interface Friends {
 
     /**
-     * Docs.
-     */
-    private final transient Docs docs;
-
-    /**
-     * Request.
-     */
-    private final transient Request request;
-
-    /**
-     * Ctor.
-     * @param dcs Docs
-     * @param req Request
-     */
-    public TkDocs(final Docs dcs, final Request req) {
-        this.docs = dcs;
-        this.request = req;
-    }
-
-    @Override
-    public Response act() throws IOException {
-        return new RsPage(
-            "/xsl/docs.xsl",
-            this.request,
-            new XeSource() {
-                @Override
-                public Iterable<Directive> toXembly() throws IOException {
-                    return TkDocs.this.list();
-                }
-            }
-        );
-    }
-
-    /**
-     * Convert docs into directives.
-     * @return Directives
+     * I'm the leader?
+     * @return TRUE if I'm the leader of the group
      * @throws IOException If fails
      */
-    private Iterable<Directive> list() throws IOException {
-        final Directives dirs = new Directives().add("docs");
-        final Href home = new RqHref(this.request).href();
-        for (final String name : this.docs.names()) {
-            dirs.add("doc").add("name").set(name).up()
-                .add("read")
-                .set(home.path("r").with("f", name).toString()).up()
-                .add("delete")
-                .set(home.path("d").with("x", name).toString()).up()
-                .up();
-        }
-        return dirs;
-    }
+    boolean leader() throws IOException;
+
+    /**
+     * Everybody who has access to the document.
+     * @return URNs of them
+     * @throws IOException If fails
+     */
+    Iterable<String> names() throws IOException;
+
+    /**
+     * Add new friend (fails if I'm not a leader).
+     * @param name Name of friend
+     * @throws IOException If fails
+     */
+    void add(String name) throws IOException;
+
+    /**
+     * Eject a friend (fails if I'm not a leader).
+     * @param name Name of friend
+     * @throws IOException If fails
+     */
+    void eject(String name) throws IOException;
 
 }

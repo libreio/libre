@@ -27,81 +27,48 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes;
 
-import com.jcabi.manifests.Manifests;
-import com.jcabi.s3.Region;
-import com.jcabi.s3.retry.ReBucket;
-import com.nerodesk.om.Base;
-import com.nerodesk.om.aws.AwsBase;
+import com.jcabi.matchers.XhtmlMatchers;
+import com.nerodesk.om.User;
 import com.nerodesk.om.mock.MkBase;
-import com.nerodesk.takes.TsApp;
-import java.io.IOException;
-import java.util.Arrays;
-import org.takes.http.Exit;
-import org.takes.http.FtCLI;
+import java.io.ByteArrayInputStream;
+import org.hamcrest.MatcherAssert;
+import org.junit.Test;
+import org.takes.rq.RqFake;
+import org.takes.rs.RsPrint;
 
 /**
- * Launch (used only for heroku).
+ * Tests for {@code TkDocs}.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.1
+ * @since 0.2
  */
-public final class Launch {
+public final class TkDocsTest {
 
     /**
-     * Arguments.
+     * TkDocs can return a list of docs.
+     * @throws Exception If fails.
      */
-    private final transient Iterable<String> arguments;
-
-    /**
-     * Ctor.
-     * @param args Command line args
-     */
-    public Launch(final String[] args) {
-        this.arguments = Arrays.asList(args);
+    @Test
+    public void returnsListOfDocs() throws Exception {
+        final User user = new MkBase().user("urn:test:1");
+        user.docs().doc("test.txt").write(
+            new ByteArrayInputStream("hello, world!".getBytes())
+        );
+        user.docs().doc("test-2.txt").write(
+            new ByteArrayInputStream("hello!".getBytes())
+        );
+        MatcherAssert.assertThat(
+            new RsPrint(
+                new TkDocs(user.docs(), new RqFake()).act()
+            ).printBody(),
+            XhtmlMatchers.hasXPaths(
+                "/page/docs[count(doc)=2]",
+                "/page/docs/doc[name='test.txt']",
+                "/page/docs/doc/read"
+            )
+        );
     }
-
-    /**
-     * Main entry point.
-     * @param args Arguments
-     * @throws IOException If fails
-     */
-    public static void main(final String... args) throws IOException {
-        new Launch(args).exec();
-    }
-
-    /**
-     * Run it all.
-     * @throws IOException If fails
-     */
-    public void exec() throws IOException {
-        new FtCLI(
-            new TsApp(Launch.base()),
-            this.arguments
-        ).start(Exit.NEVER);
-    }
-
-    /**
-     * Base.
-     * @return Base
-     */
-    private static Base base() {
-        final String key = Manifests.read("Nerodesk-AwsKey");
-        final Base base;
-        if (key.startsWith("AAAA") || key.startsWith("${")) {
-            base = new MkBase();
-        } else {
-            base = new AwsBase(
-                new ReBucket(
-                    new Region.Simple(
-                        key, Manifests.read("Nerodesk-AwsSecret")
-                    ).bucket(Manifests.read("Nerodesk-Bucket"))
-                )
-            );
-        }
-        return base;
-    }
-
 }

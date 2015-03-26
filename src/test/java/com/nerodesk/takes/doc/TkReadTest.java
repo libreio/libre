@@ -27,66 +27,35 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes.doc;
 
-import com.google.common.base.Joiner;
-import com.nerodesk.om.Docs;
+import com.nerodesk.om.Doc;
 import com.nerodesk.om.mock.MkBase;
-import java.io.ByteArrayOutputStream;
+import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.takes.rq.RqFake;
-import org.takes.rq.RqWithHeader;
 import org.takes.rs.RsPrint;
 
 /**
- * Tests for {@code TkWrite}.
+ * Tests for {@code TkRead}.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
-public final class TkWriteTest {
+public final class TkReadTest {
 
     /**
-     * TkWrite can write file content.
+     * TkRead can read file content.
      * @throws Exception If fails.
      */
     @Test
-    public void writesFileContent() throws Exception {
-        final Docs docs = new MkBase().user("urn:test:1").docs();
-        final String file = "hey.txt";
+    public void readsFileContent() throws Exception {
+        final Doc doc = new MkBase().user("urn:test:1").docs().doc("hey");
+        doc.write(IOUtils.toInputStream("hello, world!"));
         MatcherAssert.assertThat(
-            new RsPrint(
-                new TkWrite(
-                    docs,
-                    new RqWithHeader(
-                        new RqFake(
-                            "POST", "/",
-                            Joiner.on("\r\n").join(
-                                " --AaB03x",
-                                "Content-Disposition: form-data; name=\"name\"",
-                                "",
-                                file,
-                                "--AaB03x",
-                                "Content-Disposition: form-data; name=\"file\"",
-                                "Content-Transfer-Encoding: utf-8",
-                                "",
-                                "hello, world!",
-                                "--AaB03x--"
-                            )
-                        ),
-                        "Content-Type: multipart/form-data; boundary=AaB03x"
-                    )
-                ).act()
-            ).print(),
-            Matchers.startsWith("HTTP/1.1 303 See Other")
-        );
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        docs.doc(file).read(baos);
-        MatcherAssert.assertThat(
-            new String(baos.toByteArray()),
+            new RsPrint(new TkRead(doc).act()).printBody(),
             Matchers.endsWith("world!")
         );
     }

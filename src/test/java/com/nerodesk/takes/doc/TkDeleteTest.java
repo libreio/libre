@@ -27,9 +27,10 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk;
+package com.nerodesk.takes.doc;
 
 import com.nerodesk.om.Doc;
+import com.nerodesk.om.Docs;
 import com.nerodesk.om.mock.MkBase;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
@@ -38,26 +39,28 @@ import org.junit.Test;
 import org.takes.rs.RsPrint;
 
 /**
- * Tests for {@code TkRead}.
+ * Tests for {@code TkDelete}.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
  */
-public final class TkReadTest {
+public final class TkDeleteTest {
 
     /**
-     * TkRead can read file content.
+     * TkDelete can delete file.
      * @throws Exception If fails.
      */
     @Test
-    public void readsFileContent() throws Exception {
-        final Doc doc = new MkBase().user("urn:test:1").docs().doc("hey");
+    public void deletesFile() throws Exception {
+        final Docs docs = new MkBase().user("urn:test:1").docs();
+        final Doc doc = docs.doc("hey");
         doc.write(IOUtils.toInputStream("hello, world!"));
         MatcherAssert.assertThat(
-            new RsPrint(new TkRead(doc).act()).printBody(),
-            Matchers.endsWith("world!")
+            new RsPrint(new TkDelete(doc).act()).print(),
+            Matchers.startsWith("HTTP/1.1 303")
         );
+        MatcherAssert.assertThat(docs.names(), Matchers.emptyIterable());
     }
 
 }

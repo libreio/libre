@@ -27,55 +27,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om;
-
-import com.jcabi.aspects.Immutable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
- * Document.
+ * Takes.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
  */
-@Immutable
-public interface Doc {
-
-    /**
-     * Does it exist?
-     * @return TRUE if exists
-     * @throws IOException If fails
-     */
-    boolean exists() throws IOException;
-
-    /**
-     * Delete it (fails if the document is not mine).
-     * @throws IOException If fails
-     */
-    void delete() throws IOException;
-
-    /**
-     * Everybody who has access to this document.
-     * @return Friends
-     * @throws IOException If fails
-     */
-    Friends friends() throws IOException;
-
-    /**
-     * Read its entire content into this output stream.
-     * @param output Output stream
-     * @throws IOException If fails
-     */
-    void read(OutputStream output) throws IOException;
-
-    /**
-     * Write its entire content from this input stream.
-     * @param input Input stream
-     * @throws IOException If fails
-     */
-    void write(InputStream input) throws IOException;
-
-}
+package com.nerodesk.takes;

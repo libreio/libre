@@ -70,11 +70,12 @@ public final class AwsDocs implements Docs {
         return new AwsDoc(this.bucket, doc);
     }
 
-    // @todo #48:30min This method should return valid size of aws document
-    //  storage. Currently is returning just dummy value. Remember to provide
-    //  test case for that also.
     @Override
     public long size() throws IOException {
-        return 0;
+        long total = 0;
+        for (final String object : this.bucket.list("")) {
+            total += this.bucket.ocket(object).meta().getContentLength();
+        }
+        return total;
     }
 }
