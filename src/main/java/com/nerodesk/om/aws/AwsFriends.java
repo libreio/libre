@@ -32,14 +32,14 @@ package com.nerodesk.om.aws;
 import com.amazonaws.services.s3.model.CopyObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Sets;
 import com.jcabi.immutable.ArrayMap;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
 import com.nerodesk.om.Friends;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Set;
+import java.util.Collection;
+import java.util.HashSet;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.io.IOUtils;
@@ -96,22 +96,15 @@ final class AwsFriends implements Friends {
 
     @Override
     public Iterable<String> names() throws IOException {
-        final Ocket ocket = this.bucket.ocket(this.key());
-        return Arrays.asList(
-            ocket.meta().getUserMetaDataOf(AwsFriends.HEADER).split(";")
-        );
+        return this.list();
     }
 
     @Override
     public void add(final String name) throws IOException {
+        final Collection<String> friends = this.list();
+        friends.add(name);
         final Ocket ocket = this.bucket.ocket(this.key());
         final ObjectMetadata meta = ocket.meta();
-        final Set<String> friends = Sets.newHashSet(
-            Arrays.asList(
-                meta.getUserMetaDataOf(AwsFriends.HEADER).split(";")
-            )
-        );
-        friends.add(name);
         meta.setUserMetadata(
             new ArrayMap<>(meta.getUserMetadata()).with(
                 AwsFriends.HEADER,
@@ -135,14 +128,10 @@ final class AwsFriends implements Friends {
 
     @Override
     public void eject(final String name) throws IOException {
+        final Collection<String> friends = this.list();
+        friends.remove(name);
         final Ocket ocket = this.bucket.ocket(this.key());
         final ObjectMetadata meta = ocket.meta();
-        final Set<String> friends = Sets.newHashSet(
-            Arrays.asList(
-                meta.getUserMetaDataOf(AwsFriends.HEADER).split(";")
-            )
-        );
-        friends.remove(name);
         meta.setUserMetadata(
             new ArrayMap<>(meta.getUserMetadata()).with(
                 AwsFriends.HEADER,
@@ -166,5 +155,23 @@ final class AwsFriends implements Friends {
      */
     private String key() {
         return String.format("%s/%s", this.user, this.label);
+    }
+
+    /**
+     * Get a collection of friends.
+     * @return Names of them
+     * @throws IOException If fails
+     */
+    private Collection<String> list() throws IOException {
+        final Ocket ocket = this.bucket.ocket(this.key());
+        final Collection<String> friends = new HashSet<>(0);
+        if (ocket.exists()) {
+            final ObjectMetadata meta = ocket.meta();
+            final String header = meta.getUserMetaDataOf(AwsFriends.HEADER);
+            if (header != null) {
+                friends.addAll(Arrays.asList(header.split(";")));
+            }
+        }
+        return friends;
     }
 }

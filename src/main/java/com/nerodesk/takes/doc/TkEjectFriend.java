@@ -27,85 +27,48 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.aws;
+package com.nerodesk.takes.doc;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.jcabi.s3.Bucket;
 import com.nerodesk.om.Doc;
-import com.nerodesk.om.Docs;
 import java.io.IOException;
-import java.util.List;
-import lombok.EqualsAndHashCode;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.facets.flash.RsFlash;
+import org.takes.facets.forward.RsForward;
 
 /**
- * AWS-based version of Docs.
+ * Reject friend.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
  */
-@EqualsAndHashCode(of = { "bucket", "user" })
-final class AwsDocs implements Docs {
+final class TkEjectFriend implements Take {
 
     /**
-     * Bucket.
+     * Doc.
      */
-    private final transient Bucket bucket;
+    private final transient Doc doc;
 
     /**
-     * User.
+     * Name of friend (URN).
      */
-    private final transient String user;
+    private final transient String friend;
 
     /**
      * Ctor.
-     * @param bkt Bucket
-     * @param urn URN of the user
+     * @param src Source document to read from
+     * @param name Name of Friend
      */
-    AwsDocs(final Bucket bkt, final String urn) {
-        this.bucket = bkt;
-        this.user = urn;
+    TkEjectFriend(final Doc src, final String name) {
+        this.doc = src;
+        this.friend = name;
     }
 
     @Override
-    public List<String> names() throws IOException {
-        return Lists.newArrayList(
-            Iterables.transform(
-                this.bucket.list(this.prefix()),
-                new Function<String, String>() {
-                    @Override
-                    public String apply(final String input) {
-                        return input.substring(
-                            AwsDocs.this.user.length() + 1
-                        );
-                    }
-                }
-            )
-        );
-    }
-
-    @Override
-    public Doc doc(final String doc) {
-        return new AwsDoc(this.bucket, this.user, doc);
-    }
-
-    @Override
-    public long size() throws IOException {
-        long total = 0;
-        for (final String object : this.bucket.list(this.prefix())) {
-            total += this.bucket.ocket(object).meta().getContentLength();
-        }
-        return total;
-    }
-
-    /**
-     * Prefix.
-     * @return Prefix
-     */
-    private String prefix() {
-        return String.format("%s/", this.user);
+    public Response act() throws IOException {
+        this.doc.friends().eject(this.friend);
+        return new RsForward(new RsFlash("friend ejected"));
     }
 
 }

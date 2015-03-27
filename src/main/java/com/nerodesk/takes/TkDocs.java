@@ -112,7 +112,7 @@ public final class TkDocs implements Take {
                         href.path("eject-friend")
                             .with("friend", friend).toString()
                     )
-                    .up();
+                    .up().up();
             }
             dirs.up().up();
         }
