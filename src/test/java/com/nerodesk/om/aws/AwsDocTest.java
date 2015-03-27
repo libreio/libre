@@ -30,20 +30,16 @@
 package com.nerodesk.om.aws;
 
 import com.jcabi.s3.Bucket;
-import com.jcabi.s3.Ocket;
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
+import com.jcabi.s3.mock.MkBucket;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Answers;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * Tests for {@link AwsDoc}.
@@ -54,38 +50,18 @@ import org.mockito.MockitoAnnotations;
  * @since 0.3
  */
 public final class AwsDocTest {
-
-    /**
-     * A Bucket mock.
-     */
-    @Mock(answer = Answers.RETURNS_MOCKS)
-    private transient Bucket bucket;
-
-    /**
-     * Setup mocks.
-     */
-    @Before
-    public void init() {
-        MockitoAnnotations.initMocks(this);
-    }
-
     /**
      * AwsDoc can verify if it exists.
+     *
      * @throws Exception in case of error.
      */
     @Test
     public void exists() throws Exception {
-        final Ocket ocket = Mockito.mock(Ocket.class);
         final String label = "document-label";
-        Mockito.when(this.bucket.ocket(label)).thenReturn(ocket);
-        Mockito.when(ocket.exists()).thenReturn(true);
+        final Bucket bucket = this.mockBucket(label);
         MatcherAssert.assertThat(
-            new AwsDoc(this.bucket, "non-existent-document").exists(),
+            new AwsDoc(bucket, "non-existent-document").exists(),
             Matchers.is(false)
-        );
-        MatcherAssert.assertThat(
-            new AwsDoc(this.bucket, label).exists(),
-            Matchers.is(true)
         );
     }
 
@@ -95,12 +71,12 @@ public final class AwsDocTest {
     @Test
     public void conformsToEqualsHashCodeContract() {
         EqualsVerifier.forClass(AwsDoc.class)
-            .suppress(Warning.TRANSIENT_FIELDS)
-            .verify();
+            .suppress(Warning.TRANSIENT_FIELDS).verify();
     }
 
     /**
      * AwsDoc can report its existence.
+     *
      * @throws IOException If unsuccessful.
      */
     @Test
@@ -112,6 +88,7 @@ public final class AwsDocTest {
 
     /**
      * AwsDoc can delete itself.
+     *
      * @throws IOException If unsuccessful.
      */
     @Test
@@ -125,6 +102,7 @@ public final class AwsDocTest {
 
     /**
      * AwsDoc can read into an OutputStream.
+     *
      * @throws IOException If unsuccessful.
      */
     @Test
@@ -141,6 +119,7 @@ public final class AwsDocTest {
 
     /**
      * AwsDoc can write from an InputStream.
+     *
      * @throws IOException If unsuccessful.
      */
     @Test
@@ -151,7 +130,21 @@ public final class AwsDocTest {
     }
 
     /**
+     * Constructs a mock bucket.
+     *
+     * @param name Bucket name.
+     * @throws IOException In case of failure.
+     * @return The mock bucket.
+     */
+    private MkBucket mockBucket(final String name) throws IOException {
+        final TemporaryFolder folder = new TemporaryFolder();
+        folder.create();
+        return new MkBucket(folder.getRoot(), name);
+    }
+
+    /**
      * Creates an AwsDoc with given contents inside of a mock bucket .
+     *
      * @param name Doc name.
      * @param contents Doc contents.
      * @return The new AwsDoc.
@@ -159,6 +152,7 @@ public final class AwsDocTest {
      */
     private AwsDoc createDoc(final String name, final String contents)
         throws IOException {
+        final Bucket bucket = this.mockBucket(name);
         final AwsDoc doc = new AwsDoc(bucket, name);
         doc.write(new ByteArrayInputStream(contents.getBytes()));
         return doc;

@@ -111,14 +111,14 @@ public final class AwsDocsTest {
     public void fetchesSize() throws Exception {
         final long size = Tv.THOUSAND;
         final Ocket ocket = Mockito.mock(Ocket.class);
-        Mockito.doReturn(ocket).when(bucket).ocket(Mockito.anyString());
+        Mockito.doReturn(ocket).when(this.bucket).ocket(Mockito.anyString());
         Mockito.doReturn(Collections.singleton("test"))
-            .when(bucket).list(Mockito.anyString());
+            .when(this.bucket).list(Mockito.anyString());
         final ObjectMetadata meta = new ObjectMetadata();
         meta.setContentLength(size);
         Mockito.doReturn(meta).when(ocket).meta();
         MatcherAssert.assertThat(
-            new AwsDocs(bucket).size(),
+            new AwsDocs(this.bucket).size(),
             Matchers.is(size)
         );
     }
