@@ -30,7 +30,6 @@
 package com.nerodesk.om.aws;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.google.common.collect.Lists;
 import com.jcabi.aspects.Tv;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
@@ -40,6 +39,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import nl.jqno.equalsverifier.EqualsVerifier;
@@ -111,11 +111,12 @@ public final class AwsDocsTest {
      */
     @Test
     public void listsDocs() throws IOException {
-        final Bucket bucket = this.mockBucket("lists", "lists-exists");
-        final List<String> expected = Lists.newArrayList(bucket.list(""));
-        final List<String> names = new AwsDocs(bucket).names();
+        final String label = "lists";
+        final String name = "lists-exists";
+        final Bucket bucket = this.mockBucket(label, name);
+        final List<String> expected = Arrays.asList(name, "sub/file");
+        final List<String> names = new AwsDocs(bucket, label).names();
         MatcherAssert.assertThat(names, Matchers.equalTo(expected));
-        MatcherAssert.assertThat(names, Matchers.hasItem("sub/file"));
     }
 
     /**
@@ -124,9 +125,10 @@ public final class AwsDocsTest {
      */
     @Test
     public void findsDoc() throws IOException {
+        final String label = "finds";
         final String exists = "finds-exists";
-        final Bucket bucket = this.mockBucket("finds", exists);
-        final Docs docs = new AwsDocs(bucket);
+        final Bucket bucket = this.mockBucket(label, exists);
+        final Docs docs = new AwsDocs(bucket, label);
         MatcherAssert.assertThat(
             docs.doc(exists).exists(),
             Matchers.equalTo(true)
@@ -140,14 +142,14 @@ public final class AwsDocsTest {
     /**
      * Builds a mock Bucket.
      * @param name Bucket name.
-     * @param exists Name of Ocket that exists.
+     * @param exists Name of Ocket that should exist.
      * @return The mock bucket.
      * @throws IOException If something goes wrong.
      */
     private Bucket mockBucket(final String name, final String exists)
         throws IOException {
         final Path bucket = Files.createDirectories(
-            Paths.get(this.folder.getRoot().getAbsolutePath(), name)
+            Paths.get(this.folder.getRoot().getAbsolutePath(), name, name)
         );
         Files.createFile(bucket.resolve(exists));
         Files.createFile(
