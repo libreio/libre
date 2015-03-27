@@ -25,7 +25,7 @@ $ mvn clean package
 $ java -cp target/nerodesk.jar:target/deps/* com.nerodesk.Launch --port=8080
 ```
 
-If you're on Windows (seriously?):
+If you're on Windows:
 
 ```
 java -cp target\nerodesk.jar;target\deps\* com.nerodesk.Launch --port=8080

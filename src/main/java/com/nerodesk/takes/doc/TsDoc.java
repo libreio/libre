@@ -42,6 +42,7 @@ import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TsFork;
 import org.takes.misc.Href;
 import org.takes.rq.RqHeaders;
+import org.takes.rq.RqForm;
 import org.takes.rq.RqHref;
 import org.takes.rq.RqMultipart;
 
@@ -52,6 +53,7 @@ import org.takes.rq.RqMultipart;
  * @version $Id$
  * @since 0.3
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle MultipleStringLiteralsCheck (500 lines)
  * @todo #103:30m/DEV Friend ejection is not implemented now. Let's create
  *  new "take" TkEjectFriend and implement ejection there. Also, let's not
  *  forget to create a unit test for it.
@@ -111,8 +113,20 @@ public final class TsDoc implements Takes {
                 "/doc/add-friend",
                 new Takes() {
                     @Override
-                    public Take route(final Request request) {
+                    public Take route(final Request rst) throws IOException {
                         return new TkAddFriend(
+                            doc,
+                            new RqForm(rst).param("friend").iterator().next()
+                        );
+                    }
+                }
+            ),
+            new FkRegex(
+                "/doc/eject-friend",
+                new Takes() {
+                    @Override
+                    public Take route(final Request rst) {
+                        return new TkEjectFriend(
                             doc, href.param("friend").iterator().next()
                         );
                     }
