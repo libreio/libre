@@ -31,21 +31,19 @@ package com.nerodesk.om.aws;
 
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
-import com.jcabi.s3.mock.MkBucket;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 /**
  * Tests for {@link AwsDoc}.
@@ -153,18 +151,6 @@ public final class AwsDocTest {
     }
 
     /**
-     * Constructs a mock bucket.
-     * @param name Bucket name.
-     * @throws IOException In case of failure.
-     * @return The mock bucket.
-     */
-    private MkBucket mockBucket(final String name) throws IOException {
-        final TemporaryFolder folder = new TemporaryFolder();
-        folder.create();
-        return new MkBucket(folder.getRoot(), name);
-    }
-
-    /**
      * Creates an AwsDoc with given contents inside of a mock bucket .
      * @param name Doc name.
      * @param contents Doc contents.
@@ -173,10 +159,8 @@ public final class AwsDocTest {
      */
     private AwsDoc createDoc(final String name, final String contents)
         throws IOException {
-        final Bucket bucket = this.mockBucket(name);
         final AwsDoc doc = new AwsDoc(bucket, name);
         doc.write(new ByteArrayInputStream(contents.getBytes()));
         return doc;
     }
-
 }

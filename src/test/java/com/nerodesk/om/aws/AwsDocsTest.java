@@ -33,6 +33,9 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.aspects.Tv;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
@@ -43,10 +46,6 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 
 /**
  * Tests for {@link AwsDocs}.
@@ -111,7 +110,6 @@ public final class AwsDocsTest {
     @Test
     public void fetchesSize() throws Exception {
         final long size = Tv.THOUSAND;
-        final Bucket bucket = Mockito.mock(Bucket.class);
         final Ocket ocket = Mockito.mock(Ocket.class);
         Mockito.doReturn(ocket).when(bucket).ocket(Mockito.anyString());
         Mockito.doReturn(Collections.singleton("test"))
