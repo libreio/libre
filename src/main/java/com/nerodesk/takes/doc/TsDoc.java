@@ -79,7 +79,7 @@ public final class TsDoc implements Takes {
     //  to do this in clean way.
     // @todo #94:30min This method is way to complicated and should be splitted
     //  to smaller chunks. It's very hard to test what is going on here. After
-    //  splitting it can be covered by unit tests.
+    //  splitting, it should be covered by unit tests.
     @Override
     public Take route(final Request req) throws IOException {
         final String file;
