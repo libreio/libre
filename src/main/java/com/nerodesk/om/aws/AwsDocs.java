@@ -79,7 +79,9 @@ final class AwsDocs implements Docs {
                 new Function<String, String>() {
                     @Override
                     public String apply(final String input) {
-                        return input.substring(0, AwsDocs.this.user.length());
+                        return input.substring(
+                            0, AwsDocs.this.user.length() + 1
+                        );
                     }
                 }
             )
