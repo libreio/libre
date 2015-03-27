@@ -27,47 +27,48 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.aws;
+package com.nerodesk.takes.doc;
 
-import com.jcabi.s3.Bucket;
-import com.nerodesk.om.Docs;
-import com.nerodesk.om.User;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import com.nerodesk.om.Doc;
+import java.io.IOException;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.facets.flash.RsFlash;
+import org.takes.facets.forward.RsForward;
 
 /**
- * AWS-based version of User.
+ * Reject friend.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
  */
-@ToString
-@EqualsAndHashCode(of = { "bucket", "name" })
-public final class AwsUser implements User {
+final class TkEjectFriend implements Take {
 
     /**
-     * Bucket.
+     * Doc.
      */
-    private final transient Bucket bucket;
+    private final transient Doc doc;
 
     /**
-     * URN of user.
+     * Name of friend (URN).
      */
-    private final transient String name;
+    private final transient String friend;
 
     /**
      * Ctor.
-     * @param bkt Bucket
-     * @param urn URN of the user
+     * @param src Source document to read from
+     * @param name Name of Friend
      */
-    public AwsUser(final Bucket bkt, final String urn) {
-        this.bucket = bkt;
-        this.name = urn;
+    TkEjectFriend(final Doc src, final String name) {
+        this.doc = src;
+        this.friend = name;
     }
 
     @Override
-    public Docs docs() {
-        return new AwsDocs(this.bucket, this.name);
+    public Response act() throws IOException {
+        this.doc.friends().eject(this.friend);
+        return new RsForward(new RsFlash("friend ejected"));
     }
+
 }

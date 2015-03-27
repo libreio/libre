@@ -29,6 +29,8 @@
  */
 package com.nerodesk.om.aws;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.jcabi.s3.Bucket;
 import com.nerodesk.om.Doc;
@@ -46,8 +48,8 @@ import lombok.ToString;
  * @since 0.2
  */
 @ToString
-@EqualsAndHashCode(of = "bucket")
-public final class AwsDocs implements Docs {
+@EqualsAndHashCode(of = { "bucket", "user" })
+final class AwsDocs implements Docs {
 
     /**
      * Bucket.
@@ -55,29 +57,57 @@ public final class AwsDocs implements Docs {
     private final transient Bucket bucket;
 
     /**
+     * User.
+     */
+    private final transient String user;
+
+    /**
      * Ctor.
      * @param bkt Bucket
+     * @param urn URN of the user
      */
-    public AwsDocs(final Bucket bkt) {
+    AwsDocs(final Bucket bkt, final String urn) {
         this.bucket = bkt;
+        this.user = urn;
     }
 
     @Override
     public List<String> names() throws IOException {
-        return Lists.newArrayList(this.bucket.list(""));
+        return Lists.newArrayList(
+            Iterables.transform(
+                this.bucket.list(this.prefix()),
+                new Function<String, String>() {
+                    @Override
+                    public String apply(final String input) {
+                        return input.substring(
+                            AwsDocs.this.user.length() + 1
+                        );
+                    }
+                }
+            )
+        );
     }
 
     @Override
     public Doc doc(final String doc) {
-        return new AwsDoc(this.bucket, doc);
+        return new AwsDoc(this.bucket, this.user, doc);
     }
 
     @Override
     public long size() throws IOException {
         long total = 0;
-        for (final String object : this.bucket.list("")) {
+        for (final String object : this.bucket.list(this.prefix())) {
             total += this.bucket.ocket(object).meta().getContentLength();
         }
         return total;
     }
+
+    /**
+     * Prefix.
+     * @return Prefix
+     */
+    private String prefix() {
+        return String.format("%s/", this.user);
+    }
+
 }

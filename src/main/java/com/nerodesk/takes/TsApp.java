@@ -72,6 +72,7 @@ import org.takes.tk.TkRedirect;
 import org.takes.ts.TsClasspath;
 import org.takes.ts.TsFiles;
 import org.takes.ts.TsGreedy;
+import org.takes.ts.TsVerbose;
 import org.takes.ts.TsWithType;
 import org.takes.ts.TsWrap;
 
@@ -180,7 +181,9 @@ public final class TsApp extends TsWrap {
                 new TsSecure(new TsGreedy(new TsDoc(base)))
             )
         );
-        return TsApp.fallback(new TsFlash(TsApp.auth(fork)));
+        return TsApp.fallback(
+            new TsVerbose(new TsFlash(TsApp.auth(fork)))
+        );
     }
 
     /**

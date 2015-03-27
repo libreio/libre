@@ -309,7 +309,11 @@ public final class TsAppTest {
             "",
             name,
             "--AaB03x",
-            "Content-Disposition: form-data; name=\"file\"",
+            Joiner.on("; ").join(
+                "Content-Disposition: form-data",
+                "name=\"file\"",
+                String.format("filename=\"%s\"", name)
+            ),
             "Content-Transfer-Encoding: utf-8",
             "",
             content,

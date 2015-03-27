@@ -43,7 +43,6 @@
         </p>
         <form method="post" action="{links/link[@rel='upload']/@href}"
             enctype="multipart/form-data">
-            <input name="name"/>
             <input name="file" type="file"/>
             <input name="upload" type="submit"/>
         </form>
@@ -68,7 +67,7 @@
         <ul>
             <xsl:apply-templates select="friend"/>
             <li>
-                <form action="{../add-friend}" method="get">
+                <form action="{../add-friend}" method="post">
                     <input name="friend" placeholder="share with..."/>
                     <input type="submit"/>
                 </form>

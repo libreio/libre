@@ -33,6 +33,7 @@ import com.nerodesk.om.Base;
 import com.nerodesk.om.Doc;
 import java.io.IOException;
 import java.util.Iterator;
+import org.apache.commons.lang3.StringUtils;
 import org.takes.Request;
 import org.takes.Take;
 import org.takes.Takes;
@@ -40,9 +41,10 @@ import org.takes.facets.auth.RqAuth;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TsFork;
 import org.takes.misc.Href;
+import org.takes.rq.RqForm;
+import org.takes.rq.RqHeaders;
 import org.takes.rq.RqHref;
 import org.takes.rq.RqMultipart;
-import org.takes.rq.RqPrint;
 
 /**
  * Takes for a specific document.
@@ -51,6 +53,7 @@ import org.takes.rq.RqPrint;
  * @version $Id$
  * @since 0.3
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle MultipleStringLiteralsCheck (500 lines)
  * @todo #103:30m/DEV Friend ejection is not implemented now. Let's create
  *  new "take" TkEjectFriend and implement ejection there. Also, let's not
  *  forget to create a unit test for it.
@@ -70,17 +73,29 @@ public final class TsDoc implements Takes {
         this.base = bse;
     }
 
+    // @todo #94:30min I tried to get filename from file meta data and it
+    //  doesn't look clean but works for now. We have to either wait for impl.
+    //  from `Takes` framework or implement in this project class that is going
+    //  to do this in clean way.
+    // @todo #94:30min This method is way to complicated and should be splitted
+    //  to smaller chunks. It's very hard to test what is going on here. After
+    //  splitting, it should be covered by unit tests.
     @Override
     public Take route(final Request req) throws IOException {
         final String file;
         final Href href = new RqHref(req).href();
-        final Iterator<String> param = href.param("file").iterator();
+        final String key = "file";
+        final Iterator<String> param = href.param(key).iterator();
         if (param.hasNext()) {
             file = param.next();
         } else {
-            file = new RqPrint(
-                new RqMultipart(req).part("name").iterator().next()
-            ).printBody();
+            final String disposition = new RqHeaders(
+                new RqMultipart(req).part(key).iterator().next()
+            ).header("Content-Disposition").iterator().next();
+            file = StringUtils.substringBefore(
+                StringUtils.substringAfter(disposition, "filename=\""),
+                "\""
+            );
         }
         final Doc doc = this.base.user(
             new RqAuth(req).identity().urn()
@@ -101,8 +116,20 @@ public final class TsDoc implements Takes {
                 "/doc/add-friend",
                 new Takes() {
                     @Override
-                    public Take route(final Request request) {
+                    public Take route(final Request rst) throws IOException {
                         return new TkAddFriend(
+                            doc,
+                            new RqForm(rst).param("friend").iterator().next()
+                        );
+                    }
+                }
+            ),
+            new FkRegex(
+                "/doc/eject-friend",
+                new Takes() {
+                    @Override
+                    public Take route(final Request rst) {
+                        return new TkEjectFriend(
                             doc, href.param("friend").iterator().next()
                         );
                     }

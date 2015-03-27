@@ -122,6 +122,10 @@
         </dependency>
         <dependency>
             <groupId>com.jcabi</groupId>
+            <artifactId>jcabi-immutable</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jcabi</groupId>
             <artifactId>jcabi-log</artifactId>
         </dependency>
         <dependency>
@@ -169,7 +173,7 @@
         <dependency>
             <groupId>org.takes</groupId>
             <artifactId>takes</artifactId>
-            <version>0.9.9</version>
+            <version>0.9.11</version>
         </dependency>
         <dependency>
             <groupId>com.restfb</groupId>
