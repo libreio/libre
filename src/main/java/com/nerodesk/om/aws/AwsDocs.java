@@ -29,6 +29,8 @@
  */
 package com.nerodesk.om.aws;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.jcabi.s3.Bucket;
 import com.nerodesk.om.Doc;
@@ -71,7 +73,17 @@ final class AwsDocs implements Docs {
 
     @Override
     public List<String> names() throws IOException {
-        return Lists.newArrayList(this.bucket.list(this.prefix()));
+        return Lists.newArrayList(
+            Iterables.transform(
+                this.bucket.list(this.prefix()),
+                new Function<String, String>() {
+                    @Override
+                    public String apply(final String input) {
+                        return input.substring(0, AwsDocs.this.user.length());
+                    }
+                }
+            )
+        );
     }
 
     @Override
