@@ -114,10 +114,9 @@ public final class TsDoc implements Takes {
                 "/doc/eject-friend",
                 new Takes() {
                     @Override
-                    public Take route(final Request rst) throws IOException {
+                    public Take route(final Request rst) {
                         return new TkEjectFriend(
-                            doc,
-                            new RqForm(rst).param("friend").iterator().next()
+                            doc, href.param("friend").iterator().next()
                         );
                     }
                 }
