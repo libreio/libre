@@ -40,6 +40,7 @@ import org.takes.facets.auth.RqAuth;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TsFork;
 import org.takes.misc.Href;
+import org.takes.rq.RqForm;
 import org.takes.rq.RqHref;
 import org.takes.rq.RqMultipart;
 import org.takes.rq.RqPrint;
@@ -101,9 +102,10 @@ public final class TsDoc implements Takes {
                 "/doc/add-friend",
                 new Takes() {
                     @Override
-                    public Take route(final Request request) {
+                    public Take route(final Request req) throws IOException {
                         return new TkAddFriend(
-                            doc, href.param("friend").iterator().next()
+                            doc,
+                            new RqForm(req).param("friend").iterator().next()
                         );
                     }
                 }
