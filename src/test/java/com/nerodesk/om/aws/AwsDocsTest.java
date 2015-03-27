@@ -33,13 +33,23 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.aspects.Tv;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
+import com.jcabi.s3.mock.MkBucket;
+import com.nerodesk.om.Docs;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
@@ -51,12 +61,6 @@ import org.mockito.MockitoAnnotations;
  * @since 0.3
  */
 public final class AwsDocsTest {
-    /**
-     * A Bucket mock.
-     */
-    @Mock(answer = Answers.RETURNS_MOCKS)
-    private transient Bucket bucket;
-
     /**
      * Temporary folder.
      * @checkstyle VisibilityModifierCheck (3 lines)
@@ -73,28 +77,14 @@ public final class AwsDocsTest {
     }
 
     /**
-     * AwsDocs can list file names.
-     * @throws Exception in case of error.
-     */
-    @Test
-    public void listsFilenames() throws Exception {
-        final List<String> names = Arrays.asList("a", "b", "c");
-        Mockito.when(this.bucket.list("urn1/"))
-            .thenReturn(names);
-        MatcherAssert.assertThat(
-            new AwsDocs(this.bucket, "urn1").names(),
-            Matchers.equalTo(names)
-        );
-    }
-
-    /**
      * AwsDocs can obtain an AwsDoc.
      * @throws Exception in case of error.
      */
     @Test
     public void obtainsDoc() throws Exception {
+        final Bucket bucket = this.mockBucket("any-name", "any-file");
         MatcherAssert.assertThat(
-            new AwsDocs(this.bucket, "urn2").doc("doc1"),
+            new AwsDocs(bucket, "urn2").doc("doc1"),
             Matchers.notNullValue()
         );
     }
@@ -112,27 +102,18 @@ public final class AwsDocsTest {
     @Test
     public void fetchesSize() throws Exception {
         final long size = Tv.THOUSAND;
+        final Bucket bucket = Mockito.mock(Bucket.class);
         final Ocket ocket = Mockito.mock(Ocket.class);
-        Mockito.doReturn(ocket).when(this.bucket).ocket(Mockito.anyString());
+        Mockito.doReturn(ocket).when(bucket).ocket(Mockito.anyString());
         Mockito.doReturn(Collections.singleton("test"))
-            .when(this.bucket).list(Mockito.anyString());
+            .when(bucket).list(Mockito.anyString());
         final ObjectMetadata meta = new ObjectMetadata();
         meta.setContentLength(size);
         Mockito.doReturn(meta).when(ocket).meta();
         MatcherAssert.assertThat(
-            new AwsDocs(this.bucket, "urn3").size(),
+            new AwsDocs(bucket, "urn3").size(),
             Matchers.is(size)
         );
-    }
-
-    /**
-     * AwsDocs conforms to equals and hashCode contract.
-     */
-    @Test
-    public void conformsToEqualsHashCodeContract() {
-        EqualsVerifier.forClass(AwsDocs.class)
-            .suppress(Warning.TRANSIENT_FIELDS)
-            .verify();
     }
 
     /**
@@ -167,6 +148,16 @@ public final class AwsDocsTest {
             docs.doc("xyz").exists(),
             Matchers.equalTo(false)
         );
+    }
+
+    /**
+     * AwsDocs conforms to equals and hashCode contract.
+     */
+    @Test
+    public void conformsToEqualsHashCodeContract() {
+        EqualsVerifier.forClass(AwsDocs.class)
+            .suppress(Warning.TRANSIENT_FIELDS)
+            .verify();
     }
 
     /**
