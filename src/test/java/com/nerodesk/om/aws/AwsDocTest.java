@@ -60,7 +60,7 @@ public final class AwsDocTest {
         final String label = "document-label";
         final Bucket bucket = this.mockBucket(label);
         MatcherAssert.assertThat(
-            new AwsDoc(bucket, "non-existent-document").exists(),
+            new AwsDoc(bucket, "user-urn", "non-existent-document").exists(),
             Matchers.is(false)
         );
     }

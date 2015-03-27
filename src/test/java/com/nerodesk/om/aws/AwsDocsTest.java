@@ -77,10 +77,10 @@ public final class AwsDocsTest {
     @Test
     public void listsFilenames() throws Exception {
         final List<String> names = Arrays.asList("a", "b", "c");
-        Mockito.when(this.bucket.list(""))
+        Mockito.when(this.bucket.list("urn1/"))
             .thenReturn(names);
         MatcherAssert.assertThat(
-            new AwsDocs(this.bucket).names(),
+            new AwsDocs(this.bucket, "urn1").names(),
             Matchers.equalTo(names)
         );
     }
@@ -92,7 +92,7 @@ public final class AwsDocsTest {
     @Test
     public void obtainsDoc() throws Exception {
         MatcherAssert.assertThat(
-            new AwsDocs(this.bucket).doc("doc1"),
+            new AwsDocs(this.bucket, "urn2").doc("doc1"),
             Matchers.notNullValue()
         );
     }
@@ -118,7 +118,7 @@ public final class AwsDocsTest {
         meta.setContentLength(size);
         Mockito.doReturn(meta).when(ocket).meta();
         MatcherAssert.assertThat(
-            new AwsDocs(this.bucket).size(),
+            new AwsDocs(this.bucket, "urn3").size(),
             Matchers.is(size)
         );
     }
@@ -133,4 +133,3 @@ public final class AwsDocsTest {
             .verify();
     }
 }
- 
