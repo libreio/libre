@@ -77,6 +77,9 @@ public final class TsDoc implements Takes {
     //  doesn't look clean but works for now. We have to either wait for impl.
     //  from `Takes` framework or implement in this project class that is going
     //  to do this in clean way.
+    // @todo #94:30min This method is way to complicated and should be splitted
+    //  to smaller chunks. It's very hard to test what is going on here. After
+    //  splitting it can be covered by unit tests.
     @Override
     public Take route(final Request req) throws IOException {
         final String file;
