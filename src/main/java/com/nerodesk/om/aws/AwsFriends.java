@@ -29,12 +29,20 @@
  */
 package com.nerodesk.om.aws;
 
+import com.amazonaws.services.s3.model.CopyObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Sets;
+import com.jcabi.immutable.ArrayMap;
 import com.jcabi.s3.Bucket;
+import com.jcabi.s3.Ocket;
 import com.nerodesk.om.Friends;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.apache.commons.io.IOUtils;
 
 /**
  * AWS-based version of Doc.
@@ -42,18 +50,26 @@ import lombok.ToString;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.3
- * @todo #103:30m/DEV This class is not implemented and we can't really share
- *  documents between users. Let's implement it using DynamoDB or some
- *  more simple S3-only based mechanism.
+ * @checkstyle MultipleStringLiteralsCheck (500 lines)
  */
 @ToString
-@EqualsAndHashCode(of = { "bucket", "label" })
-public final class AwsFriends implements Friends {
+@EqualsAndHashCode(of = { "bucket", "user", "label" })
+final class AwsFriends implements Friends {
+
+    /**
+     * Header with a list of friends.
+     */
+    public static final String HEADER = "x-ndk-friends";
 
     /**
      * Bucket.
      */
     private final transient Bucket bucket;
+
+    /**
+     * URN of the user.
+     */
+    private final transient String user;
 
     /**
      * Doc name.
@@ -63,32 +79,92 @@ public final class AwsFriends implements Friends {
     /**
      * Ctor.
      * @param bkt Bucket
+     * @param urn URN of the user
      * @param doc Name of document
      */
-    public AwsFriends(final Bucket bkt, final String doc) {
+    AwsFriends(final Bucket bkt, final String urn, final String doc) {
         this.bucket = bkt;
+        this.user = urn;
         this.label = doc;
     }
 
     @Override
     public boolean leader() throws IOException {
-        return true;
+        final Ocket ocket = this.bucket.ocket(this.key());
+        return ocket.meta().getUserMetaDataOf(AwsDoc.HEADER) == null;
     }
 
     @Override
     public Iterable<String> names() throws IOException {
-        assert this.bucket != null;
-        assert this.label != null;
-        return Collections.emptyList();
+        final Ocket ocket = this.bucket.ocket(this.key());
+        return Arrays.asList(
+            ocket.meta().getUserMetaDataOf(AwsFriends.HEADER).split(";")
+        );
     }
 
     @Override
     public void add(final String name) throws IOException {
-        // nothing
+        final Ocket ocket = this.bucket.ocket(this.key());
+        final ObjectMetadata meta = ocket.meta();
+        final Set<String> friends = Sets.newHashSet(
+            Arrays.asList(
+                meta.getUserMetaDataOf(AwsFriends.HEADER).split(";")
+            )
+        );
+        friends.add(name);
+        meta.setUserMetadata(
+            new ArrayMap<>(meta.getUserMetadata()).with(
+                AwsFriends.HEADER,
+                Joiner.on(';').join(friends)
+            )
+        );
+        ocket.bucket().region().aws().copyObject(
+            new CopyObjectRequest(
+                ocket.bucket().name(),
+                ocket.key(),
+                ocket.bucket().name(),
+                ocket.key()
+            ).withNewObjectMetadata(meta)
+        );
+        final ObjectMetadata fmeta = new ObjectMetadata();
+        fmeta.addUserMetadata(AwsDoc.HEADER, "true");
+        this.bucket.ocket(String.format("%s/%s", name, this.label)).write(
+            IOUtils.toInputStream(""), fmeta
+        );
     }
 
     @Override
     public void eject(final String name) throws IOException {
-        // nothing
+        final Ocket ocket = this.bucket.ocket(this.key());
+        final ObjectMetadata meta = ocket.meta();
+        final Set<String> friends = Sets.newHashSet(
+            Arrays.asList(
+                meta.getUserMetaDataOf(AwsFriends.HEADER).split(";")
+            )
+        );
+        friends.remove(name);
+        meta.setUserMetadata(
+            new ArrayMap<>(meta.getUserMetadata()).with(
+                AwsFriends.HEADER,
+                Joiner.on(';').join(friends)
+            )
+        );
+        ocket.bucket().region().aws().copyObject(
+            new CopyObjectRequest(
+                ocket.bucket().name(),
+                ocket.key(),
+                ocket.bucket().name(),
+                ocket.key()
+            ).withNewObjectMetadata(meta)
+        );
+        this.bucket.remove(String.format("%s/%s", name, this.label));
+    }
+
+    /**
+     * Ocket key.
+     * @return Key
+     */
+    private String key() {
+        return String.format("%s/%s", this.user, this.label);
     }
 }

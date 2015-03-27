@@ -71,7 +71,7 @@ public final class AwsDocsTest {
         meta.setContentLength(size);
         Mockito.doReturn(meta).when(ocket).meta();
         MatcherAssert.assertThat(
-            new AwsDocs(bucket).size(),
+            new AwsDocs(bucket, "").size(),
             Matchers.is(size)
         );
     }

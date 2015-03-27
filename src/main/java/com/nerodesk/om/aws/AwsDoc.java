@@ -50,13 +50,23 @@ import lombok.ToString;
  * @since 0.2
  */
 @ToString
-@EqualsAndHashCode(of = { "bucket", "label" })
-public final class AwsDoc implements Doc {
+@EqualsAndHashCode(of = { "bucket", "user", "label" })
+final class AwsDoc implements Doc {
+
+    /**
+     * Header with a list of friends.
+     */
+    public static final String HEADER = "x-ndk-redirect";
 
     /**
      * Bucket.
      */
     private final transient Bucket bucket;
+
+    /**
+     * URN of the user.
+     */
+    private final transient String user;
 
     /**
      * Doc name.
@@ -66,32 +76,38 @@ public final class AwsDoc implements Doc {
     /**
      * Ctor.
      * @param bkt Bucket
+     * @param urn URN of the user
      * @param doc Name of document
      */
-    public AwsDoc(final Bucket bkt, final String doc) {
+    AwsDoc(final Bucket bkt, final String urn, final String doc) {
         this.bucket = bkt;
+        this.user = urn;
         this.label = doc;
     }
 
     @Override
     public boolean exists() throws IOException {
-        final Ocket ocket = this.bucket.ocket(this.label);
+        final Ocket ocket = this.bucket.ocket(this.key());
         return ocket.exists();
     }
 
     @Override
     public void delete() throws IOException {
-        this.bucket.remove(this.label);
+        this.bucket.remove(this.key());
     }
 
     @Override
     public Friends friends() {
-        return new AwsFriends(this.bucket, this.label);
+        return new AwsFriends(this.bucket, this.user, this.label);
     }
 
     @Override
     public void read(@NotNull final OutputStream output) throws IOException {
-        final Ocket ocket = this.bucket.ocket(this.label);
+        Ocket ocket = this.bucket.ocket(this.key());
+        final String redir = ocket.meta().getUserMetaDataOf(AwsDoc.HEADER);
+        if (redir != null) {
+            ocket = this.bucket.ocket(redir);
+        }
         ocket.read(output);
         Logger.info(this, "%s read", ocket);
     }
@@ -99,8 +115,19 @@ public final class AwsDoc implements Doc {
     @Override
     public void write(final InputStream input) throws IOException {
         final Ocket ocket = this.bucket.ocket(this.label);
+        if (ocket.meta().getUserMetaDataOf(AwsDoc.HEADER) != null) {
+            throw new IllegalStateException("you can't write to this doc");
+        }
         ocket.write(input, new ObjectMetadata());
         Logger.info(this, "%s written", ocket);
+    }
+
+    /**
+     * Ocket key.
+     * @return Key
+     */
+    private String key() {
+        return String.format("%s/%s", this.user, this.label);
     }
 
 }
