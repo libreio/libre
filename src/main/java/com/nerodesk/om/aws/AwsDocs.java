@@ -80,7 +80,7 @@ final class AwsDocs implements Docs {
                     @Override
                     public String apply(final String input) {
                         return input.substring(
-                            0, AwsDocs.this.user.length() + 1
+                            AwsDocs.this.user.length() + 1
                         );
                     }
                 }
