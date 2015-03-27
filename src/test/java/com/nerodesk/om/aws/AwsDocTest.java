@@ -153,7 +153,7 @@ public final class AwsDocTest {
     private AwsDoc createDoc(final String name, final String contents)
         throws IOException {
         final Bucket bucket = this.mockBucket(name);
-        final AwsDoc doc = new AwsDoc(bucket, name);
+        final AwsDoc doc = new AwsDoc(bucket, "", name);
         doc.write(new ByteArrayInputStream(contents.getBytes()));
         return doc;
     }
