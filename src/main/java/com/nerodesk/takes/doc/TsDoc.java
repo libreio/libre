@@ -52,6 +52,7 @@ import org.takes.rq.RqPrint;
  * @version $Id$
  * @since 0.3
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle MultipleStringLiteralsCheck (500 lines)
  * @todo #103:30m/DEV Friend ejection is not implemented now. Let's create
  *  new "take" TkEjectFriend and implement ejection there. Also, let's not
  *  forget to create a unit test for it.
