@@ -129,7 +129,7 @@ final class AwsFriends implements Friends {
     @Override
     public void eject(final String name) throws IOException {
         final Collection<String> friends = this.list();
-        friends.add(name);
+        friends.remove(name);
         final Ocket ocket = this.bucket.ocket(this.key());
         final ObjectMetadata meta = ocket.meta();
         meta.setUserMetadata(
