@@ -32,15 +32,14 @@ package com.nerodesk.om.aws;
 import com.amazonaws.services.s3.model.CopyObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Sets;
 import com.jcabi.immutable.ArrayMap;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
 import com.nerodesk.om.Friends;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.io.IOUtils;
@@ -165,13 +164,13 @@ final class AwsFriends implements Friends {
      */
     private Collection<String> list() throws IOException {
         final Ocket ocket = this.bucket.ocket(this.key());
-        final ObjectMetadata meta = ocket.meta();
-        final String header = meta.getUserMetaDataOf(AwsFriends.HEADER);
-        final Collection<String> friends;
-        if (header == null) {
-            friends = new ArrayList<>(1);
-        } else {
-            friends = Sets.newHashSet(Arrays.asList(header.split(";")));
+        final Collection<String> friends = new HashSet<>(0);
+        if (ocket.exists()) {
+            final ObjectMetadata meta = ocket.meta();
+            final String header = meta.getUserMetaDataOf(AwsFriends.HEADER);
+            if (header != null) {
+                friends.addAll(Arrays.asList(header.split(";")));
+            }
         }
         return friends;
     }

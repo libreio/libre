@@ -114,7 +114,8 @@ final class AwsDoc implements Doc {
     @Override
     public void write(final InputStream input) throws IOException {
         final Ocket ocket = this.ocket();
-        if (ocket.meta().getUserMetaDataOf(AwsDoc.HEADER) != null) {
+        if (ocket.exists()
+            && ocket.meta().getUserMetaDataOf(AwsDoc.HEADER) != null) {
             throw new IllegalStateException("you can't write to this doc");
         }
         ocket.write(input, new ObjectMetadata());
