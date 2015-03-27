@@ -87,13 +87,12 @@ final class AwsDoc implements Doc {
 
     @Override
     public boolean exists() throws IOException {
-        final Ocket ocket = this.bucket.ocket(this.key());
-        return ocket.exists();
+        return this.ocket().exists();
     }
 
     @Override
     public void delete() throws IOException {
-        this.bucket.remove(this.key());
+        this.bucket.remove(this.ocket().key());
     }
 
     @Override
@@ -103,7 +102,7 @@ final class AwsDoc implements Doc {
 
     @Override
     public void read(@NotNull final OutputStream output) throws IOException {
-        Ocket ocket = this.bucket.ocket(this.key());
+        Ocket ocket = this.ocket();
         final String redir = ocket.meta().getUserMetaDataOf(AwsDoc.HEADER);
         if (redir != null) {
             ocket = this.bucket.ocket(redir);
@@ -114,7 +113,7 @@ final class AwsDoc implements Doc {
 
     @Override
     public void write(final InputStream input) throws IOException {
-        final Ocket ocket = this.bucket.ocket(this.label);
+        final Ocket ocket = this.ocket();
         if (ocket.meta().getUserMetaDataOf(AwsDoc.HEADER) != null) {
             throw new IllegalStateException("you can't write to this doc");
         }
@@ -126,8 +125,10 @@ final class AwsDoc implements Doc {
      * Ocket key.
      * @return Key
      */
-    private String key() {
-        return String.format("%s/%s", this.user, this.label);
+    private Ocket ocket() {
+        return this.bucket.ocket(
+            String.format("%s/%s", this.user, this.label)
+        );
     }
 
 }
