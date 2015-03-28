@@ -41,7 +41,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -52,7 +51,6 @@ import org.apache.commons.io.IOUtils;
  * @since 0.3
  * @checkstyle MultipleStringLiteralsCheck (500 lines)
  */
-@ToString
 @EqualsAndHashCode(of = { "bucket", "user", "label" })
 final class AwsFriends implements Friends {
 
