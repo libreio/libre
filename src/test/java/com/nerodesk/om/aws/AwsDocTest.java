@@ -52,7 +52,6 @@ import org.junit.rules.TemporaryFolder;
 public final class AwsDocTest {
     /**
      * AwsDoc can verify if it exists.
-     *
      * @throws Exception in case of error.
      */
     @Test
@@ -71,12 +70,12 @@ public final class AwsDocTest {
     @Test
     public void conformsToEqualsHashCodeContract() {
         EqualsVerifier.forClass(AwsDoc.class)
-            .suppress(Warning.TRANSIENT_FIELDS).verify();
+            .suppress(Warning.TRANSIENT_FIELDS)
+            .verify();
     }
 
     /**
      * AwsDoc can report its existence.
-     *
      * @throws IOException If unsuccessful.
      */
     @Test
@@ -88,7 +87,6 @@ public final class AwsDocTest {
 
     /**
      * AwsDoc can delete itself.
-     *
      * @throws IOException If unsuccessful.
      */
     @Test
@@ -102,7 +100,6 @@ public final class AwsDocTest {
 
     /**
      * AwsDoc can read into an OutputStream.
-     *
      * @throws IOException If unsuccessful.
      */
     @Test
@@ -119,7 +116,6 @@ public final class AwsDocTest {
 
     /**
      * AwsDoc can write from an InputStream.
-     *
      * @throws IOException If unsuccessful.
      */
     @Test
@@ -131,7 +127,6 @@ public final class AwsDocTest {
 
     /**
      * Constructs a mock bucket.
-     *
      * @param name Bucket name.
      * @throws IOException In case of failure.
      * @return The mock bucket.
@@ -144,7 +139,6 @@ public final class AwsDocTest {
 
     /**
      * Creates an AwsDoc with given contents inside of a mock bucket .
-     *
      * @param name Doc name.
      * @param contents Doc contents.
      * @return The new AwsDoc.

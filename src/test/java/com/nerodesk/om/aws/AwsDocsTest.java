@@ -57,6 +57,8 @@ import org.mockito.MockitoAnnotations;
  * Tests for {@link AwsDocs}.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
+ * @author Felipe Pina (felipe.pina@protonmail.com)
+ * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
  * @since 0.3
  */
@@ -117,6 +119,16 @@ public final class AwsDocsTest {
     }
 
     /**
+     * AwsDocs conforms to equals and hashCode contract.
+     */
+    @Test
+    public void conformsToEqualsHashCodeContract() {
+        EqualsVerifier.forClass(AwsDocs.class)
+            .suppress(Warning.TRANSIENT_FIELDS)
+            .verify();
+    }
+
+    /**
      * AwsDocs can list all docs.
      * @throws IOException If something goes wrong.
      */
@@ -148,16 +160,6 @@ public final class AwsDocsTest {
             docs.doc("xyz").exists(),
             Matchers.equalTo(false)
         );
-    }
-
-    /**
-     * AwsDocs conforms to equals and hashCode contract.
-     */
-    @Test
-    public void conformsToEqualsHashCodeContract() {
-        EqualsVerifier.forClass(AwsDocs.class)
-            .suppress(Warning.TRANSIENT_FIELDS)
-            .verify();
     }
 
     /**
