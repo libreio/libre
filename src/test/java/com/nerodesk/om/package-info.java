@@ -27,58 +27,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.aws;
-
-import com.google.common.collect.Lists;
-import com.jcabi.s3.Bucket;
-import com.nerodesk.om.Doc;
-import com.nerodesk.om.Docs;
-import com.nerodesk.om.SmallDoc;
-import java.io.IOException;
-import java.util.List;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /**
- * AWS-based version of Docs.
+ * Nerodesk common tests.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Paul Polishchuk (ppol@ua.fm)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
  */
-@ToString
-@EqualsAndHashCode(of = "bucket")
-public final class AwsDocs implements Docs {
-
-    /**
-     * Bucket.
-     */
-    private final transient Bucket bucket;
-
-    /**
-     * Ctor.
-     * @param bkt Bucket
-     */
-    public AwsDocs(final Bucket bkt) {
-        this.bucket = bkt;
-    }
-
-    @Override
-    public List<String> names() throws IOException {
-        return Lists.newArrayList(this.bucket.list(""));
-    }
-
-    @Override
-    public Doc doc(final String doc) {
-        return new SmallDoc(new AwsDoc(this.bucket, doc));
-    }
-
-    @Override
-    public long size() throws IOException {
-        long total = 0;
-        for (final String object : this.bucket.list("")) {
-            total += this.bucket.ocket(object).meta().getContentLength();
-        }
-        return total;
-    }
-}
+package com.nerodesk.om;

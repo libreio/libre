@@ -33,6 +33,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
+import com.nerodesk.om.SmallDoc;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -92,7 +93,7 @@ public final class MkDocs implements Docs {
 
     @Override
     public Doc doc(final String doc) {
-        return new MkDoc(this.dir, this.name, doc);
+        return new SmallDoc(new MkDoc(this.dir, this.name, doc));
     }
 
     @Override

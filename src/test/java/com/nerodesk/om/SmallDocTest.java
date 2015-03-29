@@ -27,14 +27,16 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.mock;
+package com.nerodesk.om;
 
 import com.google.common.io.Files;
+import com.jcabi.aspects.Tv;
+import com.nerodesk.om.mock.MkDoc;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
@@ -42,13 +44,13 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * Tests for {@link MkDoc}.
+ * Tests for {@link SmallDoc}.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
- * @since 0.3
+ * @since 0.4
  */
-public final class MkDocTest {
+public final class SmallDocTest {
     /**
      * Temporary folder.
      * @checkstyle VisibilityModifierCheck (5 lines)
@@ -57,79 +59,33 @@ public final class MkDocTest {
     public final transient TemporaryFolder folder = new TemporaryFolder();
 
     /**
-     * MkDoc exists can return false for missing file.
+     * SmallDoc can write a doc.
      * @throws IOException In case of error
      */
     @Test
-    public void existsReturnsFalseForMissingFile() throws IOException {
-        MatcherAssert.assertThat(
-            new MkDoc(new File(this.folder.newFolder(), "foo"), "", "")
-                .exists(),
-            Matchers.is(false)
-        );
-    }
-
-    /**
-     * MkDoc exists can return true for existing file.
-     * @throws IOException In case of error
-     */
-    @Test
-    public void existsReturnsTrueForExistingFile() throws IOException {
-        final File file = new File(this.folder.newFolder(), "bar");
-        MatcherAssert.assertThat(
-            file.createNewFile(),
-            Matchers.is(true)
+    public void writesTheDoc() throws IOException {
+        final File file = new File(this.folder.newFolder(), "writable");
+        final String content = "store";
+        new SmallDoc(new MkDoc(file, "", "")).write(
+            new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
         );
         MatcherAssert.assertThat(
-            new MkDoc(file, "", "").exists(),
-            Matchers.is(true)
-        );
-    }
-
-    /**
-     * MkDoc can delete a file.
-     * @throws IOException In case of error
-     */
-    @Test
-    public void deletesFile() throws IOException {
-        final File file = new File(this.folder.newFolder(), "test");
-        MatcherAssert.assertThat(
-            file.createNewFile(),
-            Matchers.is(true)
-        );
-        new MkDoc(file, "", "").delete();
-        MatcherAssert.assertThat(
-            file.exists(),
-            Matchers.is(false)
-        );
-    }
-
-    /**
-     * MkDoc can read from file.
-     * @throws IOException In case of error
-     */
-    @Test
-    public void readsFromFile() throws IOException {
-        final File file = new File(this.folder.newFolder(), "readable");
-        final String content = "read";
-        Files.write(content.getBytes(StandardCharsets.UTF_8), file);
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        new MkDoc(file, "", "").read(stream);
-        MatcherAssert.assertThat(
-            new String(stream.toByteArray(), StandardCharsets.UTF_8),
+            Files.toString(file, StandardCharsets.UTF_8),
             Matchers.equalTo(content)
         );
     }
 
     /**
-     * MkDoc can write to file.
+     * SmallDoc can throw exception if the Doc is too big.
      * @throws IOException In case of error
      */
-    @Test
-    public void writesToFile() throws IOException {
-        final File file = new File(this.folder.newFolder(), "writable");
-        final String content = "store";
-        new MkDoc(file, "", "").write(
+    @Test(expected = IllegalArgumentException.class)
+    public void failsToWriteBigDoc() throws IOException {
+        final File file = new File(
+            this.folder.newFolder(), "big_file"
+        );
+        final String content = StringUtils.repeat('b', 101);
+        new SmallDoc(new MkDoc(file, "", ""), (long) Tv.HUNDRED).write(
             new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
         );
         MatcherAssert.assertThat(
