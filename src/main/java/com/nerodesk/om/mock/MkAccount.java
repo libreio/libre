@@ -30,50 +30,43 @@
 package com.nerodesk.om.mock;
 
 import com.nerodesk.om.Account;
-import com.nerodesk.om.Docs;
-import com.nerodesk.om.User;
-import java.io.File;
-import lombok.EqualsAndHashCode;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.LinkedList;
 import lombok.ToString;
 
 /**
- * Mocked version of user.
+ * Mock account.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
- * @since 0.2
+ * @since 0.4
  */
 @ToString
-@EqualsAndHashCode
-public final class MkUser implements User {
+public final class MkAccount implements Account {
+    /**
+     * Current balance.
+     */
+    private transient int blnc;
 
     /**
-     * Directory.
+     * All transactions.
      */
-    private final transient File dir;
+    private final transient Deque<String> trans = new LinkedList<>();
 
-    /**
-     * URN.
-     */
-    private final transient String name;
-
-    /**
-     * Ctor.
-     * @param file Directory
-     * @param urn URN
-     */
-    public MkUser(final File file, final String urn) {
-        this.dir = file;
-        this.name = urn;
+    @Override
+    public int balance() {
+        return this.blnc;
     }
 
     @Override
-    public Docs docs() {
-        return new MkDocs(this.dir, this.name.replaceAll("[^a-z0-9]", "/"));
+    public Iterable<String> transactions() {
+        return Collections.unmodifiableCollection(this.trans);
     }
 
     @Override
-    public Account account() {
-        return new MkAccount();
+    public void add(final int amount, final String text) {
+        this.blnc += amount;
+        this.trans.addFirst(text);
     }
 }

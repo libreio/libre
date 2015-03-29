@@ -27,53 +27,37 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.mock;
+package com.nerodesk.om;
 
-import com.nerodesk.om.Account;
-import com.nerodesk.om.Docs;
-import com.nerodesk.om.User;
-import java.io.File;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import com.jcabi.aspects.Immutable;
 
 /**
- * Mocked version of user.
+ * User account.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
- * @since 0.2
+ * @since 0.4
  */
-@ToString
-@EqualsAndHashCode
-public final class MkUser implements User {
+@Immutable
+public interface Account {
+    /**
+     * Current account balance in cents.
+     * @return Balance in cents
+     */
+    int balance();
 
     /**
-     * Directory.
+     * All operations on the account.
+     * Operations are returned in reverse chronological order, the most recent
+     * at the beginning of the list.
+     * @return All operations on the account
      */
-    private final transient File dir;
+    Iterable<String> transactions();
 
     /**
-     * URN.
+     * Add a new operation.
+     * @param amount Amount to fund (positive) or charge (negative)
+     * @param text Description of the operation
      */
-    private final transient String name;
-
-    /**
-     * Ctor.
-     * @param file Directory
-     * @param urn URN
-     */
-    public MkUser(final File file, final String urn) {
-        this.dir = file;
-        this.name = urn;
-    }
-
-    @Override
-    public Docs docs() {
-        return new MkDocs(this.dir, this.name.replaceAll("[^a-z0-9]", "/"));
-    }
-
-    @Override
-    public Account account() {
-        return new MkAccount();
-    }
+    void add(int amount, String text);
 }

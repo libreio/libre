@@ -30,6 +30,7 @@
 package com.nerodesk.om.aws;
 
 import com.jcabi.s3.Bucket;
+import com.nerodesk.om.Account;
 import com.nerodesk.om.Docs;
 import com.nerodesk.om.User;
 import lombok.EqualsAndHashCode;
@@ -69,5 +70,16 @@ public final class AwsUser implements User {
     @Override
     public Docs docs() {
         return new AwsDocs(this.bucket, this.name);
+    }
+
+    // @todo #118:30min Create AwsAccount (preferably using DynamoDB) for
+    //  permanent storage of account related information - current balance and
+    //  a list of operations performed on the account.
+    // @todo #118:30min Add current balance of the user on top line of each
+    //  web page. Create also a page account.xsl displaying all the transactions
+    //  from the account.
+    @Override
+    public Account account() {
+        throw new UnsupportedOperationException();
     }
 }
