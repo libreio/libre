@@ -33,21 +33,40 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.aspects.Tv;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
+import com.jcabi.s3.mock.MkBucket;
+import com.nerodesk.om.Docs;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 
 /**
  * Tests for {@link AwsDocs}.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
+ * @author Felipe Pina (felipe.pina@protonmail.com)
  * @version $Id$
+ * @since 0.3
  */
 public final class AwsDocsTest {
+
+    /**
+     * Temporary folder.
+     * @checkstyle VisibilityModifierCheck (3 lines)
+     */
+    @Rule
+    public final transient TemporaryFolder folder = new TemporaryFolder();
 
     /**
      * AwsDoc can return the size of its contents.
@@ -71,7 +90,7 @@ public final class AwsDocsTest {
         meta.setContentLength(size);
         Mockito.doReturn(meta).when(ocket).meta();
         MatcherAssert.assertThat(
-            new AwsDocs(bucket).size(),
+            new AwsDocs(bucket, "").size(),
             Matchers.is(size)
         );
     }
@@ -85,4 +104,58 @@ public final class AwsDocsTest {
             .suppress(Warning.TRANSIENT_FIELDS)
             .verify();
     }
+
+    /**
+     * AwsDocs can list all docs.
+     * @throws IOException If something goes wrong.
+     */
+    @Test
+    public void listsDocs() throws IOException {
+        final String label = "lists";
+        final String name = "lists-exists";
+        final Bucket bucket = this.mockBucket(label, name);
+        final List<String> expected = Arrays.asList(name, "sub/file");
+        final List<String> names = new AwsDocs(bucket, label).names();
+        MatcherAssert.assertThat(names, Matchers.equalTo(expected));
+    }
+
+    /**
+     * AwsDocs can find a doc.
+     * @throws IOException If something goes wrong.
+     */
+    @Test
+    public void findsDoc() throws IOException {
+        final String label = "finds";
+        final String exists = "finds-exists";
+        final Bucket bucket = this.mockBucket(label, exists);
+        final Docs docs = new AwsDocs(bucket, label);
+        MatcherAssert.assertThat(
+            docs.doc(exists).exists(),
+            Matchers.equalTo(true)
+        );
+        MatcherAssert.assertThat(
+            docs.doc("xyz").exists(),
+            Matchers.equalTo(false)
+        );
+    }
+
+    /**
+     * Builds a mock Bucket.
+     * @param name Bucket name.
+     * @param exists Name of Ocket that should exist.
+     * @return The mock bucket.
+     * @throws IOException If something goes wrong.
+     */
+    private Bucket mockBucket(final String name, final String exists)
+        throws IOException {
+        final Path bucket = Files.createDirectories(
+            Paths.get(this.folder.getRoot().getAbsolutePath(), name, name)
+        );
+        Files.createFile(bucket.resolve(exists));
+        Files.createFile(
+            Files.createDirectories(bucket.resolve("sub")).resolve("file")
+        );
+        return new MkBucket(this.folder.getRoot(), name);
+    }
+
 }

@@ -68,8 +68,6 @@ public final class AwsUser implements User {
 
     @Override
     public Docs docs() {
-        return new AwsDocs(
-            new Bucket.Prefixed(this.bucket, String.format("%s/", this.name))
-        );
+        return new AwsDocs(this.bucket, this.name);
     }
 }
