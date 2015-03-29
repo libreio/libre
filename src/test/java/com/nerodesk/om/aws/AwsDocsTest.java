@@ -40,6 +40,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import nl.jqno.equalsverifier.EqualsVerifier;
@@ -116,6 +117,7 @@ public final class AwsDocsTest {
         final Bucket bucket = this.mockBucket(label, name);
         final List<String> expected = Arrays.asList(name, "sub/file");
         final List<String> names = new AwsDocs(bucket, label).names();
+        Collections.sort(names);
         MatcherAssert.assertThat(names, Matchers.equalTo(expected));
     }
 
