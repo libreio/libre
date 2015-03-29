@@ -1,0 +1,20 @@
+date: 27-03-2015
+author: Felipe Pina
+method: champions.pert
+scope:
+  1: web panel (UI)
+  2: session management (including login)
+  3: account logic (create/delete)
+  4: file logic (list/upload/download/delete/share)
+  5: domain model + persistence (user, account, file/object pointer)
+  6: S3 storage backend
+  7: EC2 storage backend
+champions:
+  4:
+    worst-case: 120
+    best-case: 64
+    most-likely: 80
+  5:
+    worst-case: 80
+    best-case: 24
+    most-likely: 40
