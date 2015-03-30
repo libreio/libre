@@ -27,47 +27,28 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.mock;
+package com.nerodesk.om.aws;
 
-import com.google.common.io.Files;
-import com.nerodesk.om.Base;
-import com.nerodesk.om.User;
-import java.io.File;
-import java.io.IOException;
-import lombok.EqualsAndHashCode;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
+import org.junit.Test;
 
 /**
- * Mocked version of base.
+ * Tests for {@link AwsFriends}.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
  */
-@EqualsAndHashCode(of = "dir")
-public final class MkBase implements Base {
+public final class AwsFriendsTest {
 
     /**
-     * Directory.
+     * AwsFriends conforms to equals and hashCode contract.
      */
-    private final transient File dir;
-
-    /**
-     * Ctor.
-     */
-    public MkBase() {
-        this(Files.createTempDir());
-    }
-
-    /**
-     * Ctor.
-     * @param file Directory
-     */
-    public MkBase(final File file) {
-        this.dir = file;
-    }
-
-    @Override
-    public User user(final String urn) throws IOException {
-        return new MkUser(this.dir, urn);
+    @Test
+    public void conformsToEqualsHashCodeContract() {
+        EqualsVerifier.forClass(AwsFriends.class)
+            .suppress(Warning.TRANSIENT_FIELDS)
+            .verify();
     }
 }

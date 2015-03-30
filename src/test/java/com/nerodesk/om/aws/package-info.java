@@ -34,5 +34,7 @@
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
  * @since 0.3
+ * @todo #97:30m Replace all mocks provided by Mockito in this package
+ *  by their relative Mk classes and fix all the affected tests.
  */
 package com.nerodesk.om.aws;

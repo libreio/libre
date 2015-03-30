@@ -33,8 +33,6 @@ import com.nerodesk.om.Friends;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /**
  * Mocked version of friends.
@@ -46,8 +44,6 @@ import lombok.ToString;
  *  implement it and test in a unit test. Let's use some primitive mechanism,
  *  based on file names.
  */
-@ToString
-@EqualsAndHashCode
 public final class MkFriends implements Friends {
 
     /**

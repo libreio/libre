@@ -40,7 +40,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /**
  * AWS-based version of Doc.
@@ -49,7 +48,6 @@ import lombok.ToString;
  * @version $Id$
  * @since 0.2
  */
-@ToString
 @EqualsAndHashCode(of = { "bucket", "user", "label" })
 final class AwsDoc implements Doc {
 

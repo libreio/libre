@@ -34,7 +34,6 @@ import com.nerodesk.om.Account;
 import com.nerodesk.om.Docs;
 import com.nerodesk.om.User;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /**
  * AWS-based version of User.
@@ -43,7 +42,6 @@ import lombok.ToString;
  * @version $Id$
  * @since 0.2
  */
-@ToString
 @EqualsAndHashCode(of = { "bucket", "name" })
 public final class AwsUser implements User {
 

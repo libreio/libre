@@ -45,10 +45,24 @@ import org.junit.rules.TemporaryFolder;
  * Tests for {@link AwsDoc}.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
+ * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
  * @since 0.3
  */
 public final class AwsDocTest {
+    /**
+     * AwsDoc can verify if it exists.
+     * @throws Exception in case of error.
+     */
+    @Test
+    public void exists() throws Exception {
+        final String label = "document-label";
+        final Bucket bucket = this.mockBucket(label);
+        MatcherAssert.assertThat(
+            new AwsDoc(bucket, "user-urn", "non-existent-document").exists(),
+            Matchers.is(false)
+        );
+    }
 
     /**
      * AwsDoc conforms to equals and hashCode contract.
@@ -137,5 +151,4 @@ public final class AwsDocTest {
         doc.write(new ByteArrayInputStream(contents.getBytes()));
         return doc;
     }
-
 }

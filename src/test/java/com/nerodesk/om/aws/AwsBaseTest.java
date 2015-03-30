@@ -29,17 +29,35 @@
  */
 package com.nerodesk.om.aws;
 
+import com.jcabi.s3.Bucket;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Tests for {@link AwsBase}.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
+ * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
+ * @since 0.3
  */
 public final class AwsBaseTest {
+    /**
+     * AwsBase can have users.
+     * @throws Exception In case of error.
+     */
+    @Test
+    public void hasUser() throws Exception {
+        MatcherAssert.assertThat(
+            new AwsBase(Mockito.mock(Bucket.class)).user("urn"),
+            Matchers.notNullValue()
+        );
+    }
+
     /**
      * AwsBase conforms to equals and hashCode contract.
      */

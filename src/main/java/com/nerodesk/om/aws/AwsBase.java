@@ -33,7 +33,6 @@ import com.jcabi.s3.Bucket;
 import com.nerodesk.om.Base;
 import com.nerodesk.om.User;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /**
  * AWS-based version of Base.
@@ -42,7 +41,6 @@ import lombok.ToString;
  * @version $Id$
  * @since 0.2
  */
-@ToString
 @EqualsAndHashCode(of = "bucket")
 public final class AwsBase implements Base {
 

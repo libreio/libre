@@ -33,8 +33,6 @@ import com.nerodesk.om.Account;
 import com.nerodesk.om.Docs;
 import com.nerodesk.om.User;
 import java.io.File;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /**
  * Mocked version of user.
@@ -43,8 +41,6 @@ import lombok.ToString;
  * @version $Id$
  * @since 0.2
  */
-@ToString
-@EqualsAndHashCode
 public final class MkUser implements User {
 
     /**

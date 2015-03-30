@@ -38,8 +38,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -50,8 +48,6 @@ import org.apache.commons.io.IOUtils;
  * @version $Id$
  * @since 0.2
  */
-@ToString
-@EqualsAndHashCode
 public final class MkDoc implements Doc {
 
     /**

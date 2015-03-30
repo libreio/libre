@@ -36,8 +36,6 @@ import com.nerodesk.om.Docs;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
@@ -48,8 +46,6 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
  * @version $Id$
  * @since 0.2
  */
-@ToString
-@EqualsAndHashCode
 public final class MkDocs implements Docs {
 
     /**
