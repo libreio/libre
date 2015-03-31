@@ -74,12 +74,10 @@ public final class AwsUser implements User {
 
     // @todo #118:30min Create AwsAccount (preferably using DynamoDB) for
     //  permanent storage of account related information - current balance and
-    //  a list of operations performed on the account.
-    // @todo #118:30min Add current balance of the user on top line of each
-    //  web page. Create also a page account.xsl displaying all the transactions
-    //  from the account.
+    //  a list of operations performed on the account. Replace dummy
+    //  dummy implementation with newly created class.
     @Override
     public Account account() {
-        throw new UnsupportedOperationException();
+        return Account.DUMMY;
     }
 }
