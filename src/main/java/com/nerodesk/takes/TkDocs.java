@@ -100,6 +100,10 @@ public final class TkDocs implements Take {
             final Href href = home.path("doc").with("file", name);
             dirs.add("doc")
                 .add("name").set(name).up()
+                .add("size").set(Long.toString(doc.size())).up()
+                .add("created").set(Long.toString(doc.created().getTime())).up()
+                .add("type").set(doc.type()).up()
+                .add("name").set(name).up()
                 .add("read").set(href.path("read").toString()).up()
                 .add("delete").set(href.path("delete").toString()).up()
                 .add("add-friend").set(href.path("add-friend").toString()).up()
