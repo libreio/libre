@@ -29,8 +29,13 @@
  */
 package com.nerodesk.om.aws;
 
+import java.io.IOException;
+import java.util.Arrays;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.apache.commons.lang3.StringUtils;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
@@ -51,4 +56,30 @@ public final class AwsFriendsTest {
             .suppress(Warning.TRANSIENT_FIELDS)
             .verify();
     }
+
+    /**
+     * AwsFriends can split the friends list correctly.
+     * @throws IOException If something goes wrong.
+     * @todo 152:30min This test should actually verify that AwsFriends.names is
+     *  correct after removing/ejecting all friends - it should return an empty
+     *  list instead of a list with a single blank element. However, it is not
+     *  currently possible to unit test that functionality because of specific
+     *  calls to the AWS API done inside of method eject. Mocking with jcabi-s3
+     *  is also not an option because we can't control the metadata returned by
+     *  MkOcket. Once it is possible to test eject, change the test below to its
+     *  correct behavior described above.
+     */
+    @Test
+    public void splitsFriendCorrectly() throws IOException {
+        final String names = "";
+        MatcherAssert.assertThat(
+            Arrays.asList(names.split(";")),
+            Matchers.hasSize(1)
+        );
+        MatcherAssert.assertThat(
+            Arrays.asList(StringUtils.split(names, ';')),
+            Matchers.hasSize(0)
+        );
+    }
+
 }
