@@ -168,7 +168,7 @@ final class AwsFriends implements Friends {
             final ObjectMetadata meta = ocket.meta();
             final String header = meta.getUserMetaDataOf(AwsFriends.HEADER);
             if (header != null) {
-                friends.addAll(Arrays.asList(StringUtils.split(header,';')));
+                friends.addAll(Arrays.asList(StringUtils.split(header, ';')));
             }
         }
         return friends;
