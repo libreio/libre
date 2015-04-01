@@ -38,6 +38,11 @@
         </title>
     </xsl:template>
     <xsl:template match="page" mode="body">
+        <form method="post" action="{links/link[@rel='mkdir']/@href}">
+            <input name="name" type="text" placeholder="New directory name"/>
+            <input name="create" type="submit"/>
+        </form>
+        <hr/>
         <p>
             <xsl:text>My docs:</xsl:text>
         </p>

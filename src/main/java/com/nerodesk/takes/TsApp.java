@@ -33,6 +33,7 @@ import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import com.jcabi.manifests.Manifests;
 import com.nerodesk.om.Base;
+import com.nerodesk.takes.doc.TsDir;
 import com.nerodesk.takes.doc.TsDoc;
 import java.io.File;
 import java.io.IOException;
@@ -179,6 +180,10 @@ public final class TsApp extends TsWrap {
             new FkRegex(
                 "/doc/.*",
                 new TsSecure(new TsGreedy(new TsDoc(base)))
+            ),
+            new FkRegex(
+                "/dir/.*",
+                new TsSecure(new TsGreedy(new TsDir()))
             )
         );
         return TsApp.fallback(
