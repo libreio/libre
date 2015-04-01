@@ -30,47 +30,40 @@
 package com.nerodesk.takes.doc;
 
 import com.nerodesk.om.Doc;
-import java.io.IOException;
-import org.takes.Response;
-import org.takes.Take;
-import org.takes.facets.flash.RsFlash;
-import org.takes.facets.forward.RsForward;
+import com.nerodesk.om.Docs;
+import com.nerodesk.om.mock.MkBase;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.takes.rs.RsPrint;
 
 /**
- * Add friend.
+ * Test case for {@link TkAddFriend}.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
- * @since 0.3
- * @todo #144:30min/DEV We now have a unit test, but no integration test.
- *  Let's create one, to check how this document sharing works.
+ * @since 0.4
  */
-final class TkAddFriend implements Take {
+public final class TkAddFriendTest {
 
     /**
-     * Doc.
+     * TkAddFriend can add a friend.
+     * @throws Exception If fails.
+     * @todo #144:15min We should add an assertion where we will check if the
+     *  added friend is in fact present in doc.friends(). However, class
+     *  MkFriends is not yet implemented, so it returns nothing. When it is
+     *  implemented let's add that assertion to make this test more robust and
+     *  comprehensive.
      */
-    private final transient Doc doc;
-
-    /**
-     * Name of friend (URN).
-     */
-    private final transient String friend;
-
-    /**
-     * Ctor.
-     * @param src Source document to read from
-     * @param name Name of Friend
-     */
-    TkAddFriend(final Doc src, final String name) {
-        this.doc = src;
-        this.friend = name;
-    }
-
-    @Override
-    public Response act() throws IOException {
-        this.doc.friends().add(this.friend);
-        return new RsForward(new RsFlash("document shared"));
+    @Test
+    public void addsFriend() throws Exception {
+        final Docs docs = new MkBase().user("urn:test:1").docs();
+        final Doc doc = docs.doc("hey");
+        final String friend = "Bob";
+        MatcherAssert.assertThat(
+            new RsPrint(new TkAddFriend(doc, friend).act()).print(),
+            Matchers.containsString("document shared")
+        );
     }
 
 }
