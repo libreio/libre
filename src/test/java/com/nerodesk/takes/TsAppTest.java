@@ -43,6 +43,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.util.Locale;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHeaders;
 import org.hamcrest.MatcherAssert;
@@ -109,6 +110,34 @@ public final class TsAppTest {
                 }
             }
         );
+    }
+
+    /**
+     * TsApp can launch web server in non-latin locale.
+     * @throws Exception If fails
+     */
+    @Test
+    public void launchesWebServerInNonLatinLocale() throws Exception {
+        final Locale def = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.CHINESE);
+            final TsApp app = new TsApp(new MkBase());
+            new FtRemote(app).exec(
+                new FtRemote.Script() {
+                    @Override
+                    public void exec(final URI home) throws IOException {
+                        new JdkRequest(home)
+                            .fetch()
+                            .as(RestResponse.class)
+                            .assertStatus(HttpURLConnection.HTTP_OK)
+                            .as(XmlResponse.class)
+                            .assertXPath("/xhtml:html");
+                    }
+                }
+            );
+        } finally {
+            Locale.setDefault(def);
+        }
     }
 
     /**

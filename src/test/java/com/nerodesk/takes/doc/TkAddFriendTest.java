@@ -62,7 +62,7 @@ public final class TkAddFriendTest {
         final String friend = "Bob";
         MatcherAssert.assertThat(
             new RsPrint(new TkAddFriend(doc, friend).act()).print(),
-            Matchers.containsString("document shared")
+            Matchers.containsString("document+shared")
         );
     }
 
