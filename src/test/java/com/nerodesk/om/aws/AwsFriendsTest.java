@@ -29,14 +29,16 @@
  */
 package com.nerodesk.om.aws;
 
+import com.jcabi.s3.Bucket;
 import java.io.IOException;
 import java.util.Arrays;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
-import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Tests for {@link AwsFriends}.
@@ -58,26 +60,29 @@ public final class AwsFriendsTest {
     }
 
     /**
-     * AwsFriends can split the friends list correctly.
+     * AwsFriends can eject the last friend correctly.
      * @throws IOException If something goes wrong.
-     * @todo 152:30min This test should actually verify that AwsFriends.names is
-     *  correct after removing/ejecting all friends - it should return an empty
-     *  list instead of a list with a single blank element. However, it is not
-     *  currently possible to unit test that functionality because of specific
-     *  calls to the AWS API done inside of method eject. Mocking with jcabi-s3
-     *  is also not an option because we can't control the metadata returned by
-     *  MkOcket. Once it is possible to test eject, change the test below to its
-     *  correct behavior described above.
+     * @todo 152:30min It is not currently possible to run this test because of
+     *  specific calls to the AWS API done inside of method eject. Mocking with
+     *  jcabi-s3 is also currently not an option because we can't control the
+     *  metadata returned by MkOcket. Once it is possible to test this, unignore
+     *  the test.
      */
     @Test
-    public void splitsFriendCorrectly() throws IOException {
-        final String names = "";
+    @Ignore
+    public void ejectsLastFriend() throws IOException {
+        final AwsFriends friends = new AwsFriends(
+            Mockito.mock(Bucket.class), "user", "doc"
+        );
+        final String friend = "friend";
+        friends.add(friend);
         MatcherAssert.assertThat(
-            Arrays.asList(names.split(";")),
+            Arrays.asList(friends.names()),
             Matchers.hasSize(1)
         );
+        friends.eject(friend);
         MatcherAssert.assertThat(
-            Arrays.asList(StringUtils.split(names, ';')),
+            Arrays.asList(friends.names()),
             Matchers.hasSize(0)
         );
     }
