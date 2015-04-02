@@ -317,15 +317,19 @@
 <a class="jxr_linenumber" name="L309" href="#L309">309</a>             <span class="jxr_string">""</span>,
 <a class="jxr_linenumber" name="L310" href="#L310">310</a>             name,
 <a class="jxr_linenumber" name="L311" href="#L311">311</a>             <span class="jxr_string">"--AaB03x"</span>,
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>             <span class="jxr_string">"Content-Disposition: form-data; name=\&quot;file\&quot;"</span>,
-<a class="jxr_linenumber" name="L313" href="#L313">313</a>             <span class="jxr_string">"Content-Transfer-Encoding: utf-8"</span>,
-<a class="jxr_linenumber" name="L314" href="#L314">314</a>             <span class="jxr_string">""</span>,
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>             content,
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>             <span class="jxr_string">"--AaB03x--"</span>
-<a class="jxr_linenumber" name="L317" href="#L317">317</a>         );
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>     }
-<a class="jxr_linenumber" name="L319" href="#L319">319</a> 
-<a class="jxr_linenumber" name="L320" href="#L320">320</a> }
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>             Joiner.on(<span class="jxr_string">"; "</span>).join(
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>                 <span class="jxr_string">"Content-Disposition: form-data"</span>,
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>                 <span class="jxr_string">"name=\&quot;file\&quot;"</span>,
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>                 String.format(<span class="jxr_string">"filename=\&quot;%s\&quot;"</span>, name)
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>             ),
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>             <span class="jxr_string">"Content-Transfer-Encoding: utf-8"</span>,
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>             <span class="jxr_string">""</span>,
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>             content,
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>             <span class="jxr_string">"--AaB03x--"</span>
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>         );
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>     }
+<a class="jxr_linenumber" name="L323" href="#L323">323</a> 
+<a class="jxr_linenumber" name="L324" href="#L324">324</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2015 <a href="http://www.nerodesk.com">Nerodesk, Inc.</a>. All rights reserved.</div>

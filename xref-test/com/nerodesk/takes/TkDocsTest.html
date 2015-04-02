@@ -70,16 +70,17 @@
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          );
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          MatcherAssert.assertThat(
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>              <strong class="jxr_keyword">new</strong> RsPrint(
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>                  <strong class="jxr_keyword">new</strong> TkDocs(user.docs(), <strong class="jxr_keyword">new</strong> RqFake()).act()
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>                  <strong class="jxr_keyword">new</strong> TkDocs(user, <strong class="jxr_keyword">new</strong> RqFake()).act()
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>              ).printBody(),
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>              XhtmlMatchers.hasXPaths(
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>                  <span class="jxr_string">"/page/docs[count(doc)=2]"</span>,
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>                  <span class="jxr_string">"/page/docs/doc[name='test.txt']"</span>,
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>                  <span class="jxr_string">"/page/docs/doc/read"</span>
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>              )
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>          );
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>      }
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>  }
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>                  <span class="jxr_string">"/page/user[balance=0]"</span>,
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>                  <span class="jxr_string">"/page/docs[count(doc)=2]"</span>,
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>                  <span class="jxr_string">"/page/docs/doc[name='test.txt']"</span>,
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>                  <span class="jxr_string">"/page/docs/doc/read"</span>
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>              )
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          );
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>      }
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2015 <a href="http://www.nerodesk.com">Nerodesk, Inc.</a>. All rights reserved.</div>
