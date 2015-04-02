@@ -115,12 +115,8 @@ public final class TsAppTest {
     /**
      * TsApp can launch web server in non-latin locale.
      * @throws Exception If fails
-     * @todo #137:30min Upgrade project to takes version >= 0.11.2 and enable
-     *  this test afterwards. Right now it fails with HTTP status != 200.
-     *  Upgrade to higher takes causes
      */
     @Test
-    @Ignore
     public void launchesWebServerInNonLatinLocale() throws Exception {
         final Locale def = Locale.getDefault();
         try {
