@@ -32,6 +32,7 @@ package com.nerodesk.om;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -47,10 +48,6 @@ import lombok.ToString;
 @EqualsAndHashCode
 public final class SmallDoc implements Doc {
     /**
-     * Default maximal file size to write in bytes.
-     */
-    private static final long DEFAULT_MAX_SIZE = 10_000_000L;
-    /**
      * Decorated.
      */
     private final transient Doc decorated;
@@ -60,11 +57,12 @@ public final class SmallDoc implements Doc {
      */
     private final transient long mlength;
     /**
-     * Constructor.
+     * Constructor with default max file size = 10Mb.
      * @param doc Doc to be decorated
+     * @checkstyle MagicNumberCheck (3 lines)
      */
     public SmallDoc(final Doc doc) {
-        this(doc, SmallDoc.DEFAULT_MAX_SIZE);
+        this(doc, 10_000_000L);
     }
     /**
      * Constructor.
@@ -87,6 +85,21 @@ public final class SmallDoc implements Doc {
     }
 
     @Override
+    public long size() throws IOException {
+        return this.decorated.size();
+    }
+
+    @Override
+    public String type() throws IOException {
+        return this.decorated.type();
+    }
+
+    @Override
+    public Date created() throws IOException {
+        return this.decorated.created();
+    }
+
+    @Override
     public Friends friends() throws IOException {
         return this.decorated.friends();
     }
@@ -97,25 +110,18 @@ public final class SmallDoc implements Doc {
     }
 
     @Override
-    @SuppressWarnings("PMD.DoNotUseThreads")
     public void write(final InputStream input) throws IOException {
-        this.decorated.write(
-            new ThresholdInputStream(
-                input,
-                this.mlength,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        throw new IllegalArgumentException(
-                            String.format(
-                                // @checkstyle LineLengthCheck (1 line)
-                                "Now you can't upload a file that is larger than %s bytes",
-                                SmallDoc.this.mlength
-                            )
-                        );
-                    }
-                }
-            )
-        );
+        try {
+            this.decorated.write(
+                new ThresholdInputStream(input, this.mlength)
+            );
+        } catch (final ThresholdInputStream.LimitReachedException exc) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Now you can't upload a file that is larger than %s bytes",
+                    this.mlength
+                ), exc
+            );
+        }
     }
 }

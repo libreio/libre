@@ -378,6 +378,11 @@
                         <artifactId>cobertura-maven-plugin</artifactId>
                         <version>2.5.2</version>
                         <configuration>
+                            <instrumentation>
+                                <excludes>
+                                    <exclude>com/nerodesk/om/ThresholdInputStream.class</exclude>
+                                </excludes>
+                            </instrumentation>
                             <check>
                                 <haltOnFailure>true</haltOnFailure>
                                 <branchRate>0</branchRate>

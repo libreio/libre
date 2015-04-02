@@ -33,19 +33,18 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Decorator for the {@code InputStream} which execute
- * {@code Runnable} callback if more than {@code max} bytes read from
- * underlying stream.
+ * Decorator for the {@code InputStream} which throws IllegalStateException
+ * if more than {@code max} bytes read from underlying stream.
  *
  * @author Paul Polishchuk (ppol@ua.fm)
  * @version $Id$
  * @since 0.4
  * @todo #89:30min Create a tests for the ThresholdInputStream class.
- *  We need to make sure that it's obey the InputStream contract and
- *  calls callback when maximum read bytes is reached.
+ *  We need to make sure that it's obey the InputStream contract
+ *  and throws an exception when maximum read bytes limit is reached.
+ *  Also please remove this class form cobertura excludes after that.
  */
-@SuppressWarnings("PMD.DoNotUseThreads")
-public final class ThresholdInputStream extends InputStream {
+final class ThresholdInputStream extends InputStream {
 
     /**
      * The wrapped input stream.
@@ -56,11 +55,6 @@ public final class ThresholdInputStream extends InputStream {
      * The max length to provide.
      */
     private final transient long max;
-
-    /**
-     * Callback to be called when the limit reached.
-     */
-    private final transient Runnable clbck;
 
     /**
      * Number of bytes already returned.
@@ -80,17 +74,13 @@ public final class ThresholdInputStream extends InputStream {
     /**
      * Creates a new {@code ThresholdInputStream} that wraps
      * given input stream and limits it to a certain size.
-     * If the limit reached then provided callback will be called
-     * in current thread.
      *
      * @param inp The wrapped input stream
      * @param size The maximum number of bytes to return.
      *  Should be greater or equal to zero
-     * @param callback To be called
      */
-    public ThresholdInputStream(
-        final InputStream inp, final long size,
-        final Runnable callback
+    ThresholdInputStream(
+        final InputStream inp, final long size
     ) {
         super();
         if (size < 0L) {
@@ -100,7 +90,6 @@ public final class ThresholdInputStream extends InputStream {
         }
         this.max = size;
         this.origin = inp;
-        this.clbck = callback;
     }
 
     /**
@@ -111,15 +100,11 @@ public final class ThresholdInputStream extends InputStream {
      */
     @Override
     public int read() throws IOException {
-        final int rbytes;
         if (this.pos >= this.max) {
-            this.clbck.run();
-            rbytes = -1;
-        } else {
-            ++this.pos;
-            rbytes = this.origin.read();
+            throw new ThresholdInputStream.LimitReachedException();
         }
-        return rbytes;
+        ++this.pos;
+        return this.origin.read();
     }
 
     /**
@@ -145,21 +130,19 @@ public final class ThresholdInputStream extends InputStream {
     @Override
     public int read(final byte[] bytes, final int off, final int len)
         throws IOException {
-        final int rbytes;
         if (this.pos >= this.max) {
-            this.clbck.run();
-            rbytes = -1;
+            throw new ThresholdInputStream.LimitReachedException();
+        }
+        final long maxread;
+        if (this.max >= 0L) {
+            maxread = Math.min((long) len, this.max - this.pos);
         } else {
-            final long maxread;
-            if (this.max >= 0L) {
-                maxread = Math.min((long) len, this.max - this.pos);
-            } else {
-                maxread = len;
-            }
-            rbytes = this.origin.read(bytes, off, (int) maxread);
-            if (rbytes != -1) {
-                this.pos += (long) rbytes;
-            }
+            maxread = (long) len;
+        }
+        final int rbytes;
+        rbytes = this.origin.read(bytes, off, (int) maxread);
+        if (rbytes != -1) {
+            this.pos += (long) rbytes;
         }
         return rbytes;
     }
@@ -216,4 +199,13 @@ public final class ThresholdInputStream extends InputStream {
         return this.origin.markSupported();
     }
 
+    /**
+     * Exceptional case when limit was reached during reading from the stream.
+     */
+    public static class LimitReachedException extends RuntimeException {
+        /**
+         * Serial version UID.
+         */
+        private static final long serialVersionUID = 1402905235180338966L;
+    }
 }
