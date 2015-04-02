@@ -38,8 +38,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Date;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -50,8 +51,6 @@ import org.apache.commons.io.IOUtils;
  * @version $Id$
  * @since 0.2
  */
-@ToString
-@EqualsAndHashCode
 public final class MkDoc implements Doc {
 
     /**
@@ -89,6 +88,25 @@ public final class MkDoc implements Doc {
     @Override
     public void delete() {
         this.file().delete();
+    }
+
+    @Override
+    public long size() throws IOException {
+        return FileUtils.sizeOf(this.file());
+    }
+
+    @Override
+    public String type() throws IOException {
+        return Files.probeContentType(this.file().toPath());
+    }
+
+    @Override
+    public Date created() throws IOException {
+        return new Date(
+            Files.readAttributes(
+                this.file().toPath(), BasicFileAttributes.class
+            ).creationTime().toMillis()
+        );
     }
 
     @Override

@@ -27,44 +27,80 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.aws;
+package com.nerodesk.om.mock;
 
-import com.jcabi.s3.Bucket;
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
+import com.nerodesk.om.Account;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 /**
- * Tests for {@link AwsBase}.
+ * Tests for {@link MkAccount}.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
- * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
- * @since 0.3
+ * @since 0.4
  */
-public final class AwsBaseTest {
+public final class MkAccountTest {
     /**
-     * AwsBase can have users.
-     * @throws Exception In case of error.
+     * MkAccount starting balance is zero.
      */
     @Test
-    public void hasUser() throws Exception {
+    public void startingBalanceIsZero() {
+        final Account account = new MkAccount();
         MatcherAssert.assertThat(
-            new AwsBase(Mockito.mock(Bucket.class)).user("urn"),
-            Matchers.notNullValue()
+            account.balance(), Matchers.equalTo(0)
         );
     }
 
     /**
-     * AwsBase conforms to equals and hashCode contract.
+     * MkAccounts should have no transactions at start.
      */
     @Test
-    public void conformsToEqualsHashCodeContract() {
-        EqualsVerifier.forClass(AwsBase.class)
-            .suppress(Warning.TRANSIENT_FIELDS)
-            .verify();
+    public void hasNoTransactionsAtStart() {
+        final Account account = new MkAccount();
+        MatcherAssert.assertThat(
+            account.transactions(), Matchers.emptyIterable()
+        );
+    }
+
+    /**
+     * MkAccounts can add operation.
+     */
+    @Test
+    public void addsOperation() {
+        final Account account = new MkAccount();
+        final String funding = "funding";
+        final int amount = 1;
+        account.add(amount, funding);
+        MatcherAssert.assertThat(
+            account.balance(),
+            Matchers.equalTo(amount)
+        );
+        MatcherAssert.assertThat(
+            account.transactions(),
+            Matchers.contains(funding)
+        );
+    }
+
+    /**
+     * MkAccounts can return operations starting from the last.
+     */
+    @Test
+    public void returnsOperationsStartingFromLast() {
+        final Account account = new MkAccount();
+        final String first = "first";
+        final String second = "second";
+        final int amount = 1;
+        account.add(amount, first);
+        account.add(amount, second);
+        MatcherAssert.assertThat(
+            account.balance(),
+            Matchers.equalTo(2 * amount)
+        );
+        MatcherAssert.assertThat(
+            account.transactions(),
+            Matchers.contains(second, first)
+        );
     }
 }

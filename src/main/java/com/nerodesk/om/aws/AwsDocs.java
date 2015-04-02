@@ -39,7 +39,6 @@ import com.nerodesk.om.SmallDoc;
 import java.io.IOException;
 import java.util.List;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /**
  * AWS-based version of Docs.
@@ -48,7 +47,6 @@ import lombok.ToString;
  * @version $Id$
  * @since 0.2
  */
-@ToString
 @EqualsAndHashCode(of = { "bucket", "user" })
 final class AwsDocs implements Docs {
 

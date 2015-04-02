@@ -27,47 +27,56 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.mock;
+package com.nerodesk.om;
 
-import com.google.common.io.Files;
-import com.nerodesk.om.Base;
-import com.nerodesk.om.User;
-import java.io.File;
-import java.io.IOException;
-import lombok.EqualsAndHashCode;
+import com.jcabi.aspects.Immutable;
+import java.util.Collections;
 
 /**
- * Mocked version of base.
+ * User account.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
- * @since 0.2
+ * @since 0.4
  */
-@EqualsAndHashCode(of = "dir")
-public final class MkBase implements Base {
+@Immutable
+public interface Account {
+    /**
+     * Dummy implementation.
+     */
+    Account DUMMY = new Account() {
+        @Override
+        public int balance() {
+            return 0;
+        }
+        @Override
+        public Iterable<String> transactions() {
+            return Collections.emptyList();
+        }
+        @Override
+        public void add(final int amount, final String text) {
+            // do nothing
+        }
+    };
 
     /**
-     * Directory.
+     * Current account balance in cents.
+     * @return Balance in cents
      */
-    private final transient File dir;
+    int balance();
 
     /**
-     * Ctor.
+     * All operations on the account.
+     * Operations are returned in reverse chronological order, the most recent
+     * at the beginning of the list.
+     * @return All operations on the account
      */
-    public MkBase() {
-        this(Files.createTempDir());
-    }
+    Iterable<String> transactions();
 
     /**
-     * Ctor.
-     * @param file Directory
+     * Add a new operation.
+     * @param amount Amount to fund (positive) or charge (negative)
+     * @param text Description of the operation
      */
-    public MkBase(final File file) {
-        this.dir = file;
-    }
-
-    @Override
-    public User user(final String urn) throws IOException {
-        return new MkUser(this.dir, urn);
-    }
+    void add(int amount, String text);
 }

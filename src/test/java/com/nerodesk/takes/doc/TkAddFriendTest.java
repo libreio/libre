@@ -27,47 +27,43 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.mock;
+package com.nerodesk.takes.doc;
 
-import com.google.common.io.Files;
-import com.nerodesk.om.Base;
-import com.nerodesk.om.User;
-import java.io.File;
-import java.io.IOException;
-import lombok.EqualsAndHashCode;
+import com.nerodesk.om.Doc;
+import com.nerodesk.om.Docs;
+import com.nerodesk.om.mock.MkBase;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.takes.rs.RsPrint;
 
 /**
- * Mocked version of base.
+ * Test case for {@link TkAddFriend}.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
- * @since 0.2
+ * @since 0.4
  */
-@EqualsAndHashCode(of = "dir")
-public final class MkBase implements Base {
+public final class TkAddFriendTest {
 
     /**
-     * Directory.
+     * TkAddFriend can add a friend.
+     * @throws Exception If fails.
+     * @todo #144:15min We should add an assertion where we will check if the
+     *  added friend is in fact present in doc.friends(). However, class
+     *  MkFriends is not yet implemented, so it returns nothing. When it is
+     *  implemented let's add that assertion to make this test more robust and
+     *  comprehensive.
      */
-    private final transient File dir;
-
-    /**
-     * Ctor.
-     */
-    public MkBase() {
-        this(Files.createTempDir());
+    @Test
+    public void addsFriend() throws Exception {
+        final Docs docs = new MkBase().user("urn:test:1").docs();
+        final Doc doc = docs.doc("hey");
+        final String friend = "Bob";
+        MatcherAssert.assertThat(
+            new RsPrint(new TkAddFriend(doc, friend).act()).print(),
+            Matchers.containsString("document shared")
+        );
     }
 
-    /**
-     * Ctor.
-     * @param file Directory
-     */
-    public MkBase(final File file) {
-        this.dir = file;
-    }
-
-    @Override
-    public User user(final String urn) throws IOException {
-        return new MkUser(this.dir, urn);
-    }
 }

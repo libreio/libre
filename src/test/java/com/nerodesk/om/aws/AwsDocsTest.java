@@ -46,27 +46,50 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 /**
  * Tests for {@link AwsDocs}.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @author Felipe Pina (felipe.pina@protonmail.com)
+ * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
  * @since 0.3
  */
 public final class AwsDocsTest {
-
     /**
      * Temporary folder.
      * @checkstyle VisibilityModifierCheck (3 lines)
      */
     @Rule
     public final transient TemporaryFolder folder = new TemporaryFolder();
+
+    /**
+     * Setup mocks.
+     */
+    @Before
+    public void init() {
+        MockitoAnnotations.initMocks(this);
+    }
+
+    /**
+     * AwsDocs can obtain an AwsDoc.
+     * @throws Exception in case of error.
+     */
+    @Test
+    public void obtainsDoc() throws Exception {
+        final Bucket bucket = this.mockBucket("any-name", "any-file");
+        MatcherAssert.assertThat(
+            new AwsDocs(bucket, "urn2").doc("doc1"),
+            Matchers.notNullValue()
+        );
+    }
 
     /**
      * AwsDoc can return the size of its contents.
@@ -90,7 +113,7 @@ public final class AwsDocsTest {
         meta.setContentLength(size);
         Mockito.doReturn(meta).when(ocket).meta();
         MatcherAssert.assertThat(
-            new AwsDocs(bucket, "").size(),
+            new AwsDocs(bucket, "urn3").size(),
             Matchers.is(size)
         );
     }

@@ -42,9 +42,8 @@ import org.takes.facets.forward.RsForward;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.3
- * @todo #103:30m/DEV There is no unit test for this class. Let's create one.
- *  Also let's create an integration test, to check how this document
- *  sharing works.
+ * @todo #144:30min/DEV We now have a unit test, but no integration test.
+ *  Let's create one, to check how this document sharing works.
  */
 final class TkAddFriend implements Take {
 

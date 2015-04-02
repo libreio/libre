@@ -30,6 +30,7 @@
 package com.nerodesk.om.aws;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
@@ -38,9 +39,9 @@ import com.nerodesk.om.Friends;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /**
  * AWS-based version of Doc.
@@ -48,8 +49,11 @@ import lombok.ToString;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
+ * @todo #101:30min Methods size, type and created have to replaced with correct
+ *  implementation. Size should give number of bytes of the document, type
+ *  should be MIME type of the document, created should be a timestamp when the
+ *  document was created.
  */
-@ToString
 @EqualsAndHashCode(of = { "bucket", "user", "label" })
 final class AwsDoc implements Doc {
 
@@ -93,6 +97,21 @@ final class AwsDoc implements Doc {
     @Override
     public void delete() throws IOException {
         this.bucket.remove(this.ocket().key());
+    }
+
+    @Override
+    public long size() throws IOException {
+        return Tv.MILLION;
+    }
+
+    @Override
+    public String type() throws IOException {
+        return "application/octet-stream";
+    }
+
+    @Override
+    public Date created() throws IOException {
+        return new Date();
     }
 
     @Override

@@ -391,11 +391,11 @@
                                 -->
                                 <totalBranchRate>50</totalBranchRate>
                                 <!--
-                                @todo #63:30min Line coverage is intentionally lowered here,
+                                @todo #97:30min Line coverage is intentionally lowered here,
                                  in order to get version 0.2 out of the door. Let's
                                  raise it back to 75.
                                 -->
-                                <totalLineRate>40</totalLineRate>
+                                <totalLineRate>70</totalLineRate>
                             </check>
                         </configuration>
                         <executions>

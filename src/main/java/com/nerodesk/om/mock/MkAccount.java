@@ -29,45 +29,44 @@
  */
 package com.nerodesk.om.mock;
 
-import com.google.common.io.Files;
-import com.nerodesk.om.Base;
-import com.nerodesk.om.User;
-import java.io.File;
-import java.io.IOException;
-import lombok.EqualsAndHashCode;
+import com.nerodesk.om.Account;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.LinkedList;
+import lombok.ToString;
 
 /**
- * Mocked version of base.
+ * Mock account.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
- * @since 0.2
+ * @since 0.4
  */
-@EqualsAndHashCode(of = "dir")
-public final class MkBase implements Base {
+@ToString
+public final class MkAccount implements Account {
+    /**
+     * Current balance.
+     */
+    private transient int blnc;
 
     /**
-     * Directory.
+     * All transactions.
      */
-    private final transient File dir;
+    private final transient Deque<String> trans = new LinkedList<>();
 
-    /**
-     * Ctor.
-     */
-    public MkBase() {
-        this(Files.createTempDir());
-    }
-
-    /**
-     * Ctor.
-     * @param file Directory
-     */
-    public MkBase(final File file) {
-        this.dir = file;
+    @Override
+    public int balance() {
+        return this.blnc;
     }
 
     @Override
-    public User user(final String urn) throws IOException {
-        return new MkUser(this.dir, urn);
+    public Iterable<String> transactions() {
+        return Collections.unmodifiableCollection(this.trans);
+    }
+
+    @Override
+    public void add(final int amount, final String text) {
+        this.blnc += amount;
+        this.trans.addFirst(text);
     }
 }

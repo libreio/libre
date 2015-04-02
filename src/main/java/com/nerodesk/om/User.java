@@ -49,4 +49,9 @@ public interface User {
      */
     Docs docs() throws IOException;
 
+    /**
+     * Account info.
+     * @return Account
+     */
+    Account account();
 }

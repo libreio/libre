@@ -30,10 +30,10 @@
 package com.nerodesk.om.aws;
 
 import com.jcabi.s3.Bucket;
+import com.nerodesk.om.Account;
 import com.nerodesk.om.Docs;
 import com.nerodesk.om.User;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /**
  * AWS-based version of User.
@@ -42,7 +42,6 @@ import lombok.ToString;
  * @version $Id$
  * @since 0.2
  */
-@ToString
 @EqualsAndHashCode(of = { "bucket", "name" })
 public final class AwsUser implements User {
 
@@ -69,5 +68,14 @@ public final class AwsUser implements User {
     @Override
     public Docs docs() {
         return new AwsDocs(this.bucket, this.name);
+    }
+
+    // @todo #118:30min Create AwsAccount (preferably using DynamoDB) for
+    //  permanent storage of account related information - current balance and
+    //  a list of operations performed on the account. Replace dummy
+    //  dummy implementation with newly created class.
+    @Override
+    public Account account() {
+        return Account.DUMMY;
     }
 }

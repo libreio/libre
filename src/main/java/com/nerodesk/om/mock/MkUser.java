@@ -29,11 +29,10 @@
  */
 package com.nerodesk.om.mock;
 
+import com.nerodesk.om.Account;
 import com.nerodesk.om.Docs;
 import com.nerodesk.om.User;
 import java.io.File;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /**
  * Mocked version of user.
@@ -42,8 +41,6 @@ import lombok.ToString;
  * @version $Id$
  * @since 0.2
  */
-@ToString
-@EqualsAndHashCode
 public final class MkUser implements User {
 
     /**
@@ -69,5 +66,10 @@ public final class MkUser implements User {
     @Override
     public Docs docs() {
         return new MkDocs(this.dir, this.name.replaceAll("[^a-z0-9]", "/"));
+    }
+
+    @Override
+    public Account account() {
+        return new MkAccount();
     }
 }
