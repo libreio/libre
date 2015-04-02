@@ -43,6 +43,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.util.Locale;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHeaders;
 import org.hamcrest.MatcherAssert;
@@ -109,6 +110,38 @@ public final class TsAppTest {
                 }
             }
         );
+    }
+
+    /**
+     * Launches web server in non-latin locale.
+     * @throws Exception If fails
+     * @todo #137:30min Upgrade project to takes version >= 0.11.2 and enable
+     *  this test afterwards. Right now it fails with HTTP status != 200.
+     *  Upgrade to higher takes causes
+     */
+    @Test
+    @Ignore
+    public void launchesInNonLatinLocale() throws Exception {
+        final Locale def = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.CHINESE);
+            final TsApp app = new TsApp(new MkBase());
+            new FtRemote(app).exec(
+                new FtRemote.Script() {
+                    @Override
+                    public void exec(final URI home) throws IOException {
+                        new JdkRequest(home)
+                            .fetch()
+                            .as(RestResponse.class)
+                            .assertStatus(HttpURLConnection.HTTP_OK)
+                            .as(XmlResponse.class)
+                            .assertXPath("/xhtml:html");
+                    }
+                }
+            );
+        } finally {
+            Locale.setDefault(def);
+        }
     }
 
     /**
