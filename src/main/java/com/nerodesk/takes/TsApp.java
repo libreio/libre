@@ -160,7 +160,7 @@ public final class TsApp extends TsWrap {
                                 return new TkDocs(
                                     base.user(
                                         new RqAuth(req).identity().urn()
-                                    ).docs(),
+                                    ),
                                     req
                                 );
                             }
