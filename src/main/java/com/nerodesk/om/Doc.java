@@ -33,6 +33,7 @@ import com.jcabi.aspects.Immutable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 
 /**
  * Document.
@@ -56,6 +57,27 @@ public interface Doc {
      * @throws IOException If fails
      */
     void delete() throws IOException;
+
+    /**
+     * Size of the document in bytes.
+     * @return Number of bytes
+     * @throws IOException If fails
+     */
+    long size() throws IOException;
+
+    /**
+     * Mime type of the document.
+     * @return Mime type.
+     * @throws IOException If fails
+     */
+    String type() throws IOException;
+
+    /**
+     * Timestamp when the document was created.
+     * @return Date in UTC.
+     * @throws IOException If fails
+     */
+    Date created() throws IOException;
 
     /**
      * Everybody who has access to this document.
