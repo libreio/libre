@@ -36,7 +36,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -185,20 +184,20 @@ public final class MkDocTest {
     public void retrievesFileCreationTime() throws IOException {
         final File file = new File(this.folder.newFolder(), "time");
         final String content = "some content";
-        final Date before = new Date();
+        final long before = System.currentTimeMillis();
         final Doc doc = new MkDoc(file, "", "");
         doc.write(
             new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
         );
-        final Date after = new Date();
+        final long after = System.currentTimeMillis();
         MatcherAssert.assertThat(
             TimeUnit.MILLISECONDS.toSeconds(doc.created().getTime()),
             Matchers.allOf(
                 Matchers.greaterThanOrEqualTo(
-                    TimeUnit.MILLISECONDS.toSeconds(before.getTime())
+                    TimeUnit.MILLISECONDS.toSeconds(before)
                 ),
                 Matchers.lessThanOrEqualTo(
-                    TimeUnit.MILLISECONDS.toSeconds(after.getTime())
+                    TimeUnit.MILLISECONDS.toSeconds(after)
                 )
             )
         );
