@@ -45,6 +45,7 @@ public final class TsContentDisposition {
     /**
      * Regex to get the filename from header.
      */
+    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
     private static final Pattern FILENAME = Pattern
         .compile(".*filename=\"(.*)\";?.*");
 

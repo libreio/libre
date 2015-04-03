@@ -130,13 +130,16 @@ public final class TsDoc implements Takes {
      */
     private String filename(final Request req, final String key,
         final Iterator<String> param) throws IOException {
+        String name;
         if (param.hasNext()) {
-            return param.next();
+            name = param.next();
+        } else {
+            name = new TsContentDisposition(
+                new RqHeaders(
+                    new RqMultipart(req).part(key).iterator().next()
+                )
+            ).filename();
         }
-        return new TsContentDisposition(
-            new RqHeaders(
-                new RqMultipart(req).part(key).iterator().next()
-            )
-        ).filename();
+        return name;
     }
 }
