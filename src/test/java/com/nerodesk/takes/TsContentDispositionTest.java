@@ -53,7 +53,7 @@ public final class TsContentDispositionTest {
     @Test
     public void getsFilenameFromHeaders() throws Exception {
         final TsContentDisposition disposition = new TsContentDisposition(
-            fakeRequestFilename("filename=file.txt")
+            fakeRequestFilename("filename=\"file.txt\"")
         );
         MatcherAssert.assertThat(
             disposition.filename(),
@@ -69,7 +69,7 @@ public final class TsContentDispositionTest {
     @Test(expected = IOException.class)
     public void throwsErrorWhenNoFilenameGiven() throws Exception {
         final TsContentDisposition disposition = new TsContentDisposition(
-            fakeRequestFilename("attachment;")
+            fakeRequestFilename("")
         );
         disposition.filename();
     }

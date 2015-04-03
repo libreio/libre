@@ -46,7 +46,7 @@ public final class TsContentDisposition {
      * Regex to get the filename from header.
      */
     private static final Pattern FILENAME = Pattern
-        .compile(".*filename=(.*);?.*");
+        .compile(".*filename=\"(.*)\";?.*");
 
     /**
      * The contents of Content-Disposition header.
