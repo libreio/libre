@@ -31,9 +31,9 @@ package com.nerodesk.takes.doc;
 
 import com.nerodesk.om.Base;
 import com.nerodesk.om.Doc;
+import com.nerodesk.takes.TsContentDisposition;
 import java.io.IOException;
 import java.util.Iterator;
-import org.apache.commons.lang3.StringUtils;
 import org.takes.Request;
 import org.takes.Take;
 import org.takes.Takes;
@@ -70,30 +70,15 @@ public final class TsDoc implements Takes {
         this.base = bse;
     }
 
-    // @todo #94:30min I tried to get filename from file meta data and it
-    //  doesn't look clean but works for now. We have to either wait for impl.
-    //  from `Takes` framework or implement in this project class that is going
-    //  to do this in clean way.
     // @todo #94:30min This method is way to complicated and should be splitted
     //  to smaller chunks. It's very hard to test what is going on here. After
     //  splitting, it should be covered by unit tests.
     @Override
     public Take route(final Request req) throws IOException {
-        final String file;
         final Href href = new RqHref(req).href();
         final String key = "file";
         final Iterator<String> param = href.param(key).iterator();
-        if (param.hasNext()) {
-            file = param.next();
-        } else {
-            final String disposition = new RqHeaders(
-                new RqMultipart(req).part(key).iterator().next()
-            ).header("Content-Disposition").iterator().next();
-            file = StringUtils.substringBefore(
-                StringUtils.substringAfter(disposition, "filename=\""),
-                "\""
-            );
-        }
+        final String file = filename(req, key, param);
         final Doc doc = this.base.user(
             new RqAuth(req).identity().urn()
         ).docs().doc(file);
@@ -133,5 +118,25 @@ public final class TsDoc implements Takes {
                 }
             )
         ).route(req);
+    }
+
+    /**
+     * Gets the filename from the Content-Disposition request header.
+     * @param req The Request.
+     * @param key The Multipart Key.
+     * @param param The Parameters iterator.
+     * @return The Filename found.
+     * @throws IOException In case of error.
+     */
+    private String filename(final Request req, final String key,
+        final Iterator<String> param) throws IOException {
+        if (param.hasNext()) {
+            return param.next();
+        }
+        return new TsContentDisposition(
+            new RqHeaders(
+                new RqMultipart(req).part(key).iterator().next()
+            )
+        ).filename();
     }
 }
