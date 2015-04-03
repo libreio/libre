@@ -65,8 +65,9 @@ public final class AwsFriendsTest {
      * @todo 152:30min It is not currently possible to run this test because of
      *  specific calls to the AWS API done inside of method eject. Mocking with
      *  jcabi-s3 is also currently not an option because we can't control the
-     *  metadata returned by MkOcket. Once it is possible to test this, unignore
-     *  the test.
+     *  metadata returned by MkOcket. Issue #25 in jcabi-s3 should help by
+     *  adding metadata support for the mocks. Once it is possible to test this,
+     *  unignore the test.
      */
     @Test
     @Ignore
