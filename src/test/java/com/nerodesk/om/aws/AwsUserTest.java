@@ -29,13 +29,14 @@
  */
 package com.nerodesk.om.aws;
 
-import com.jcabi.s3.Bucket;
+import com.jcabi.s3.mock.MkBucket;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * Tests for {@link AwsUser}.
@@ -46,6 +47,14 @@ import org.mockito.Mockito;
  * @since 0.3
  */
 public final class AwsUserTest {
+
+    /**
+     * Temporary folder.
+     * @checkstyle VisibilityModifierCheck (3 lines)
+     */
+    @Rule
+    public final transient TemporaryFolder folder = new TemporaryFolder();
+
     /**
      * AwsUser can obtain its user documents.
      * @throws Exception in case of error.
@@ -53,7 +62,10 @@ public final class AwsUserTest {
     @Test
     public void obtainsDocs() throws Exception {
         MatcherAssert.assertThat(
-            new AwsUser(Mockito.mock(Bucket.class), "user1").docs(),
+            new AwsUser(
+                new MkBucket(this.folder.newFile(), "1"),
+                "user1"
+            ).docs(),
             Matchers.notNullValue()
         );
     }

@@ -29,13 +29,14 @@
  */
 package com.nerodesk.om.aws;
 
-import com.jcabi.s3.Bucket;
+import com.jcabi.s3.mock.MkBucket;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * Tests for {@link AwsBase}.
@@ -46,6 +47,14 @@ import org.mockito.Mockito;
  * @since 0.3
  */
 public final class AwsBaseTest {
+
+    /**
+     * Temporary folder.
+     * @checkstyle VisibilityModifierCheck (3 lines)
+     */
+    @Rule
+    public final transient TemporaryFolder folder = new TemporaryFolder();
+
     /**
      * AwsBase can have users.
      * @throws Exception In case of error.
@@ -53,7 +62,7 @@ public final class AwsBaseTest {
     @Test
     public void hasUser() throws Exception {
         MatcherAssert.assertThat(
-            new AwsBase(Mockito.mock(Bucket.class)).user("urn"),
+            new AwsBase(new MkBucket(this.folder.newFile(), "1")).user("urn"),
             Matchers.notNullValue()
         );
     }
