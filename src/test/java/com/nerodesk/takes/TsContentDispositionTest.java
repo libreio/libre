@@ -53,7 +53,7 @@ public final class TsContentDispositionTest {
     @Test
     public void getsFilenameFromHeaders() throws Exception {
         final TsContentDisposition disposition = new TsContentDisposition(
-            fakeRequestFilename("filename=\"file.txt\"")
+            this.fakeRequestFilename("filename=\"file.txt\"")
         );
         MatcherAssert.assertThat(
             disposition.filename(),
@@ -69,7 +69,7 @@ public final class TsContentDispositionTest {
     @Test(expected = IOException.class)
     public void throwsErrorWhenNoFilenameGiven() throws Exception {
         final TsContentDisposition disposition = new TsContentDisposition(
-            fakeRequestFilename("")
+            this.fakeRequestFilename("")
         );
         disposition.filename();
     }
@@ -79,14 +79,17 @@ public final class TsContentDispositionTest {
      * filename.
      * @param filename The Content-Disposition filename.
      * @return A fake request.
+     * @checkstyle StringLiteralsConcatenationCheck (15 lines)
      */
     private RqHeaders fakeRequestFilename(final String filename) {
-        return new RqHeaders(new RqFake(
-            Arrays.asList(
-                "GET /",
-                "Content-Disposition: attachment; " + filename
-            ),
-            ""
-        ));
+        return new RqHeaders(
+            new RqFake(
+                Arrays.asList(
+                    "GET /",
+                    "Content-Disposition: attachment; " + filename
+                ),
+                ""
+            )
+        );
     }
 }

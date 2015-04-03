@@ -71,8 +71,7 @@ public final class TsContentDisposition {
         final Matcher matcher = FILENAME.matcher(this.content);
         if (!matcher.matches()) {
             throw new IOException(
-                "filename isn't present in header "
-                + this.content
+                "filename isn't present in header"
             );
         }
         return matcher.group(matcher.groupCount());
