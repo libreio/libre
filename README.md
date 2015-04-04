@@ -39,9 +39,10 @@ maximum size of Amazon S3 object, see http://aws.amazon.com/s3/faqs/.
 
 
 ## Graphic design
-(Nerodesk logo)[http://www.nerodesk.com/logo_large.png] should be placed on top
-of all site pages (centered horizontally), just above site information and
-login/logout link.
+Resized [nerodesk logo](http://www.nerodesk.com/logo_large.png) should be placed
+on top of all site pages (centered horizontally), just above site information
+and login/logout link.
+
 
 ## How to contribute
 
