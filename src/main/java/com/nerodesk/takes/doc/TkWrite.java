@@ -44,6 +44,9 @@ import org.takes.rq.RqMultipart;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
+ * @todo #151:30min This class should work with a batch of documents, not just
+ *  with a single document. Use the new interface Batch in place of the current
+ *  Doc interface.
  */
 final class TkWrite implements Take {
 
