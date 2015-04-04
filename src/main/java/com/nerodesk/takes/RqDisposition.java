@@ -57,7 +57,7 @@ public final class RqDisposition extends RqWrap {
 
     /**
      * Ctor.
-     * @param headers Request Headers.
+     * @param req Request.
      * @throws IOException In case of error.
      */
     public RqDisposition(final Request req) throws IOException {
