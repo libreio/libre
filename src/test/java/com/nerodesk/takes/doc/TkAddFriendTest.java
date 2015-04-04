@@ -29,6 +29,7 @@
  */
 package com.nerodesk.takes.doc;
 
+import com.google.common.collect.Lists;
 import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
 import com.nerodesk.om.mock.MkBase;
@@ -49,11 +50,6 @@ public final class TkAddFriendTest {
     /**
      * TkAddFriend can add a friend.
      * @throws Exception If fails.
-     * @todo #144:15min We should add an assertion where we will check if the
-     *  added friend is in fact present in doc.friends(). However, class
-     *  MkFriends is not yet implemented, so it returns nothing. When it is
-     *  implemented let's add that assertion to make this test more robust and
-     *  comprehensive.
      */
     @Test
     public void addsFriend() throws Exception {
@@ -61,8 +57,16 @@ public final class TkAddFriendTest {
         final Doc doc = docs.doc("hey");
         final String friend = "Bob";
         MatcherAssert.assertThat(
+            Lists.newArrayList(doc.friends().names()),
+            Matchers.not(Matchers.hasItem(friend))
+        );
+        MatcherAssert.assertThat(
             new RsPrint(new TkAddFriend(doc, friend).act()).print(),
             Matchers.containsString("document+shared")
+        );
+        MatcherAssert.assertThat(
+            Lists.newArrayList(doc.friends().names()),
+            Matchers.hasItem(friend)
         );
     }
 

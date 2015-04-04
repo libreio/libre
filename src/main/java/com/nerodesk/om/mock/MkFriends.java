@@ -32,7 +32,8 @@ package com.nerodesk.om.mock;
 import com.nerodesk.om.Friends;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
+import java.nio.file.Paths;
+import java.util.Arrays;
 
 /**
  * Mocked version of friends.
@@ -40,9 +41,8 @@ import java.util.Collections;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.3
- * @todo #103:30min/DEV This class is not implemented and doesn't work. Let's
- *  implement it and test in a unit test. Let's use some primitive mechanism,
- *  based on file names.
+ * @todo #103:30min/DEV This class does not have any tests implemented yet.
+ *  Let's implement tests for all existent methods (leader, names, add, eject).
  */
 public final class MkFriends implements Friends {
 
@@ -62,6 +62,11 @@ public final class MkFriends implements Friends {
     private final transient String label;
 
     /**
+     * Friends folder.
+     */
+    private final transient File friends;
+
+    /**
      * Ctor.
      * @param file Directory
      * @param urn URN
@@ -71,6 +76,15 @@ public final class MkFriends implements Friends {
         this.dir = file;
         this.user = urn;
         this.label = name;
+        this.friends = Paths.get(
+            this.dir.getAbsolutePath(),
+            this.user,
+            "friends",
+            this.label
+        ).toFile();
+        if (!this.friends.exists()) {
+            assert this.friends.mkdirs();
+        }
     }
 
     @Override
@@ -83,16 +97,19 @@ public final class MkFriends implements Friends {
         assert this.dir != null;
         assert this.user != null;
         assert this.label != null;
-        return Collections.emptyList();
+        return Arrays.asList(this.friends.list());
     }
 
     @Override
     public void add(final String name) throws IOException {
-        // nothing
+        assert Paths.get(this.friends.getAbsolutePath(), name).toFile()
+            .createNewFile();
     }
 
     @Override
     public void eject(final String name) throws IOException {
-        // nothing
+        assert Paths.get(this.friends.getAbsolutePath(), name).toFile()
+            .delete();
     }
+
 }
