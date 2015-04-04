@@ -73,6 +73,10 @@ import org.takes.http.FtRemote;
  *  read should be implemented as well.
  *  Let's start from proper tests. See example for partitioned write
  *  AppTest.uploadsBigFile()
+ * @todo #160:30min Test readsFileWithSpecialCharactersInName and
+ *  deletesFileWithSpecialCharactersInName are disabled because of a bug in
+ *  takes 0.11.2, when yegor256/takes#126 is resolved and a new takes with this
+ *  fix is released add it to the pom.xml and uncomment those tests.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class TsAppTest {
@@ -81,6 +85,11 @@ public final class TsAppTest {
      * Fake URN.
      */
     private static final String FAKE_URN = "urn:test:1";
+
+    /**
+     * File query param.
+     */
+    private static final String FILE = "file";
 
     /**
      * Launches web server on random port.
@@ -157,13 +166,79 @@ public final class TsAppTest {
                 @Override
                 public void exec(final URI home) throws IOException {
                     new JdkRequest(home)
-                        .uri().path("/doc/read").queryParam("file", name).back()
+                        .uri().path("/doc/read")
+                        .queryParam(TsAppTest.FILE, name).back()
                         .fetch()
                         .as(RestResponse.class)
                         .assertStatus(HttpURLConnection.HTTP_OK)
                         .assertBody(Matchers.startsWith("hello, world"));
                 }
             }
+        );
+    }
+
+    /**
+     * TsApp can read file with special characters in its name.
+     * @throws Exception If fails
+     */
+    @Test
+    @Ignore
+    public void readsFileWithSpecialCharactersInName() throws Exception {
+        final Base base = new MkBase();
+        final String name = "[][].txt";
+        final String data = "fake data";
+        base.user(TsAppTest.FAKE_URN).docs().doc(name).write(
+            new ByteArrayInputStream(data.getBytes())
+        );
+        new FtRemote(new TsApp(base)).exec(
+            new FtRemote.Script() {
+                @Override
+                public void exec(final URI home) throws IOException {
+                    new JdkRequest(home)
+                        .uri().path("/doc/read")
+                        .queryParam(TsAppTest.FILE, name).back()
+                        .fetch()
+                        .as(RestResponse.class)
+                        .assertStatus(HttpURLConnection.HTTP_OK)
+                        .assertBody(Matchers.startsWith(data));
+                }
+            }
+        );
+    }
+
+    /**
+     * TsApp can delete file with special characters in its name.
+     * @throws Exception If fails
+     */
+    @Test
+    @Ignore
+    public void deletesFileWithSpecialCharactersInName() throws Exception {
+        final Base base = new MkBase();
+        final String name = "[][].txt";
+        final String data = "fake data";
+        base.user(TsAppTest.FAKE_URN).docs().doc(name).write(
+            new ByteArrayInputStream(data.getBytes())
+        );
+        MatcherAssert.assertThat(
+            base.user(TsAppTest.FAKE_URN).docs().names(),
+            Matchers.not(Matchers.emptyIterable())
+        );
+        new FtRemote(new TsApp(base)).exec(
+            new FtRemote.Script() {
+                @Override
+                public void exec(final URI home) throws IOException {
+                    new JdkRequest(home)
+                        .uri().path("/doc/delete")
+                        .queryParam(TsAppTest.FILE, name).back()
+                        .fetch().as(RestResponse.class).follow()
+                        .fetch().as(RestResponse.class)
+                        .assertStatus(HttpURLConnection.HTTP_OK);
+                }
+            }
+        );
+        MatcherAssert.assertThat(
+            base.user(TsAppTest.FAKE_URN).docs().names(),
+            Matchers.emptyIterable()
         );
     }
 
@@ -186,7 +261,7 @@ public final class TsAppTest {
                     MatcherAssert.assertThat(
                         new JdkRequest(home)
                             .uri().path("/doc/read")
-                            .queryParam("file", name).back()
+                            .queryParam(TsAppTest.FILE, name).back()
                             .fetch()
                             .as(RestResponse.class)
                             .assertStatus(HttpURLConnection.HTTP_OK)
