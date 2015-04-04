@@ -39,14 +39,13 @@ import org.takes.rq.RqHeaders;
  *
  * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
- * @since 0.3
+ * @since 0.3.2
  */
 public final class TsContentDisposition {
     /**
      * Regex to get the filename from header.
      */
-    @SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
-    private static final Pattern FILENAME = Pattern
+    private static final Pattern HEADER_FNAME = Pattern
         .compile(".*filename=\"(.*)\";?.*");
 
     /**
@@ -69,7 +68,7 @@ public final class TsContentDisposition {
      * @throws IOException If the filename header is not present.
      */
     public String filename() throws IOException {
-        final Matcher matcher = FILENAME.matcher(this.content);
+        final Matcher matcher = HEADER_FNAME.matcher(this.content);
         if (!matcher.matches()) {
             throw new IOException(
                 "filename isn't present in header"
