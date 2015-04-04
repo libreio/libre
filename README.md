@@ -37,6 +37,12 @@ java -cp target\nerodesk.jar;target\deps\* com.nerodesk.Launch --port=8080
 Maximum size of the size a user can upload is 5Tb, because this is the
 maximum size of Amazon S3 object, see http://aws.amazon.com/s3/faqs/.
 
+
+## Graphic design
+(Nerodesk logo)[http://www.nerodesk.com/logo_large.png] should be placed on top
+of all site pages (centered horizontally), just above site information and
+login/logout link.
+
 ## How to contribute
 
 Fork repository, make changes, send us a pull request. We will review

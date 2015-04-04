@@ -148,6 +148,7 @@ public final class TsApp extends TsWrap {
                     "text/css"
                 )
             ),
+            new FkRegex("/images/.*", new TsClasspath()),
             new FkRegex("/robots.txt", ""),
             new FkRegex(
                 "/",
