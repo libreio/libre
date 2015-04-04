@@ -77,8 +77,11 @@ public final class TsDoc implements Takes {
     public Take route(final Request req) throws IOException {
         final Href href = new RqHref(req).href();
         final String key = "file";
-        final Iterator<String> param = href.param(key).iterator();
-        final String file = this.filename(req, key, param);
+        final String file = this.filename(
+            req,
+            key,
+            href.param(key).iterator()
+        );
         final Doc doc = this.base.user(
             new RqAuth(req).identity().urn()
         ).docs().doc(file);
