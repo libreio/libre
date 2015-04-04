@@ -31,7 +31,7 @@ package com.nerodesk.takes.doc;
 
 import com.nerodesk.om.Base;
 import com.nerodesk.om.Doc;
-import com.nerodesk.takes.TsContentDisposition;
+import com.nerodesk.takes.RqDisposition;
 import java.io.IOException;
 import java.util.Iterator;
 import org.takes.Request;
@@ -42,7 +42,6 @@ import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TsFork;
 import org.takes.misc.Href;
 import org.takes.rq.RqForm;
-import org.takes.rq.RqHeaders;
 import org.takes.rq.RqHref;
 import org.takes.rq.RqMultipart;
 
@@ -137,10 +136,8 @@ public final class TsDoc implements Takes {
         if (param.hasNext()) {
             name = param.next();
         } else {
-            name = new TsContentDisposition(
-                new RqHeaders(
-                    new RqMultipart(req).part(key).iterator().next()
-                )
+            name = new RqDisposition(
+                new RqMultipart(req).part(key).iterator().next()
             ).filename();
         }
         return name;

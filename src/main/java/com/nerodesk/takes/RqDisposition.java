@@ -32,7 +32,9 @@ package com.nerodesk.takes;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.takes.Request;
 import org.takes.rq.RqHeaders;
+import org.takes.rq.RqWrap;
 
 /**
  * Extracts properties from Content-Disposition header.
@@ -41,7 +43,7 @@ import org.takes.rq.RqHeaders;
  * @version $Id$
  * @since 0.3.2
  */
-public final class TsContentDisposition {
+public final class RqDisposition extends RqWrap {
     /**
      * Regex to get the filename from header.
      */
@@ -58,8 +60,12 @@ public final class TsContentDisposition {
      * @param headers Request Headers.
      * @throws IOException In case of error.
      */
-    public TsContentDisposition(final RqHeaders headers) throws IOException {
-        this.content = headers.header("Content-Disposition").iterator().next();
+    public RqDisposition(final Request req) throws IOException {
+        super(req);
+        this.content = new RqHeaders(req)
+            .header("Content-Disposition")
+            .iterator()
+            .next();
     }
 
     /**

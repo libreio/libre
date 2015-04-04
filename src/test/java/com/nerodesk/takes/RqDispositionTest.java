@@ -34,26 +34,26 @@ import java.util.Arrays;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.takes.Request;
 import org.takes.rq.RqFake;
-import org.takes.rq.RqHeaders;
 
 /**
- * Tests for {@link TsContentDisposition}.
+ * Tests for {@link RqDisposition}.
  *
  * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
  * @since 0.3.2
  */
-public final class TsContentDispositionTest {
+public final class RqDispositionTest {
     /**
-     * {@link TsContentDisposition} can get the filename from
+     * {@link RqDisposition} can get the filename from
      * Content-Disposition.
      * @throws Exception In case of error.
      */
     @Test
     public void getsFilenameFromHeaders() throws Exception {
         final String filename = "file.txt";
-        final TsContentDisposition disposition = new TsContentDisposition(
+        final RqDisposition disposition = new RqDisposition(
             this.fakeRequestWithHeader(
                 String.format(
                     "Content-Disposition: attachment; filename=\"%s\"",
@@ -68,13 +68,13 @@ public final class TsContentDispositionTest {
     }
 
     /**
-     * {@link TsContentDisposition} can get the filename from
+     * {@link RqDisposition} can get the filename from
      * Content-Disposition, even if the filename is empty.
      * @throws Exception In case of error.
      */
     @Test
     public void returnsEmptyWhenFilenameIsEmpty() throws Exception {
-        final TsContentDisposition disposition = new TsContentDisposition(
+        final RqDisposition disposition = new RqDisposition(
             this.fakeRequestWithHeader(
                 "Content-Disposition: attachment; filename=\"\""
             )
@@ -86,13 +86,13 @@ public final class TsContentDispositionTest {
     }
 
     /**
-     * {@link TsContentDisposition} can throw an error indicating that the
+     * {@link RqDisposition} can throw an error indicating that the
      * filename was not given.
      * @throws Exception In case of error.
      */
     @Test(expected = IOException.class)
     public void throwsErrorWhenNoFilenameGiven() throws Exception {
-        final TsContentDisposition disposition = new TsContentDisposition(
+        final RqDisposition disposition = new RqDisposition(
             this.fakeRequestWithHeader("Content-Disposition: attachment;")
         );
         disposition.filename();
@@ -103,7 +103,7 @@ public final class TsContentDispositionTest {
      * @param header A request header.
      * @return A fake request.
      */
-    private RqHeaders fakeRequestWithHeader(final String header) {
-        return new RqHeaders(new RqFake(Arrays.asList("GET /", header), ""));
+    private Request fakeRequestWithHeader(final String header) {
+        return new RqFake(Arrays.asList("GET /", header), "");
     }
 }
