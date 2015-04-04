@@ -30,6 +30,7 @@
 package com.nerodesk.om;
 
 import com.jcabi.aspects.Immutable;
+import java.util.Collections;
 
 /**
  * User account.
@@ -40,6 +41,24 @@ import com.jcabi.aspects.Immutable;
  */
 @Immutable
 public interface Account {
+    /**
+     * Dummy implementation.
+     */
+    Account DUMMY = new Account() {
+        @Override
+        public int balance() {
+            return 0;
+        }
+        @Override
+        public Iterable<String> transactions() {
+            return Collections.emptyList();
+        }
+        @Override
+        public void add(final int amount, final String text) {
+            // do nothing
+        }
+    };
+
     /**
      * Current account balance in cents.
      * @return Balance in cents

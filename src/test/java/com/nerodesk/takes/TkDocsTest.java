@@ -62,9 +62,10 @@ public final class TkDocsTest {
         );
         MatcherAssert.assertThat(
             new RsPrint(
-                new TkDocs(user.docs(), new RqFake()).act()
+                new TkDocs(user, new RqFake()).act()
             ).printBody(),
             XhtmlMatchers.hasXPaths(
+                "/page/user[balance=0]",
                 "/page/docs[count(doc)=2]",
                 "/page/docs/doc[name='test.txt']",
                 "/page/docs/doc/read"

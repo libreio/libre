@@ -27,113 +27,101 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.mock;
+package com.nerodesk.om;
 
-import com.jcabi.log.Logger;
-import com.nerodesk.om.Doc;
-import com.nerodesk.om.Friends;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
- * Mocked version of doc.
+ * Decorator for {@link Doc} which throws the exception
+ * if file to write is too big.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Paul Polishchuk (ppol@ua.fm)
  * @version $Id$
- * @since 0.2
+ * @since 0.4
  */
-public final class MkDoc implements Doc {
+@ToString
+@EqualsAndHashCode
+public final class SmallDoc implements Doc {
+    /**
+     * Decorated.
+     */
+    private final transient Doc decorated;
 
     /**
-     * Directory.
+     * Max file size.
      */
-    private final transient File dir;
-
+    private final transient long mlength;
     /**
-     * URN.
+     * Constructor with default max file size = 10Mb.
+     * @param doc Doc to be decorated
+     * @checkstyle MagicNumberCheck (3 lines)
      */
-    private final transient String user;
-
+    public SmallDoc(final Doc doc) {
+        this(doc, 10_000_000L);
+    }
     /**
-     * Doc name.
+     * Constructor.
+     * @param doc Doc to be decorated
+     * @param max Max file size
      */
-    private final transient String label;
-
-    /**
-     * Ctor.
-     * @param file Directory
-     * @param urn URN
-     * @param name Document name
-     */
-    public MkDoc(final File file, final String urn, final String name) {
-        this.dir = file;
-        this.user = urn;
-        this.label = name;
+    public SmallDoc(final Doc doc, final long max) {
+        this.decorated = doc;
+        this.mlength = max;
     }
 
     @Override
-    public boolean exists() {
-        return this.file().exists();
+    public boolean exists() throws IOException {
+        return this.decorated.exists();
     }
 
     @Override
-    public void delete() {
-        this.file().delete();
+    public void delete() throws IOException {
+        this.decorated.delete();
     }
 
     @Override
     public long size() throws IOException {
-        return FileUtils.sizeOf(this.file());
+        return this.decorated.size();
     }
 
     @Override
     public String type() throws IOException {
-        return Files.probeContentType(this.file().toPath());
+        return this.decorated.type();
     }
 
     @Override
     public Date created() throws IOException {
-        return new Date(
-            Files.readAttributes(
-                this.file().toPath(), BasicFileAttributes.class
-            ).creationTime().toMillis()
-        );
+        return this.decorated.created();
     }
 
     @Override
-    public Friends friends() {
-        return new MkFriends(this.dir, this.user, this.label);
+    public Friends friends() throws IOException {
+        return this.decorated.friends();
     }
 
     @Override
     public void read(final OutputStream output) throws IOException {
-        final File file = this.file();
-        IOUtils.copy(new FileInputStream(this.file()), output);
-        Logger.info(this, "%s loaded", file);
+        this.decorated.read(output);
     }
 
     @Override
     public void write(final InputStream input) throws IOException {
-        final File file = this.file();
-        FileUtils.touch(file);
-        IOUtils.copy(input, new FileOutputStream(file));
-        Logger.info(this, "%s saved", file);
-    }
-
-    /**
-     * File.
-     * @return File
-     */
-    private File file() {
-        return new File(new File(this.dir, this.user), this.label);
+        try {
+            this.decorated.write(
+                new ThresholdInputStream(input, this.mlength)
+            );
+        } catch (final ThresholdInputStream.LimitReachedException exc) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "Now you can't upload a file that is larger than %s bytes",
+                    this.mlength
+                ), exc
+            );
+        }
     }
 }

@@ -27,50 +27,59 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.takes.doc;
+package com.nerodesk.takes;
 
-import com.nerodesk.om.Doc;
 import java.io.IOException;
-import org.takes.Response;
-import org.takes.Take;
-import org.takes.facets.flash.RsFlash;
-import org.takes.facets.forward.RsForward;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.takes.Request;
+import org.takes.rq.RqHeaders;
+import org.takes.rq.RqWrap;
 
 /**
- * Add friend.
+ * Extracts properties from Content-Disposition header.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
- * @since 0.3
- * @todo #144:30min/DEV We now have a unit test, but no integration test.
- *  Let's create one, to check how this document sharing works.
+ * @since 0.3.2
  */
-final class TkAddFriend implements Take {
+public final class RqDisposition extends RqWrap {
+    /**
+     * Regex to get the filename from header.
+     */
+    private static final Pattern HEADER_FNAME = Pattern
+        .compile(".*filename=\"(.*)\";?.*");
 
     /**
-     * Doc.
+     * The contents of Content-Disposition header.
      */
-    private final transient Doc doc;
-
-    /**
-     * Name of friend (URN).
-     */
-    private final transient String friend;
+    private final transient String content;
 
     /**
      * Ctor.
-     * @param src Source document to read from
-     * @param name Name of Friend
+     * @param req Request.
+     * @throws IOException In case of error.
      */
-    TkAddFriend(final Doc src, final String name) {
-        this.doc = src;
-        this.friend = name;
+    public RqDisposition(final Request req) throws IOException {
+        super(req);
+        this.content = new RqHeaders(req)
+            .header("Content-Disposition")
+            .iterator()
+            .next();
     }
 
-    @Override
-    public Response act() throws IOException {
-        this.doc.friends().add(this.friend);
-        return new RsForward(new RsFlash("document shared"));
+    /**
+     * Extracts the filename from Content-Disposition.
+     * @return The filename.
+     * @throws IOException If the filename header is not present.
+     */
+    public String filename() throws IOException {
+        final Matcher matcher = HEADER_FNAME.matcher(this.content);
+        if (!matcher.matches()) {
+            throw new IOException(
+                "filename isn't present in header"
+            );
+        }
+        return matcher.group(matcher.groupCount());
     }
-
 }

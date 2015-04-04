@@ -31,6 +31,7 @@ package com.nerodesk.takes;
 
 import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
+import com.nerodesk.om.User;
 import java.io.IOException;
 import org.takes.Request;
 import org.takes.Response;
@@ -53,9 +54,9 @@ import org.xembly.Directives;
 public final class TkDocs implements Take {
 
     /**
-     * Docs.
+     * User.
      */
-    private final transient Docs docs;
+    private final transient User user;
 
     /**
      * Request.
@@ -64,11 +65,11 @@ public final class TkDocs implements Take {
 
     /**
      * Ctor.
-     * @param dcs Docs
+     * @param usr User
      * @param req Request
      */
-    public TkDocs(final Docs dcs, final Request req) {
-        this.docs = dcs;
+    public TkDocs(final User usr, final Request req) {
+        this.user = usr;
         this.request = req;
     }
 
@@ -91,14 +92,26 @@ public final class TkDocs implements Take {
      * Convert docs into directives.
      * @return Directives
      * @throws IOException If fails
+     * @todo #118:30min User balance shouldn't be inside docs page but in some
+     *  kind of decorator of all the pages that are show to logged in users.
+     *  Create such place and move user directive there.
      */
     private Iterable<Directive> list() throws IOException {
-        final Directives dirs = new Directives().add("docs");
+        final Directives dirs = new Directives();
+        dirs.add("user").add("balance").set(
+            Integer.toString(this.user.account().balance())
+        ).up().up();
         final Href home = new RqHref(this.request).href();
-        for (final String name : this.docs.names()) {
-            final Doc doc = this.docs.doc(name);
+        final Docs docs = this.user.docs();
+        dirs.add("docs");
+        for (final String name : docs.names()) {
+            final Doc doc = docs.doc(name);
             final Href href = home.path("doc").with("file", name);
             dirs.add("doc")
+                .add("name").set(name).up()
+                .add("size").set(Long.toString(doc.size())).up()
+                .add("created").set(Long.toString(doc.created().getTime())).up()
+                .add("type").set(doc.type()).up()
                 .add("name").set(name).up()
                 .add("read").set(href.path("read").toString()).up()
                 .add("delete").set(href.path("delete").toString()).up()
