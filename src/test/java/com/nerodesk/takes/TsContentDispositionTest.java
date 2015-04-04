@@ -52,12 +52,36 @@ public final class TsContentDispositionTest {
      */
     @Test
     public void getsFilenameFromHeaders() throws Exception {
+        final String filename = "file.txt";
         final TsContentDisposition disposition = new TsContentDisposition(
-            this.fakeRequestFilename("filename=\"file.txt\"")
+            this.fakeRequestWithHeader(
+                String.format(
+                    "Content-Disposition: attachment; filename=\"%s\"",
+                    filename
+                )
+            )
         );
         MatcherAssert.assertThat(
             disposition.filename(),
-            Matchers.equalTo("file.txt")
+            Matchers.equalTo(filename)
+        );
+    }
+
+    /**
+     * {@link TsContentDisposition} can get the filename from
+     * Content-Disposition, even if the filename is empty.
+     * @throws Exception In case of error.
+     */
+    @Test
+    public void returnsEmptyWhenFilenameIsEmpty() throws Exception {
+        final TsContentDisposition disposition = new TsContentDisposition(
+            this.fakeRequestWithHeader(
+                "Content-Disposition: attachment; filename=\"\""
+            )
+        );
+        MatcherAssert.assertThat(
+            disposition.filename(),
+            Matchers.equalTo("")
         );
     }
 
@@ -69,27 +93,17 @@ public final class TsContentDispositionTest {
     @Test(expected = IOException.class)
     public void throwsErrorWhenNoFilenameGiven() throws Exception {
         final TsContentDisposition disposition = new TsContentDisposition(
-            this.fakeRequestFilename("")
+            this.fakeRequestWithHeader("Content-Disposition: attachment;")
         );
         disposition.filename();
     }
 
     /**
-     * Creates a Fake Request with the given filename as Content-Disposition
-     * filename.
-     * @param filename The Content-Disposition filename.
+     * Creates a Fake Request with the given header.
+     * @param header A request header.
      * @return A fake request.
-     * @checkstyle StringLiteralsConcatenationCheck (15 lines)
      */
-    private RqHeaders fakeRequestFilename(final String filename) {
-        return new RqHeaders(
-            new RqFake(
-                Arrays.asList(
-                    "GET /",
-                    "Content-Disposition: attachment; " + filename
-                ),
-                ""
-            )
-        );
+    private RqHeaders fakeRequestWithHeader(final String header) {
+        return new RqHeaders(new RqFake(Arrays.asList("GET /", header), ""));
     }
 }
