@@ -111,7 +111,7 @@ public final class MkDocTest {
 
     /**
      * MkDoc can throw IOException on delete.
-     * @throws IOException In case of delete failed.
+     * @throws IOException In case of File.delete failed.
      */
     @Test (expected = IOException.class)
     public void throwsIOExceptionOnDelete() throws IOException {
