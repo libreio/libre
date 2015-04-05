@@ -34,6 +34,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Mocked version of friends.
@@ -44,6 +46,8 @@ import java.util.Arrays;
  * @todo #103:30min/DEV This class does not have any tests implemented yet.
  *  Let's implement tests for all existent methods (leader, names, add, eject).
  */
+@EqualsAndHashCode(of = { "dir", "user", "label" })
+@ToString
 public final class MkFriends implements Friends {
 
     /**
@@ -78,7 +82,7 @@ public final class MkFriends implements Friends {
         this.label = name;
         this.friends = Paths.get(
             this.dir.getAbsolutePath(),
-            this.user,
+            this.user.replaceAll("[^a-z0-9]", "/"),
             "friends",
             this.label
         ).toFile();
@@ -94,9 +98,6 @@ public final class MkFriends implements Friends {
 
     @Override
     public Iterable<String> names() throws IOException {
-        assert this.dir != null;
-        assert this.user != null;
-        assert this.label != null;
         return Arrays.asList(this.friends.list());
     }
 
@@ -107,7 +108,7 @@ public final class MkFriends implements Friends {
     }
 
     @Override
-    public void eject(final String name) throws IOException {
+    public void eject(final String name) {
         assert Paths.get(this.friends.getAbsolutePath(), name).toFile()
             .delete();
     }
