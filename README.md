@@ -12,6 +12,7 @@ Main features:
  - user can create an account via web panel
  - user can delete their account
  - user can upload a file, download it back and delete it
+ - user can upload multiple files in a single batch.
  - user can share any file with a few other users
  - user can see all their files in the web panel
  - the entire code will be open source

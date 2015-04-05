@@ -27,54 +27,39 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.takes.doc;
+package com.nerodesk.om.mock;
 
+import com.nerodesk.om.Batch;
 import com.nerodesk.om.Doc;
-import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
-import org.takes.facets.flash.RsFlash;
-import org.takes.facets.forward.RsForward;
-import org.takes.rq.RqMultipart;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Write file content.
+ * Mock Document batch.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Felipe Pina (felipe.pina@protonmail.com)
  * @version $Id$
- * @since 0.2
- * @todo #151:30min This class should work with a batch of documents, not just
- *  with a single document. Use the new interface Batch in place of the current
- *  Doc interface.
+ * @since 0.4
  */
-final class TkWrite implements Take {
+public class MkBatch implements Batch {
 
     /**
-     * Doc.
+     * Documents composing this batch.
      */
-    private final transient Doc doc;
-
-    /**
-     * Request.
-     */
-    private final transient Request request;
+    private final transient List<Doc> docs;
 
     /**
      * Ctor.
-     * @param document Document
-     * @param req Request
+     * @param list Documents composing this batch.
      */
-    TkWrite(final Doc document, final Request req) {
-        this.doc = document;
-        this.request = req;
+    public MkBatch(final Doc... list) {
+        this.docs = Arrays.asList(list);
     }
 
     @Override
-    public Response act() throws IOException {
-        final RqMultipart multi = new RqMultipart(this.request);
-        this.doc.write(multi.part("file").iterator().next().body());
-        return new RsForward(new RsFlash("file uploaded"));
+    public final List<Doc> list() {
+        return Collections.unmodifiableList(this.docs);
     }
 
 }
