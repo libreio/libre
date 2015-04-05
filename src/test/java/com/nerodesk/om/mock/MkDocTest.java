@@ -34,9 +34,12 @@ import com.nerodesk.om.Doc;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
@@ -104,6 +107,21 @@ public final class MkDocTest {
             file.exists(),
             Matchers.is(false)
         );
+    }
+
+    /**
+     * MkDoc can throw IOException on delete.
+     * @throws IOException In case of error
+     */
+    @Test (expected = IOException.class)
+    public void throwsIOExceptionOnDelete() throws IOException {
+        final File file = new File(this.folder.newFolder(), "exception");
+        FileUtils.touch(file);
+        IOUtils.copy(
+            IOUtils.toInputStream("hello, world!"),
+            new FileOutputStream(file)
+        );
+        new MkDoc(file, "", "").delete();
     }
 
     /**
