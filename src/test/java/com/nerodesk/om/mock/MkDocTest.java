@@ -120,7 +120,7 @@ public final class MkDocTest {
             file = new File(this.folder.newFolder(), "exception");
             FileUtils.touch(file);
             IOUtils.copy(
-                IOUtils.toInputStream("hello, world!"),
+                IOUtils.toInputStream("try to delete me"),
                 new FileOutputStream(file)
             );
         } catch (IOException e) {
