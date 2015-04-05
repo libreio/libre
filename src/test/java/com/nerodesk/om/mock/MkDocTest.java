@@ -34,12 +34,9 @@ import com.nerodesk.om.Doc;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
@@ -52,6 +49,10 @@ import org.junit.rules.TemporaryFolder;
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
  * @since 0.3
+ * @todo 95:30min method MkDoc.delete throws IOException if File.delete
+ *  return false. Lets add unit test to check it. You need to find way
+ *  to return false in File.delete (maybe make file Read Only via
+ *  File.setReadOnly).
  */
 public final class MkDocTest {
     /**
@@ -107,26 +108,6 @@ public final class MkDocTest {
             file.exists(),
             Matchers.is(false)
         );
-    }
-
-    /**
-     * MkDoc can throw IOException on delete.
-     * @throws IOException In case of File.delete failed.
-     */
-    @Test (expected = IOException.class)
-    public void throwsIOExceptionOnDelete() throws IOException {
-        final File file;
-        try {
-            file = new File(this.folder.newFolder(), "exception");
-            FileUtils.touch(file);
-            IOUtils.copy(
-                IOUtils.toInputStream("try to delete me"),
-                new FileOutputStream(file)
-            );
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-        new MkDoc(file, "", "").delete();
     }
 
     /**
