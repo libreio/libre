@@ -97,7 +97,11 @@ public final class MkDoc implements Doc {
 
     @Override
     public String type() throws IOException {
-        return Files.probeContentType(this.file().toPath());
+        String type = Files.probeContentType(this.file().toPath());
+        if (type == null) {
+            type = "unknown";
+        }
+        return type;
     }
 
     @Override

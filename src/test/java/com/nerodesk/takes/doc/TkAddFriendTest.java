@@ -29,12 +29,14 @@
  */
 package com.nerodesk.takes.doc;
 
+import com.nerodesk.om.Base;
 import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
 import com.nerodesk.om.mock.MkBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
 
 /**
@@ -57,11 +59,19 @@ public final class TkAddFriendTest {
      */
     @Test
     public void addsFriend() throws Exception {
-        final Docs docs = new MkBase().user("urn:test:1").docs();
+        final Base base = new MkBase();
+        final Docs docs = base.user("urn:test:1").docs();
         final Doc doc = docs.doc("hey");
-        final String friend = "Bob";
         MatcherAssert.assertThat(
-            new RsPrint(new TkAddFriend(doc, friend).act()).print(),
+            new RsPrint(
+                new TkAddFriend(doc).act(
+                    new RqFake(
+                        "POST",
+                        "/",
+                        "friend=Jeffrey+Lebowski"
+                    )
+                )
+            ).print(),
             Matchers.containsString("document+shared")
         );
     }

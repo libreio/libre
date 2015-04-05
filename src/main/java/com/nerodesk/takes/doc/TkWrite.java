@@ -56,23 +56,16 @@ final class TkWrite implements Take {
     private final transient Doc doc;
 
     /**
-     * Request.
-     */
-    private final transient Request request;
-
-    /**
      * Ctor.
      * @param document Document
-     * @param req Request
      */
-    TkWrite(final Doc document, final Request req) {
+    TkWrite(final Doc document) {
         this.doc = document;
-        this.request = req;
     }
 
     @Override
-    public Response act() throws IOException {
-        final RqMultipart multi = new RqMultipart(this.request);
+    public Response act(final Request req) throws IOException {
+        final RqMultipart multi = new RqMultipart(req);
         this.doc.write(multi.part("file").iterator().next().body());
         return new RsForward(new RsFlash("file uploaded"));
     }

@@ -31,6 +31,7 @@ package com.nerodesk.takes.doc;
 
 import com.nerodesk.om.Doc;
 import java.io.IOException;
+import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
 import org.takes.facets.flash.RsFlash;
@@ -59,7 +60,7 @@ final class TkDelete implements Take {
     }
 
     @Override
-    public Response act() throws IOException {
+    public Response act(final Request req) throws IOException {
         this.doc.delete();
         return new RsForward(
             new RsFlash("file deleted")

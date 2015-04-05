@@ -31,10 +31,12 @@ package com.nerodesk.takes.doc;
 
 import com.nerodesk.om.Doc;
 import java.io.IOException;
+import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
 import org.takes.facets.flash.RsFlash;
 import org.takes.facets.forward.RsForward;
+import org.takes.rq.RqForm;
 
 /**
  * Add friend.
@@ -53,24 +55,24 @@ final class TkAddFriend implements Take {
     private final transient Doc doc;
 
     /**
-     * Name of friend (URN).
-     */
-    private final transient String friend;
-
-    /**
      * Ctor.
      * @param src Source document to read from
-     * @param name Name of Friend
      */
-    TkAddFriend(final Doc src, final String name) {
+    TkAddFriend(final Doc src) {
         this.doc = src;
-        this.friend = name;
     }
 
     @Override
-    public Response act() throws IOException {
-        this.doc.friends().add(this.friend);
-        return new RsForward(new RsFlash("document shared"));
+    public Response act(final Request req) throws IOException {
+        final String friend = new RqForm(req).param("friend").iterator().next();
+        this.doc.friends().add(friend);
+        return new RsForward(
+            new RsFlash(
+                String.format(
+                    "document shared with \"%s\"", friend
+                )
+            )
+        );
     }
 
 }
