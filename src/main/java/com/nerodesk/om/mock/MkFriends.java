@@ -43,7 +43,7 @@ import lombok.ToString;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.3
- * @todo #103:30min/DEV This class does not have any tests implemented yet.
+ * @todo #173:30min/DEV This class does not have any tests implemented yet.
  *  Let's implement tests for all existent methods (leader, names, add, eject).
  */
 @EqualsAndHashCode(of = { "dir", "user", "label" })
