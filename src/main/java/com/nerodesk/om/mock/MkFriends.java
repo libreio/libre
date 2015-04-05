@@ -92,12 +92,15 @@ public final class MkFriends implements Friends {
     }
 
     @Override
-    public boolean leader() throws IOException {
+    public boolean leader() {
         return true;
     }
 
     @Override
-    public Iterable<String> names() throws IOException {
+    public Iterable<String> names() {
+        assert this.dir != null;
+        assert this.user != null;
+        assert this.label != null;
         return Arrays.asList(this.friends.list());
     }
 
