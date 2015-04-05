@@ -216,6 +216,7 @@ public final class TsAppTest {
                             .fetch()
                             .as(RestResponse.class)
                             .assertStatus(HttpURLConnection.HTTP_OK)
+                            .assertHeader("Content-Type", "image/png")
                             .binary(),
                         Matchers.is(
                             IOUtils.toByteArray(

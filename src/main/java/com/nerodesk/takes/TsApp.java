@@ -29,6 +29,7 @@
  */
 package com.nerodesk.takes;
 
+import com.google.common.net.MediaType;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import com.jcabi.manifests.Manifests;
@@ -148,7 +149,10 @@ public final class TsApp extends TsWrap {
                     "text/css"
                 )
             ),
-            new FkRegex("/images/.*", new TsClasspath()),
+            new FkRegex(
+                "/images/.*\\.png",
+                new TsWithType(new TsClasspath(), MediaType.PNG.toString())
+            ),
             new FkRegex("/robots.txt", ""),
             new FkRegex(
                 "/",
