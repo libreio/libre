@@ -111,16 +111,21 @@ public final class MkDocTest {
 
     /**
      * MkDoc can throw IOException on delete.
-     * @throws IOException In case of error
+     * @throws IOException In case of delete failed.
      */
     @Test (expected = IOException.class)
     public void throwsIOExceptionOnDelete() throws IOException {
-        final File file = new File(this.folder.newFolder(), "exception");
-        FileUtils.touch(file);
-        IOUtils.copy(
-            IOUtils.toInputStream("hello, world!"),
-            new FileOutputStream(file)
-        );
+        final File file;
+        try {
+            file = new File(this.folder.newFolder(), "exception");
+            FileUtils.touch(file);
+            IOUtils.copy(
+                IOUtils.toInputStream("hello, world!"),
+                new FileOutputStream(file)
+            );
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
         new MkDoc(file, "", "").delete();
     }
 
