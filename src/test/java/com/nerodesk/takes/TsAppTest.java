@@ -199,6 +199,36 @@ public final class TsAppTest {
     }
 
     /**
+     * Application can return static image.
+     * @throws Exception If something goes wrong
+     */
+    @Test
+    public void returnsStaticImage() throws Exception {
+        final String name = "/images/logo.png";
+        new FtRemote(new TsApp(new MkBase())).exec(
+            new FtRemote.Script() {
+                @Override
+                public void exec(final URI home) throws IOException {
+                    MatcherAssert.assertThat(
+                        new JdkRequest(home)
+                            .uri().path(name)
+                            .back()
+                            .fetch()
+                            .as(RestResponse.class)
+                            .assertStatus(HttpURLConnection.HTTP_OK)
+                            .binary(),
+                        Matchers.is(
+                            IOUtils.toByteArray(
+                                TsAppTest.class.getResource(name)
+                            )
+                        )
+                    );
+                }
+            }
+        );
+    }
+
+    /**
      * Application can upload file content.
      * @throws Exception If fails
      */
