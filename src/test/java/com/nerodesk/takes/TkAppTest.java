@@ -167,7 +167,7 @@ public final class TkAppTest {
                 public void exec(final URI home) throws IOException {
                     new JdkRequest(home)
                         .uri().path("/doc/read")
-                        .queryParam(TsAppTest.FILE, name).back()
+                        .queryParam(TkAppTest.FILE, name).back()
                         .fetch()
                         .as(RestResponse.class)
                         .assertStatus(HttpURLConnection.HTTP_OK)
@@ -187,16 +187,16 @@ public final class TkAppTest {
         final Base base = new MkBase();
         final String name = "[][].txt";
         final String data = "fake data";
-        base.user(TsAppTest.FAKE_URN).docs().doc(name).write(
+        base.user(TkAppTest.FAKE_URN).docs().doc(name).write(
             new ByteArrayInputStream(data.getBytes())
         );
-        new FtRemote(new TsApp(base)).exec(
+        new FtRemote(new TkApp(base)).exec(
             new FtRemote.Script() {
                 @Override
                 public void exec(final URI home) throws IOException {
                     new JdkRequest(home)
                         .uri().path("/doc/read")
-                        .queryParam(TsAppTest.FILE, name).back()
+                        .queryParam(TkAppTest.FILE, name).back()
                         .fetch()
                         .as(RestResponse.class)
                         .assertStatus(HttpURLConnection.HTTP_OK)
@@ -216,20 +216,20 @@ public final class TkAppTest {
         final Base base = new MkBase();
         final String name = "[][].txt";
         final String data = "fake data";
-        base.user(TsAppTest.FAKE_URN).docs().doc(name).write(
+        base.user(TkAppTest.FAKE_URN).docs().doc(name).write(
             new ByteArrayInputStream(data.getBytes())
         );
         MatcherAssert.assertThat(
-            base.user(TsAppTest.FAKE_URN).docs().names(),
+            base.user(TkAppTest.FAKE_URN).docs().names(),
             Matchers.not(Matchers.emptyIterable())
         );
-        new FtRemote(new TsApp(base)).exec(
+        new FtRemote(new TkApp(base)).exec(
             new FtRemote.Script() {
                 @Override
                 public void exec(final URI home) throws IOException {
                     new JdkRequest(home)
                         .uri().path("/doc/delete")
-                        .queryParam(TsAppTest.FILE, name).back()
+                        .queryParam(TkAppTest.FILE, name).back()
                         .fetch().as(RestResponse.class).follow()
                         .fetch().as(RestResponse.class)
                         .assertStatus(HttpURLConnection.HTTP_OK);
@@ -237,7 +237,7 @@ public final class TkAppTest {
             }
         );
         MatcherAssert.assertThat(
-            base.user(TsAppTest.FAKE_URN).docs().names(),
+            base.user(TkAppTest.FAKE_URN).docs().names(),
             Matchers.emptyIterable()
         );
     }
@@ -261,7 +261,7 @@ public final class TkAppTest {
                     MatcherAssert.assertThat(
                         new JdkRequest(home)
                             .uri().path("/doc/read")
-                            .queryParam(TsAppTest.FILE, name).back()
+                            .queryParam(TkAppTest.FILE, name).back()
                             .fetch()
                             .as(RestResponse.class)
                             .assertStatus(HttpURLConnection.HTTP_OK)
