@@ -51,23 +51,25 @@ final class TkEjectFriend implements Take {
     private final transient Doc doc;
 
     /**
-     * Name of friend (URN).
+     * Names of friends (URN).
      */
-    private final transient String friend;
+    private final transient Iterable<String> friends;
 
     /**
      * Ctor.
      * @param src Source document to read from
-     * @param name Name of Friend
+     * @param names Name of Friend
      */
-    TkEjectFriend(final Doc src, final String name) {
+    TkEjectFriend(final Doc src, final Iterable<String> names) {
         this.doc = src;
-        this.friend = name;
+        this.friends = names;
     }
 
     @Override
     public Response act() throws IOException {
-        this.doc.friends().eject(this.friend);
+        for (final String friend : this.friends) {
+            this.doc.friends().eject(friend);
+        }
         return new RsForward(new RsFlash("friend ejected"));
     }
 

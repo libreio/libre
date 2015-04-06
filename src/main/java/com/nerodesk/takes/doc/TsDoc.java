@@ -69,9 +69,6 @@ public final class TsDoc implements Takes {
         this.base = bse;
     }
 
-    // @todo #94:30min This method is way to complicated and should be splitted
-    //  to smaller chunks. It's very hard to test what is going on here. After
-    //  splitting, it should be covered by unit tests.
     @Override
     public Take route(final Request req) throws IOException {
         final Href href = new RqHref(req).href();
@@ -87,37 +84,14 @@ public final class TsDoc implements Takes {
         return new TsFork(
             new FkRegex("/doc/read", new TkRead(doc)),
             new FkRegex("/doc/delete", new TkDelete(doc)),
-            new FkRegex(
-                "/doc/write",
-                new Takes() {
-                    @Override
-                    public Take route(final Request request) {
-                        return new TkWrite(doc, req);
-                    }
-                }
-            ),
+            new FkRegex("/doc/write", new TkWrite(doc, req)),
             new FkRegex(
                 "/doc/add-friend",
-                new Takes() {
-                    @Override
-                    public Take route(final Request rst) throws IOException {
-                        return new TkAddFriend(
-                            doc,
-                            new RqForm(rst).param("friend").iterator().next()
-                        );
-                    }
-                }
+                new TkAddFriend(doc, new RqForm(req).param("friend"))
             ),
             new FkRegex(
                 "/doc/eject-friend",
-                new Takes() {
-                    @Override
-                    public Take route(final Request rst) {
-                        return new TkEjectFriend(
-                            doc, href.param("friend").iterator().next()
-                        );
-                    }
-                }
+                new TkEjectFriend(doc, href.param("friend"))
             )
         ).route(req);
     }

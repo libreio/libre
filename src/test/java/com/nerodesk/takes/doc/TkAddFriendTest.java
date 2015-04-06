@@ -32,6 +32,7 @@ package com.nerodesk.takes.doc;
 import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
 import com.nerodesk.om.mock.MkBase;
+import java.util.Collections;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -61,7 +62,9 @@ public final class TkAddFriendTest {
         final Doc doc = docs.doc("hey");
         final String friend = "Bob";
         MatcherAssert.assertThat(
-            new RsPrint(new TkAddFriend(doc, friend).act()).print(),
+            new RsPrint(
+                new TkAddFriend(doc, Collections.singleton(friend)).act()
+            ).print(),
             Matchers.containsString("document+shared")
         );
     }
