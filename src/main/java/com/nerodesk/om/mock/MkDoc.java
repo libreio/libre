@@ -46,7 +46,6 @@ import org.apache.commons.io.IOUtils;
 
 /**
  * Mocked version of doc.
- *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
@@ -86,8 +85,11 @@ public final class MkDoc implements Doc {
     }
 
     @Override
-    public void delete() {
-        this.file().delete();
+    public void delete() throws IOException {
+        final File file = this.file();
+        if (!file.delete()) {
+            throw new IOException(String.format("Failed to delete %s", file));
+        }
     }
 
     @Override
@@ -129,7 +131,9 @@ public final class MkDoc implements Doc {
     public void write(final InputStream input) throws IOException {
         final File file = this.file();
         FileUtils.touch(file);
-        IOUtils.copy(input, new FileOutputStream(file));
+        try (final FileOutputStream output = new FileOutputStream(file)) {
+            IOUtils.copy(input, output);
+        }
         Logger.info(this, "%s saved", file);
     }
 
