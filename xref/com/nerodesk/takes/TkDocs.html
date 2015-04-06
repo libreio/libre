@@ -117,26 +117,30 @@
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>             <strong class="jxr_keyword">final</strong> Href href = home.path(<span class="jxr_string">"doc"</span>).with(<span class="jxr_string">"file"</span>, name);
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>             dirs.add(<span class="jxr_string">"doc"</span>)
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>                 .add(<span class="jxr_string">"name"</span>).set(name).up()
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>                 .add(<span class="jxr_string">"read"</span>).set(href.path(<span class="jxr_string">"read"</span>).toString()).up()
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>                 .add(<span class="jxr_string">"delete"</span>).set(href.path(<span class="jxr_string">"delete"</span>).toString()).up()
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>                 .add(<span class="jxr_string">"add-friend"</span>).set(href.path(<span class="jxr_string">"add-friend"</span>).toString()).up()
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>                 .add(<span class="jxr_string">"friends"</span>);
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>             <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> String friend : doc.friends().names()) {
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>                 dirs.add(<span class="jxr_string">"friend"</span>)
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>                     .add(<span class="jxr_string">"name"</span>).set(friend).up()
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>                     .add(<span class="jxr_string">"eject"</span>)
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>                     .set(
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>                         href.path(<span class="jxr_string">"eject-friend"</span>)
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>                             .with(<span class="jxr_string">"friend"</span>, friend).toString()
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>                     )
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>                     .up().up();
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>             }
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>             dirs.up().up();
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>         }
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>         <strong class="jxr_keyword">return</strong> dirs;
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>     }
-<a class="jxr_linenumber" name="L130" href="#L130">130</a> 
-<a class="jxr_linenumber" name="L131" href="#L131">131</a> }
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>                 .add(<span class="jxr_string">"size"</span>).set(Long.toString(doc.size())).up()
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>                 .add(<span class="jxr_string">"created"</span>).set(Long.toString(doc.created().getTime())).up()
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>                 .add(<span class="jxr_string">"type"</span>).set(doc.type()).up()
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>                 .add(<span class="jxr_string">"name"</span>).set(name).up()
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>                 .add(<span class="jxr_string">"read"</span>).set(href.path(<span class="jxr_string">"read"</span>).toString()).up()
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>                 .add(<span class="jxr_string">"delete"</span>).set(href.path(<span class="jxr_string">"delete"</span>).toString()).up()
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>                 .add(<span class="jxr_string">"add-friend"</span>).set(href.path(<span class="jxr_string">"add-friend"</span>).toString()).up()
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>                 .add(<span class="jxr_string">"friends"</span>);
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>             <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> String friend : doc.friends().names()) {
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>                 dirs.add(<span class="jxr_string">"friend"</span>)
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>                     .add(<span class="jxr_string">"name"</span>).set(friend).up()
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>                     .add(<span class="jxr_string">"eject"</span>)
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>                     .set(
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>                         href.path(<span class="jxr_string">"eject-friend"</span>)
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>                             .with(<span class="jxr_string">"friend"</span>, friend).toString()
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>                     )
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>                     .up().up();
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>             }
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>             dirs.up().up();
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>         }
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>         <strong class="jxr_keyword">return</strong> dirs;
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>     }
+<a class="jxr_linenumber" name="L134" href="#L134">134</a> 
+<a class="jxr_linenumber" name="L135" href="#L135">135</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2015 <a href="http://www.nerodesk.com">Nerodesk, Inc.</a>. All rights reserved.</div>
