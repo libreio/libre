@@ -148,7 +148,7 @@ public final class TkApp extends TkWrap {
             ),
             new FkRegex(
                 "/images/.*\\.png",
-                new TsWithType(new TsClasspath(), MediaType.PNG.toString())
+                new TkWithType(new TkClasspath(), MediaType.PNG.toString())
             ),
             new FkRegex("/robots.txt", ""),
             new FkRegex(

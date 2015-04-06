@@ -205,7 +205,7 @@ public final class TkAppTest {
     @Test
     public void returnsStaticImage() throws Exception {
         final String name = "/images/logo.png";
-        new FtRemote(new TsApp(new MkBase())).exec(
+        new FtRemote(new TkApp(new MkBase())).exec(
             new FtRemote.Script() {
                 @Override
                 public void exec(final URI home) throws IOException {
@@ -220,7 +220,7 @@ public final class TkAppTest {
                             .binary(),
                         Matchers.is(
                             IOUtils.toByteArray(
-                                TsAppTest.class.getResource(name)
+                                TkAppTest.class.getResource(name)
                             )
                         )
                     );
