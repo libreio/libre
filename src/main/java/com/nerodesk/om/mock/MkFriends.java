@@ -48,6 +48,7 @@ import lombok.ToString;
  */
 @EqualsAndHashCode(of = { "dir", "user", "label" })
 @ToString
+@SuppressWarnings("PMD.SingularField")
 public final class MkFriends implements Friends {
 
     /**
@@ -98,9 +99,6 @@ public final class MkFriends implements Friends {
 
     @Override
     public Iterable<String> names() {
-        assert this.dir != null;
-        assert this.user != null;
-        assert this.label != null;
         return Arrays.asList(this.friends.list());
     }
 
