@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -46,25 +47,9 @@ import lombok.ToString;
  * @todo #173:30min/DEV This class does not have any tests implemented yet.
  *  Let's implement tests for all existent methods (leader, names, add, eject).
  */
-@EqualsAndHashCode(of = { "dir", "user", "label" })
+@EqualsAndHashCode(of = { "friends" })
 @ToString
-@SuppressWarnings("PMD.SingularField")
 public final class MkFriends implements Friends {
-
-    /**
-     * Directory.
-     */
-    private final transient File dir;
-
-    /**
-     * URN.
-     */
-    private final transient String user;
-
-    /**
-     * Doc name.
-     */
-    private final transient String label;
 
     /**
      * Friends folder.
@@ -77,15 +62,13 @@ public final class MkFriends implements Friends {
      * @param urn URN
      * @param name Document name
      */
-    public MkFriends(final File file, final String urn, final String name) {
-        this.dir = file;
-        this.user = urn;
-        this.label = name;
+    public MkFriends(@NotNull final File file, @NotNull final String urn,
+    @NotNull final String name) {
         this.friends = Paths.get(
-            this.dir.getAbsolutePath(),
-            this.user.replaceAll("[^a-z0-9]", "/"),
+            file.getAbsolutePath(),
+            urn.replaceAll("[^a-z0-9]", "/"),
             "friends",
-            this.label
+            name
         ).toFile();
         if (!this.friends.exists()) {
             assert this.friends.mkdirs();
