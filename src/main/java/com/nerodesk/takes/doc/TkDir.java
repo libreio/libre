@@ -29,29 +29,31 @@
  */
 package com.nerodesk.takes.doc;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
-import org.takes.rq.RqFake;
+import java.io.IOException;
+import org.takes.Request;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.facets.fork.FkRegex;
+import org.takes.facets.fork.TkFork;
+import org.takes.tk.TkEmpty;
 
 /**
- * Tests for {@code TsDir}.
+ * Takes for a directory.
  *
  * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @version $Id$
  * @since 0.4
  */
-public final class TsDirTest {
+public final class TkDir implements Take {
 
-    /**
-     * TsDir can return Take.
-     * @throws Exception If fails.
-     */
-    @Test
-    public void returnsTake() throws Exception {
-        MatcherAssert.assertThat(
-            new TsDir().route(new RqFake("POST", "/dir/create")),
-            Matchers.notNullValue()
-        );
+    // @todo #150:30min This is initial implementation and is not
+    //   doing anything useful yet. We should implement ability to create
+    //   directories here. Moreover there should be also way to edit them,
+    //   remove and attach existing documents.
+    @Override
+    public Response act(final Request req) throws IOException {
+        return new TkFork(
+            new FkRegex("/dir/create", new TkEmpty())
+        ).act(req);
     }
 }
