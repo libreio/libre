@@ -32,7 +32,11 @@ package com.nerodesk.om.mock;
 import com.nerodesk.om.Friends;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import javax.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Mocked version of friends.
@@ -40,26 +44,17 @@ import java.util.Collections;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.3
- * @todo #103:30min/DEV This class is not implemented and doesn't work. Let's
- *  implement it and test in a unit test. Let's use some primitive mechanism,
- *  based on file names.
+ * @todo #173:30min/DEV This class does not have any tests implemented yet.
+ *  Let's implement tests for all existent methods (leader, names, add, eject).
  */
+@EqualsAndHashCode(of = { "friends" })
+@ToString
 public final class MkFriends implements Friends {
 
     /**
-     * Directory.
+     * Friends folder.
      */
-    private final transient File dir;
-
-    /**
-     * URN.
-     */
-    private final transient String user;
-
-    /**
-     * Doc name.
-     */
-    private final transient String label;
+    private final transient File friends;
 
     /**
      * Ctor.
@@ -67,32 +62,39 @@ public final class MkFriends implements Friends {
      * @param urn URN
      * @param name Document name
      */
-    public MkFriends(final File file, final String urn, final String name) {
-        this.dir = file;
-        this.user = urn;
-        this.label = name;
+    public MkFriends(@NotNull final File file, @NotNull final String urn,
+    @NotNull final String name) {
+        this.friends = Paths.get(
+            file.getAbsolutePath(),
+            urn.replaceAll("[^a-z0-9]", "/"),
+            "friends",
+            name
+        ).toFile();
+        if (!this.friends.exists()) {
+            assert this.friends.mkdirs();
+        }
     }
 
     @Override
-    public boolean leader() throws IOException {
+    public boolean leader() {
         return true;
     }
 
     @Override
-    public Iterable<String> names() throws IOException {
-        assert this.dir != null;
-        assert this.user != null;
-        assert this.label != null;
-        return Collections.emptyList();
+    public Iterable<String> names() {
+        return Arrays.asList(this.friends.list());
     }
 
     @Override
     public void add(final String name) throws IOException {
-        // nothing
+        assert Paths.get(this.friends.getAbsolutePath(), name).toFile()
+            .createNewFile();
     }
 
     @Override
-    public void eject(final String name) throws IOException {
-        // nothing
+    public void eject(final String name) {
+        assert Paths.get(this.friends.getAbsolutePath(), name).toFile()
+            .delete();
     }
+
 }
