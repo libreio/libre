@@ -30,12 +30,17 @@
 package com.nerodesk.takes;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.nerodesk.om.Base;
 import com.nerodesk.om.User;
 import com.nerodesk.om.mock.MkBase;
 import java.io.ByteArrayInputStream;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
+import org.takes.facets.auth.Identity;
+import org.takes.facets.auth.TkAuth;
+import org.takes.facets.auth.codecs.CcPlain;
 import org.takes.rq.RqFake;
+import org.takes.rq.RqWithHeader;
 import org.takes.rs.RsPrint;
 
 /**
@@ -44,6 +49,7 @@ import org.takes.rs.RsPrint;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkDocsTest {
 
@@ -53,7 +59,9 @@ public final class TkDocsTest {
      */
     @Test
     public void returnsListOfDocs() throws Exception {
-        final User user = new MkBase().user("urn:test:1");
+        final Base base = new MkBase();
+        final String urn = "urn:test:1";
+        final User user = base.user(urn);
         user.docs().doc("test.txt").write(
             new ByteArrayInputStream("hello, world!".getBytes())
         );
@@ -62,9 +70,18 @@ public final class TkDocsTest {
         );
         MatcherAssert.assertThat(
             new RsPrint(
-                new TkDocs(user.docs(), new RqFake()).act()
+                new TkDocs(base).act(
+                    new RqWithHeader(
+                        new RqFake(),
+                        TkAuth.class.getSimpleName(),
+                        new String(
+                            new CcPlain().encode(new Identity.Simple(urn))
+                        )
+                    )
+                )
             ).printBody(),
             XhtmlMatchers.hasXPaths(
+                "/page/user[balance=0]",
                 "/page/docs[count(doc)=2]",
                 "/page/docs/doc[name='test.txt']",
                 "/page/docs/doc/read"

@@ -29,9 +29,16 @@
  */
 package com.nerodesk.om.aws;
 
+import com.jcabi.s3.Bucket;
+import java.io.IOException;
+import java.util.Arrays;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Tests for {@link AwsFriends}.
@@ -51,4 +58,34 @@ public final class AwsFriendsTest {
             .suppress(Warning.TRANSIENT_FIELDS)
             .verify();
     }
+
+    /**
+     * AwsFriends can eject the last friend correctly.
+     * @throws IOException If something goes wrong.
+     * @todo 152:30min It is not currently possible to run this test because of
+     *  specific calls to the AWS API done inside of method eject. Mocking with
+     *  jcabi-s3 is also currently not an option because we can't control the
+     *  metadata returned by MkOcket. Issue #25 in jcabi-s3 should help by
+     *  adding metadata support for the mocks. Once it is possible to test this,
+     *  unignore the test.
+     */
+    @Test
+    @Ignore
+    public void ejectsLastFriend() throws IOException {
+        final AwsFriends friends = new AwsFriends(
+            Mockito.mock(Bucket.class), "user", "doc"
+        );
+        final String friend = "friend";
+        friends.add(friend);
+        MatcherAssert.assertThat(
+            Arrays.asList(friends.names()),
+            Matchers.hasSize(1)
+        );
+        friends.eject(friend);
+        MatcherAssert.assertThat(
+            Arrays.asList(friends.names()),
+            Matchers.hasSize(0)
+        );
+    }
+
 }

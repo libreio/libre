@@ -43,6 +43,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.util.Locale;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHeaders;
 import org.hamcrest.MatcherAssert;
@@ -72,9 +73,13 @@ import org.takes.http.FtRemote;
  *  read should be implemented as well.
  *  Let's start from proper tests. See example for partitioned write
  *  AppTest.uploadsBigFile()
+ * @todo #160:30min Test readsFileWithSpecialCharactersInName and
+ *  deletesFileWithSpecialCharactersInName are disabled because of a bug in
+ *  takes 0.11.2, when yegor256/takes#126 is resolved and a new takes with this
+ *  fix is released add it to the pom.xml and uncomment those tests.
  */
 @SuppressWarnings("PMD.TooManyMethods")
-public final class TsAppTest {
+public final class TkAppTest {
 
     /**
      * Fake URN.
@@ -82,12 +87,17 @@ public final class TsAppTest {
     private static final String FAKE_URN = "urn:test:1";
 
     /**
+     * File query param.
+     */
+    private static final String FILE = "file";
+
+    /**
      * Launches web server on random port.
      * @throws Exception If fails
      */
     @Test
     public void launchesOnRandomPort() throws Exception {
-        final TsApp app = new TsApp(new MkBase());
+        final TkApp app = new TkApp(new MkBase());
         new FtRemote(app).exec(
             new FtRemote.Script() {
                 @Override
@@ -112,6 +122,34 @@ public final class TsAppTest {
     }
 
     /**
+     * TsApp can launch web server in non-latin locale.
+     * @throws Exception If fails
+     */
+    @Test
+    public void launchesWebServerInNonLatinLocale() throws Exception {
+        final Locale def = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.CHINESE);
+            final TkApp app = new TkApp(new MkBase());
+            new FtRemote(app).exec(
+                new FtRemote.Script() {
+                    @Override
+                    public void exec(final URI home) throws IOException {
+                        new JdkRequest(home)
+                            .fetch()
+                            .as(RestResponse.class)
+                            .assertStatus(HttpURLConnection.HTTP_OK)
+                            .as(XmlResponse.class)
+                            .assertXPath("/xhtml:html");
+                    }
+                }
+            );
+        } finally {
+            Locale.setDefault(def);
+        }
+    }
+
+    /**
      * Application can return file content.
      * @throws Exception If fails
      */
@@ -119,22 +157,88 @@ public final class TsAppTest {
     public void returnsFileContent() throws Exception {
         final Base base = new MkBase();
         final String name = "test.txt";
-        base.user(TsAppTest.FAKE_URN).docs().doc(name).write(
+        base.user(TkAppTest.FAKE_URN).docs().doc(name).write(
             new ByteArrayInputStream("hello, world!".getBytes())
         );
-        final TsApp app = new TsApp(base);
+        final TkApp app = new TkApp(base);
         new FtRemote(app).exec(
             new FtRemote.Script() {
                 @Override
                 public void exec(final URI home) throws IOException {
                     new JdkRequest(home)
-                        .uri().path("/doc/read").queryParam("file", name).back()
+                        .uri().path("/doc/read")
+                        .queryParam(TkAppTest.FILE, name).back()
                         .fetch()
                         .as(RestResponse.class)
                         .assertStatus(HttpURLConnection.HTTP_OK)
                         .assertBody(Matchers.startsWith("hello, world"));
                 }
             }
+        );
+    }
+
+    /**
+     * TsApp can read file with special characters in its name.
+     * @throws Exception If fails
+     */
+    @Test
+    @Ignore
+    public void readsFileWithSpecialCharactersInName() throws Exception {
+        final Base base = new MkBase();
+        final String name = "[][].txt";
+        final String data = "fake data";
+        base.user(TkAppTest.FAKE_URN).docs().doc(name).write(
+            new ByteArrayInputStream(data.getBytes())
+        );
+        new FtRemote(new TkApp(base)).exec(
+            new FtRemote.Script() {
+                @Override
+                public void exec(final URI home) throws IOException {
+                    new JdkRequest(home)
+                        .uri().path("/doc/read")
+                        .queryParam(TkAppTest.FILE, name).back()
+                        .fetch()
+                        .as(RestResponse.class)
+                        .assertStatus(HttpURLConnection.HTTP_OK)
+                        .assertBody(Matchers.startsWith(data));
+                }
+            }
+        );
+    }
+
+    /**
+     * TsApp can delete file with special characters in its name.
+     * @throws Exception If fails
+     */
+    @Test
+    @Ignore
+    public void deletesFileWithSpecialCharactersInName() throws Exception {
+        final Base base = new MkBase();
+        final String name = "[][].txt";
+        final String data = "fake data";
+        base.user(TkAppTest.FAKE_URN).docs().doc(name).write(
+            new ByteArrayInputStream(data.getBytes())
+        );
+        MatcherAssert.assertThat(
+            base.user(TkAppTest.FAKE_URN).docs().names(),
+            Matchers.not(Matchers.emptyIterable())
+        );
+        new FtRemote(new TkApp(base)).exec(
+            new FtRemote.Script() {
+                @Override
+                public void exec(final URI home) throws IOException {
+                    new JdkRequest(home)
+                        .uri().path("/doc/delete")
+                        .queryParam(TkAppTest.FILE, name).back()
+                        .fetch().as(RestResponse.class).follow()
+                        .fetch().as(RestResponse.class)
+                        .assertStatus(HttpURLConnection.HTTP_OK);
+                }
+            }
+        );
+        MatcherAssert.assertThat(
+            base.user(TkAppTest.FAKE_URN).docs().names(),
+            Matchers.emptyIterable()
         );
     }
 
@@ -147,22 +251,53 @@ public final class TsAppTest {
         final Base base = new MkBase();
         final String name = "test.dat";
         final byte[] content = new byte[]{0x00, 0x0a, (byte) 0xff, (byte) 0xfe};
-        base.user(TsAppTest.FAKE_URN).docs().doc(name).write(
+        base.user(TkAppTest.FAKE_URN).docs().doc(name).write(
             new ByteArrayInputStream(content)
         );
-        new FtRemote(new TsApp(base)).exec(
+        new FtRemote(new TkApp(base)).exec(
             new FtRemote.Script() {
                 @Override
                 public void exec(final URI home) throws IOException {
                     MatcherAssert.assertThat(
                         new JdkRequest(home)
                             .uri().path("/doc/read")
-                            .queryParam("file", name).back()
+                            .queryParam(TkAppTest.FILE, name).back()
                             .fetch()
                             .as(RestResponse.class)
                             .assertStatus(HttpURLConnection.HTTP_OK)
                             .binary(),
                         Matchers.is(content)
+                    );
+                }
+            }
+        );
+    }
+
+    /**
+     * Application can return static image.
+     * @throws Exception If something goes wrong
+     */
+    @Test
+    public void returnsStaticImage() throws Exception {
+        final String name = "/images/logo.png";
+        new FtRemote(new TkApp(new MkBase())).exec(
+            new FtRemote.Script() {
+                @Override
+                public void exec(final URI home) throws IOException {
+                    MatcherAssert.assertThat(
+                        new JdkRequest(home)
+                            .uri().path(name)
+                            .back()
+                            .fetch()
+                            .as(RestResponse.class)
+                            .assertStatus(HttpURLConnection.HTTP_OK)
+                            .assertHeader("Content-Type", "image/png")
+                            .binary(),
+                        Matchers.is(
+                            IOUtils.toByteArray(
+                                TkAppTest.class.getResource(name)
+                            )
+                        )
                     );
                 }
             }
@@ -178,14 +313,14 @@ public final class TsAppTest {
         final Base base = new MkBase();
         final String name = "small.txt";
         final String file = "uploaded by client";
-        new FtRemote(new TsApp(base)).exec(
+        new FtRemote(new TkApp(base)).exec(
             new FtRemote.Script() {
                 @Override
                 public void exec(final URI home) throws IOException {
-                    TsAppTest.write(home)
+                    TkAppTest.write(home)
                         .fetch(
                             new ByteArrayInputStream(
-                                TsAppTest.multipart(name, file).getBytes()
+                                TkAppTest.multipart(name, file).getBytes()
                             )
                         )
                         .as(RestResponse.class)
@@ -194,7 +329,7 @@ public final class TsAppTest {
             }
         );
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        base.user(TsAppTest.FAKE_URN).docs().doc(name).read(stream);
+        base.user(TkAppTest.FAKE_URN).docs().doc(name).read(stream);
         MatcherAssert.assertThat(
             IOUtils.toString(stream.toByteArray(), Charsets.UTF_8.name()),
             Matchers.containsString(file)
@@ -224,14 +359,14 @@ public final class TsAppTest {
         final Base base = new MkBase();
         final String name = "large.txt";
         final String file = "123451234512345";
-        new FtRemote(new TsApp(base)).exec(
+        new FtRemote(new TkApp(base)).exec(
             // @checkstyle AnonInnerLengthCheck (30 lines)
             new FtRemote.Script() {
                 @Override
                 public void exec(final URI home) throws IOException {
                     int pos = 0;
                     while (pos < file.length() - 1) {
-                        TsAppTest.write(home)
+                        TkAppTest.write(home)
                             .header(
                                 HttpHeaders.CONTENT_RANGE,
                                 String.format(
@@ -241,7 +376,7 @@ public final class TsAppTest {
                             )
                             .fetch(
                                 new ByteArrayInputStream(
-                                    TsAppTest.multipart(name, file).getBytes()
+                                    TkAppTest.multipart(name, file).getBytes()
                                 )
                             )
                             .as(RestResponse.class)
@@ -252,7 +387,7 @@ public final class TsAppTest {
             }
         );
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        base.user(TsAppTest.FAKE_URN).docs().doc(name).read(stream);
+        base.user(TkAppTest.FAKE_URN).docs().doc(name).read(stream);
         MatcherAssert.assertThat(
             IOUtils.toString(stream.toByteArray(), Charsets.UTF_8.name()),
             Matchers.containsString(file)
@@ -266,7 +401,7 @@ public final class TsAppTest {
     @Test
     public void showsErrorPage() throws Exception {
         final Base base = new MkBase();
-        new FtRemote(new TsApp(base)).exec(
+        new FtRemote(new TkApp(base)).exec(
             new FtRemote.Script() {
                 @Override
                 public void exec(final URI home) throws IOException {

@@ -1,4 +1,4 @@
-<img src="http://www.nerodesk.com/logo.png" width="320px" height="45px"/>
+<img src="http://www.nerodesk.com/logo_large.png" width="384px" height="85px"/>
 
 [![Made By Teamed.io](http://img.teamed.io/btn.svg)](http://www.teamed.io)
 [![DevOps By Rultor.com](http://www.rultor.com/b/teamed/nerodesk)](http://www.rultor.com/p/teamed/nerodesk)
@@ -12,6 +12,7 @@ Main features:
  - user can create an account via web panel
  - user can delete their account
  - user can upload a file, download it back and delete it
+ - user can upload multiple files in a single batch.
  - user can share any file with a few other users
  - user can see all their files in the web panel
  - user can manage file folders
@@ -37,6 +38,13 @@ java -cp target\nerodesk.jar;target\deps\* com.nerodesk.Launch --port=8080
 **File Size**.
 Maximum size of the size a user can upload is 5Tb, because this is the
 maximum size of Amazon S3 object, see http://aws.amazon.com/s3/faqs/.
+
+
+## Graphic design
+Resized [nerodesk logo](http://www.nerodesk.com/logo_large.png) should be placed
+on top of all site pages (centered horizontally), just above site information
+and login/logout link.
+
 
 ## How to contribute
 

@@ -27,56 +27,70 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.takes.doc;
+package com.nerodesk.om;
 
-import com.google.common.collect.Lists;
-import com.nerodesk.om.Doc;
-import com.nerodesk.om.Docs;
-import com.nerodesk.om.mock.MkBase;
+import com.google.common.io.Files;
+import com.jcabi.aspects.Tv;
+import com.nerodesk.om.mock.MkDoc;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Rule;
 import org.junit.Test;
-import org.takes.rq.RqFake;
-import org.takes.rs.RsPrint;
+import org.junit.rules.TemporaryFolder;
 
 /**
- * Test case for {@link TkAddFriend}.
+ * Tests for {@link SmallDoc}.
  *
- * @author Carlos Miranda (miranda.cma@gmail.com)
+ * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
  * @since 0.4
  */
-public final class TkAddFriendTest {
+public final class SmallDocTest {
+    /**
+     * Temporary folder.
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @Rule
+    public final transient TemporaryFolder folder = new TemporaryFolder();
 
     /**
-     * TkAddFriend can add a friend.
-     * @throws Exception If fails.
+     * SmallDoc can write a doc.
+     * @throws IOException In case of error
      */
     @Test
-    public void addsFriend() throws Exception {
-        final Docs docs = new MkBase().user("urn:test:1").docs();
-        final Doc doc = docs.doc("hey");
-        final String friend = "The Dude";
-        MatcherAssert.assertThat(
-            Lists.newArrayList(doc.friends().names()),
-            Matchers.not(Matchers.hasItem(friend))
+    public void writesTheDoc() throws IOException {
+        final File file = new File(this.folder.newFolder(), "writable");
+        final String content = "store";
+        new SmallDoc(new MkDoc(file, "", "")).write(
+            new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
         );
         MatcherAssert.assertThat(
-            new RsPrint(
-                new TkAddFriend(doc).act(
-                    new RqFake(
-                        "POST",
-                        "/",
-                        String.format("friend=%s", friend)
-                    )
-                )
-            ).print(),
-            Matchers.containsString("document+shared")
-        );
-        MatcherAssert.assertThat(
-            Lists.newArrayList(doc.friends().names()),
-            Matchers.hasItem(friend)
+            Files.toString(file, StandardCharsets.UTF_8),
+            Matchers.equalTo(content)
         );
     }
 
+    /**
+     * SmallDoc can throw exception if the Doc is too big.
+     * @throws IOException In case of error
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void failsToWriteBigDoc() throws IOException {
+        final File file = new File(
+            this.folder.newFolder(), "big_file"
+        );
+        final String content = StringUtils.repeat('b', 101);
+        new SmallDoc(new MkDoc(file, "", ""), (long) Tv.HUNDRED).write(
+            new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
+        );
+        MatcherAssert.assertThat(
+            Files.toString(file, StandardCharsets.UTF_8),
+            Matchers.equalTo(content)
+        );
+    }
 }

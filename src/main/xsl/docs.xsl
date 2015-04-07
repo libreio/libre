@@ -61,6 +61,18 @@
     <xsl:template match="doc">
         <li>
             <xsl:value-of select="name"/>
+            <xsl:text>, </xsl:text>
+            <xsl:value-of select="size"/>
+            <xsl:text> bytes, </xsl:text>
+            <!--
+            @todo #101:30min Creation date of document should be displayed using
+             ISO_8601 combined date time and timezone
+             (e.g. 2007-04-05T12:30-02:00). Right now it is just a unix
+             timestamp.
+            -->
+            <xsl:value-of select="created"/>
+            <xsl:text>, </xsl:text>
+            <xsl:value-of select="type"/>
             <xsl:text> </xsl:text>
             <a href="{read}">read</a>
             <xsl:text> | </xsl:text>

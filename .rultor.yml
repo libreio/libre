@@ -1,7 +1,7 @@
 install: |-
   sudo apt-get install -y bsdmainutils
-  sudo gem install pdd
-  sudo gem install est
+  sudo gem install --no-rdoc --no-ri pdd
+  sudo gem install --no-rdoc --no-ri est
 architect:
 - yegor256
 - karato

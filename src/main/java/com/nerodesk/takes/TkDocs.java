@@ -29,12 +29,15 @@
  */
 package com.nerodesk.takes;
 
+import com.nerodesk.om.Base;
 import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
+import com.nerodesk.om.User;
 import java.io.IOException;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.facets.auth.RqAuth;
 import org.takes.misc.Href;
 import org.takes.rq.RqHref;
 import org.takes.rs.xe.XeLink;
@@ -53,35 +56,29 @@ import org.xembly.Directives;
 public final class TkDocs implements Take {
 
     /**
-     * Docs.
+     * Base.
      */
-    private final transient Docs docs;
-
-    /**
-     * Request.
-     */
-    private final transient Request request;
+    private final transient Base base;
 
     /**
      * Ctor.
-     * @param dcs Docs
-     * @param req Request
+     * @param bse Base
      */
-    public TkDocs(final Docs dcs, final Request req) {
-        this.docs = dcs;
-        this.request = req;
+    public TkDocs(final Base bse) {
+        this.base = bse;
     }
 
     @Override
-    public Response act() throws IOException {
+    public Response act(final Request req) throws IOException {
+        final User user = this.base.user(new RqAuth(req).identity().urn());
         return new RsPage(
             "/xsl/docs.xsl",
-            this.request,
+            req,
             new XeLink("upload", "/doc/write"),
             new XeSource() {
                 @Override
                 public Iterable<Directive> toXembly() throws IOException {
-                    return TkDocs.this.list();
+                    return TkDocs.this.list(user, req);
                 }
             },
             new XeLink("mkdir", "/dir/create")
@@ -90,16 +87,31 @@ public final class TkDocs implements Take {
 
     /**
      * Convert docs into directives.
+     * @param user User
+     * @param req Request
      * @return Directives
      * @throws IOException If fails
+     * @todo #118:30min User balance shouldn't be inside docs page but in some
+     *  kind of decorator of all the pages that are show to logged in users.
+     *  Create such place and move user directive there.
      */
-    private Iterable<Directive> list() throws IOException {
-        final Directives dirs = new Directives().add("docs");
-        final Href home = new RqHref(this.request).href();
-        for (final String name : this.docs.names()) {
-            final Doc doc = this.docs.doc(name);
+    private Iterable<Directive> list(final User user, final Request req)
+        throws IOException {
+        final Directives dirs = new Directives();
+        dirs.add("user").add("balance").set(
+            Integer.toString(user.account().balance())
+        ).up().up();
+        final Href home = new RqHref(req).href();
+        final Docs docs = user.docs();
+        dirs.add("docs");
+        for (final String name : docs.names()) {
+            final Doc doc = docs.doc(name);
             final Href href = home.path("doc").with("file", name);
             dirs.add("doc")
+                .add("name").set(name).up()
+                .add("size").set(Long.toString(doc.size())).up()
+                .add("created").set(Long.toString(doc.created().getTime())).up()
+                .add("type").set(doc.type()).up()
                 .add("name").set(name).up()
                 .add("read").set(href.path("read").toString()).up()
                 .add("delete").set(href.path("delete").toString()).up()

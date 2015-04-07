@@ -36,6 +36,7 @@ import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
 
 /**
@@ -57,7 +58,7 @@ public final class TkDeleteTest {
         final Doc doc = docs.doc("hey");
         doc.write(IOUtils.toInputStream("hello, world!"));
         MatcherAssert.assertThat(
-            new RsPrint(new TkDelete(doc).act()).print(),
+            new RsPrint(new TkDelete(doc).act(new RqFake())).print(),
             Matchers.startsWith("HTTP/1.1 303")
         );
         MatcherAssert.assertThat(docs.names(), Matchers.emptyIterable());

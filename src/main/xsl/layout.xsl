@@ -41,6 +41,9 @@
                 <xsl:apply-templates select="." mode="head"/>
             </head>
             <body>
+                <header>
+                    <img class="logo" src="/images/logo.png"/>
+                </header>
                 <nav role="navigation" class="menu">
                     <xsl:if test="not(identity)">
                         <span>
@@ -51,6 +54,7 @@
                     </xsl:if>
                     <xsl:apply-templates select="identity"/>
                     <xsl:apply-templates select="version"/>
+                    <xsl:apply-templates select="user"/>
                     <xsl:apply-templates select="flash"/>
                 </nav>
                 <xsl:apply-templates select="." mode="body"/>
@@ -100,6 +104,17 @@
         <span title="total amount of bytes stored in your account">
             <!-- @todo #102:30min This value is hardcoded for now but should be connected to Docs.size() value and present total amount of bytes in user friendly form stored in account. -->
             <xsl:text>[47 mb]</xsl:text>
+        </span>
+    </xsl:template>
+    <xsl:template match="user">
+        <span title="current user balance">
+            <xsl:text>$</xsl:text>
+            <xsl:value-of select="format-number(balance div 100, '0.00')"/>
+            <!--
+            @todo #118:30min Create a page account.xsl that will display all of
+             the transactions performed on the account and make the above
+             balance a link to the account page.
+            -->
         </span>
     </xsl:template>
     <xsl:template match="flash">
