@@ -395,11 +395,11 @@ public final class TkAppTest {
     }
 
     /**
-     * Application can show error page.
+     * Application can show 'page not found' page.
      * @throws Exception If fails
      */
     @Test
-    public void showsErrorPage() throws Exception {
+    public void showsPageNotFound() throws Exception {
         final Base base = new MkBase();
         new FtRemote(new TkApp(base)).exec(
             new FtRemote.Script() {
@@ -410,7 +410,7 @@ public final class TkAppTest {
                         .fetch()
                         .as(RestResponse.class)
                         .assertStatus(HttpURLConnection.HTTP_OK)
-                        .assertBody(Matchers.startsWith("oops, something "));
+                        .assertBody(Matchers.startsWith("Page not found!"));
                 }
             }
         );

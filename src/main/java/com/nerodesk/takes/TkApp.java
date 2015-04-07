@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.takes.NotFoundException;
 import org.takes.Response;
 import org.takes.Take;
 import org.takes.facets.auth.PsByFlag;
@@ -179,13 +180,20 @@ public final class TkApp extends TkWrap {
             new Fallback() {
                 @Override
                 public Response act(final RqFallback req) {
-                    final String exc = ExceptionUtils.getStackTrace(
-                        req.throwable()
-                    );
-                    Logger.info(this, "Exception thrown\n%s", exc);
-                    return new RsHTML(
-                        String.format("oops, something went wrong!\n%s", exc)
-                    );
+                    if (NotFoundException.class.isInstance(req.throwable())) {
+                        return new RsNotFound();
+                    } else {
+                        final String exc = ExceptionUtils.getStackTrace(
+                            req.throwable()
+                        );
+                        Logger.info(this, "Exception thrown\n%s", exc);
+                        return new RsHTML(
+                            String.format(
+                                "oops, something went wrong!\n%s",
+                                exc
+                            )
+                        );
+                    }
                 }
             }
         );
