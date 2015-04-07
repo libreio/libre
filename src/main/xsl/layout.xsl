@@ -41,6 +41,9 @@
                 <xsl:apply-templates select="." mode="head"/>
             </head>
             <body>
+                <header>
+                    <img class="logo" src="/images/logo.png"/>
+                </header>
                 <nav role="navigation" class="menu">
                     <xsl:if test="not(identity)">
                         <span>

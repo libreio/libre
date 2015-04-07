@@ -30,26 +30,56 @@
 package com.nerodesk.takes;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
+import org.takes.rq.RqHeaders;
+import org.takes.rq.RqWrap;
 
 /**
- * Index.
+ * Extracts properties from Content-Disposition header.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.3.2
  */
-public final class TkIndex implements Take {
+public final class RqDisposition extends RqWrap {
+    /**
+     * Regex to get the filename from header.
+     */
+    private static final Pattern HEADER_FNAME = Pattern
+        .compile(".*filename=\"(.*)\";?.*");
 
-    @Override
-    public Response act(final Request req) throws IOException {
-        return new RsPage(
-            "/xsl/home.xsl",
-            req
-        );
+    /**
+     * The contents of Content-Disposition header.
+     */
+    private final transient String content;
+
+    /**
+     * Ctor.
+     * @param req Request.
+     * @throws IOException In case of error.
+     */
+    public RqDisposition(final Request req) throws IOException {
+        super(req);
+        this.content = new RqHeaders(req)
+            .header("Content-Disposition")
+            .iterator()
+            .next();
     }
 
+    /**
+     * Extracts the filename from Content-Disposition.
+     * @return The filename.
+     * @throws IOException If the filename header is not present.
+     */
+    public String filename() throws IOException {
+        final Matcher matcher = HEADER_FNAME.matcher(this.content);
+        if (!matcher.matches()) {
+            throw new IOException(
+                "filename isn't present in header"
+            );
+        }
+        return matcher.group(matcher.groupCount());
+    }
 }

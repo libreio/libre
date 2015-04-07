@@ -44,6 +44,9 @@ import org.takes.rq.RqMultipart;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
+ * @todo #151:30min This class should work with a batch of documents, not just
+ *  with a single document. Use the new interface Batch in place of the current
+ *  Doc interface.
  */
 final class TkWrite implements Take {
 
@@ -53,23 +56,16 @@ final class TkWrite implements Take {
     private final transient Doc doc;
 
     /**
-     * Request.
-     */
-    private final transient Request request;
-
-    /**
      * Ctor.
      * @param document Document
-     * @param req Request
      */
-    TkWrite(final Doc document, final Request req) {
+    TkWrite(final Doc document) {
         this.doc = document;
-        this.request = req;
     }
 
     @Override
-    public Response act() throws IOException {
-        final RqMultipart multi = new RqMultipart(this.request);
+    public Response act(final Request req) throws IOException {
+        final RqMultipart multi = new RqMultipart(req);
         this.doc.write(multi.part("file").iterator().next().body());
         return new RsForward(new RsFlash("file uploaded"));
     }

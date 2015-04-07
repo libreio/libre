@@ -27,29 +27,39 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.takes;
+package com.nerodesk.om.mock;
 
-import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
+import com.nerodesk.om.Batch;
+import com.nerodesk.om.Doc;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Index.
+ * Mock Document batch.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Felipe Pina (felipe.pina@protonmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.4
  */
-public final class TkIndex implements Take {
+public class MkBatch implements Batch {
+
+    /**
+     * Documents composing this batch.
+     */
+    private final transient List<Doc> docs;
+
+    /**
+     * Ctor.
+     * @param list Documents composing this batch.
+     */
+    public MkBatch(final Doc... list) {
+        this.docs = Arrays.asList(list);
+    }
 
     @Override
-    public Response act(final Request req) throws IOException {
-        return new RsPage(
-            "/xsl/home.xsl",
-            req
-        );
+    public final List<Doc> list() {
+        return Collections.unmodifiableList(this.docs);
     }
 
 }

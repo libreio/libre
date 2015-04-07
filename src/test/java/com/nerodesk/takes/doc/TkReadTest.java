@@ -35,6 +35,7 @@ import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
 
 /**
@@ -55,7 +56,7 @@ public final class TkReadTest {
         final Doc doc = new MkBase().user("urn:test:1").docs().doc("hey");
         doc.write(IOUtils.toInputStream("hello, world!"));
         MatcherAssert.assertThat(
-            new RsPrint(new TkRead(doc).act()).printBody(),
+            new RsPrint(new TkRead(doc).act(new RqFake())).printBody(),
             Matchers.endsWith("world!")
         );
     }

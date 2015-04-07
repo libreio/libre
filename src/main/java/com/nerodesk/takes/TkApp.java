@@ -29,26 +29,25 @@
  */
 package com.nerodesk.takes;
 
+import com.google.common.net.MediaType;
 import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import com.jcabi.manifests.Manifests;
 import com.nerodesk.om.Base;
-import com.nerodesk.takes.doc.TsDoc;
+import com.nerodesk.takes.doc.TkDoc;
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.takes.Request;
+import org.takes.Response;
 import org.takes.Take;
-import org.takes.Takes;
 import org.takes.facets.auth.PsByFlag;
 import org.takes.facets.auth.PsChain;
 import org.takes.facets.auth.PsCookie;
 import org.takes.facets.auth.PsFake;
 import org.takes.facets.auth.PsLogout;
-import org.takes.facets.auth.RqAuth;
-import org.takes.facets.auth.TsAuth;
-import org.takes.facets.auth.TsSecure;
+import org.takes.facets.auth.TkAuth;
+import org.takes.facets.auth.TkSecure;
 import org.takes.facets.auth.codecs.CcCompact;
 import org.takes.facets.auth.codecs.CcHex;
 import org.takes.facets.auth.codecs.CcSafe;
@@ -57,24 +56,23 @@ import org.takes.facets.auth.codecs.CcXOR;
 import org.takes.facets.auth.social.PsFacebook;
 import org.takes.facets.fallback.Fallback;
 import org.takes.facets.fallback.RqFallback;
-import org.takes.facets.fallback.TsFallback;
-import org.takes.facets.flash.TsFlash;
+import org.takes.facets.fallback.TkFallback;
+import org.takes.facets.flash.TkFlash;
 import org.takes.facets.fork.FkAnonymous;
 import org.takes.facets.fork.FkAuthenticated;
 import org.takes.facets.fork.FkFixed;
 import org.takes.facets.fork.FkHitRefresh;
 import org.takes.facets.fork.FkParams;
 import org.takes.facets.fork.FkRegex;
-import org.takes.facets.fork.Target;
-import org.takes.facets.fork.TsFork;
-import org.takes.tk.TkHTML;
+import org.takes.facets.fork.TkFork;
+import org.takes.rs.RsHTML;
+import org.takes.tk.TkClasspath;
+import org.takes.tk.TkFiles;
+import org.takes.tk.TkGreedy;
 import org.takes.tk.TkRedirect;
-import org.takes.ts.TsClasspath;
-import org.takes.ts.TsFiles;
-import org.takes.ts.TsGreedy;
-import org.takes.ts.TsVerbose;
-import org.takes.ts.TsWithType;
-import org.takes.ts.TsWrap;
+import org.takes.tk.TkVerbose;
+import org.takes.tk.TkWithType;
+import org.takes.tk.TkWrap;
 
 /**
  * App.
@@ -94,15 +92,15 @@ import org.takes.ts.TsWrap;
     "PMD.UseUtilityClass", "PMD.ExcessiveImports",
     "PMD.ExcessiveMethodLength"
 })
-public final class TsApp extends TsWrap {
+public final class TkApp extends TkWrap {
 
     /**
      * Ctor.
      * @param base Base
      * @throws IOException If something goes wrong.
      */
-    public TsApp(final Base base) throws IOException {
-        super(TsApp.make(base));
+    public TkApp(final Base base) throws IOException {
+        super(TkApp.make(base));
     }
 
     /**
@@ -112,8 +110,8 @@ public final class TsApp extends TsWrap {
      * @throws IOException If fails
      */
     @SuppressWarnings("PMD.DoNotUseThreads")
-    public static Takes make(final Base base) throws IOException {
-        final Takes fork = new TsFork(
+    public static Take make(final Base base) throws IOException {
+        final Take fork = new TkFork(
             new FkParams(
                 PsByFlag.class.getSimpleName(),
                 Pattern.compile(".+"),
@@ -121,12 +119,12 @@ public final class TsApp extends TsWrap {
             ),
             new FkRegex(
                 "/xsl/.*",
-                new TsWithType(new TsClasspath(), "text/xsl")
+                new TkWithType(new TkClasspath(), "text/xsl")
             ),
             new FkRegex(
                 "/css/.*",
-                new TsWithType(
-                    new TsFork(
+                new TkWithType(
+                    new TkFork(
                         new FkHitRefresh(
                             new File("./src/main/scss"),
                             new Runnable() {
@@ -141,67 +139,51 @@ public final class TsApp extends TsWrap {
                                     ).stdout();
                                 }
                             },
-                            new TsFiles("./target/classes")
+                            new TkFiles("./target/classes")
                         ),
-                        new FkFixed(new TsClasspath())
+                        new FkFixed(new TkClasspath())
                     ),
                     "text/css"
                 )
             ),
+            new FkRegex(
+                "/images/.*\\.png",
+                new TkWithType(new TkClasspath(), MediaType.PNG.toString())
+            ),
             new FkRegex("/robots.txt", ""),
             new FkRegex(
                 "/",
-                new TsFork(
-                    new FkAuthenticated(
-                        new Target<Request>() {
-                            @Override
-                            public Take route(final Request req)
-                                throws IOException {
-                                return new TkDocs(
-                                    base.user(
-                                        new RqAuth(req).identity().urn()
-                                    ),
-                                    req
-                                );
-                            }
-                        }
-                    ),
-                    new FkAnonymous(
-                        new Target<Request>() {
-                            @Override
-                            public Take route(final Request req) {
-                                return new TkIndex(req);
-                            }
-                        }
-                    )
+                new TkFork(
+                    new FkAuthenticated(new TkDocs(base)),
+                    new FkAnonymous(new TkIndex())
                 )
             ),
             new FkRegex(
                 "/doc/.*",
-                new TsSecure(new TsGreedy(new TsDoc(base)))
+                new TkSecure(new TkGreedy(new TkDoc(base)))
             )
         );
-        return TsApp.fallback(
-            new TsVerbose(new TsFlash(TsApp.auth(fork)))
+        return TkApp.fallback(
+            new TkVerbose(new TkFlash(TkApp.auth(fork)))
         );
     }
 
     /**
      * Fallback.
-     * @param takes Original takes
-     * @return Takes with fallback
+     * @param take Original take
+     * @return Take with fallback
      */
-    private static Takes fallback(final Takes takes) {
-        return new TsFallback(
-            takes,
+    private static Take fallback(final Take take) {
+        return new TkFallback(
+            take,
             new Fallback() {
                 @Override
-                public Take take(final RqFallback req) {
+                public Response act(final RqFallback req) {
                     final String exc = ExceptionUtils.getStackTrace(
                         req.throwable()
                     );
                     Logger.info(this, "Exception thrown\n%s", exc);
-                    return new TkHTML(
+                    return new RsHTML(
                         String.format("oops, something went wrong!\n%s", exc)
                     );
                 }
@@ -211,13 +193,13 @@ public final class TsApp extends TsWrap {
 
     /**
      * Authenticated.
-     * @param takes Takes
+     * @param take Take
      * @return Authenticated takes
      */
-    private static Takes auth(final Takes takes) {
+    private static Take auth(final Take take) {
         final String key = Manifests.read("Nerodesk-FacebookId");
-        return new TsAuth(
-            takes,
+        return new TkAuth(
+            take,
             new PsChain(
                 new PsFake(key.startsWith("XXXX") || key.startsWith("${")),
                 new PsByFlag(
