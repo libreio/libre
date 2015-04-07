@@ -63,8 +63,7 @@ public final class AwsUserTest {
     public void obtainsDocs() throws Exception {
         MatcherAssert.assertThat(
             new AwsUser(
-                new MkBucket(this.folder.newFile(), "1"),
-                "user1"
+                new MkBucket(this.folder.newFile(), "1"), "user1"
             ).docs(),
             Matchers.notNullValue()
         );
