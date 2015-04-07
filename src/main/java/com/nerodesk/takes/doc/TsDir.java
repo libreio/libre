@@ -38,11 +38,11 @@ import org.takes.facets.fork.TsFork;
 import org.takes.tk.TkEmpty;
 
 /**
- * Takes for a directories.
+ * Takes for a directory.
  *
  * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @version $Id$
- * @since 0.3
+ * @since 0.4
  */
 public final class TsDir implements Takes {
 

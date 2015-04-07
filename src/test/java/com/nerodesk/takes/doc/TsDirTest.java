@@ -39,7 +39,7 @@ import org.takes.rq.RqFake;
  *
  * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.4
  */
 public final class TsDirTest {
 
