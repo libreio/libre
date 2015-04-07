@@ -44,24 +44,11 @@ import org.takes.Take;
  */
 public final class TkIndex implements Take {
 
-    /**
-     * Request.
-     */
-    private final transient Request request;
-
-    /**
-     * Ctor.
-     * @param req Request
-     */
-    public TkIndex(final Request req) {
-        this.request = req;
-    }
-
     @Override
-    public Response act() throws IOException {
+    public Response act(final Request req) throws IOException {
         return new RsPage(
             "/xsl/home.xsl",
-            this.request
+            req
         );
     }
 

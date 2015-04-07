@@ -59,8 +59,7 @@ public final class TkWriteTest {
         final String file = "hey.txt";
         MatcherAssert.assertThat(
             new RsPrint(
-                new TkWrite(
-                    docs.doc(file),
+                new TkWrite(docs.doc(file)).act(
                     new RqWithHeader(
                         new RqFake(
                             "POST", "/",
@@ -79,7 +78,7 @@ public final class TkWriteTest {
                         ),
                         "Content-Type: multipart/form-data; boundary=AaB03x"
                     )
-                ).act()
+                )
             ).print(),
             Matchers.startsWith("HTTP/1.1 303 See Other")
         );

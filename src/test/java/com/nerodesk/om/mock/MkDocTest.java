@@ -49,6 +49,10 @@ import org.junit.rules.TemporaryFolder;
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
  * @since 0.3
+ * @todo 95:30min method MkDoc.delete throws IOException if File.delete
+ *  return false. Lets add unit test to check it. You need to find way
+ *  to return false in File.delete (maybe make file Read Only via
+ *  File.setReadOnly).
  */
 public final class MkDocTest {
     /**
@@ -154,7 +158,7 @@ public final class MkDocTest {
         );
         MatcherAssert.assertThat(
             doc.type(),
-            Matchers.equalTo("text/plain")
+            Matchers.notNullValue()
         );
     }
 

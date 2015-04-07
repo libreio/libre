@@ -27,53 +27,23 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.takes.doc;
+package com.nerodesk.om;
 
-import com.nerodesk.om.Base;
-import com.nerodesk.om.Doc;
-import com.nerodesk.om.Docs;
-import com.nerodesk.om.mock.MkBase;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
-import org.takes.rq.RqFake;
-import org.takes.rs.RsPrint;
+import java.util.List;
 
 /**
- * Test case for {@link TkAddFriend}.
+ * Document batch.
  *
- * @author Carlos Miranda (miranda.cma@gmail.com)
+ * @author Felipe Pina (felipe.pina@protonmail.com)
  * @version $Id$
  * @since 0.4
  */
-public final class TkAddFriendTest {
+public interface Batch {
 
     /**
-     * TkAddFriend can add a friend.
-     * @throws Exception If fails.
-     * @todo #144:15min We should add an assertion where we will check if the
-     *  added friend is in fact present in doc.friends(). However, class
-     *  MkFriends is not yet implemented, so it returns nothing. When it is
-     *  implemented let's add that assertion to make this test more robust and
-     *  comprehensive.
+     * List of documents.
+     * @return List of documents.
      */
-    @Test
-    public void addsFriend() throws Exception {
-        final Base base = new MkBase();
-        final Docs docs = base.user("urn:test:1").docs();
-        final Doc doc = docs.doc("hey");
-        MatcherAssert.assertThat(
-            new RsPrint(
-                new TkAddFriend(doc).act(
-                    new RqFake(
-                        "POST",
-                        "/",
-                        "friend=Jeffrey+Lebowski"
-                    )
-                )
-            ).print(),
-            Matchers.containsString("document+shared")
-        );
-    }
+    List<Doc> list();
 
 }
