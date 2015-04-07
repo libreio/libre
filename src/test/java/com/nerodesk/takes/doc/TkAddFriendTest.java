@@ -36,6 +36,7 @@ import com.nerodesk.om.mock.MkBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
 
 /**
@@ -55,13 +56,21 @@ public final class TkAddFriendTest {
     public void addsFriend() throws Exception {
         final Docs docs = new MkBase().user("urn:test:1").docs();
         final Doc doc = docs.doc("hey");
-        final String friend = "urn:test:2";
+        final String friend = "The Dude";
         MatcherAssert.assertThat(
             Lists.newArrayList(doc.friends().names()),
             Matchers.not(Matchers.hasItem(friend))
         );
         MatcherAssert.assertThat(
-            new RsPrint(new TkAddFriend(doc, friend).act()).print(),
+            new RsPrint(
+                new TkAddFriend(doc).act(
+                    new RqFake(
+                        "POST",
+                        "/",
+                        String.format("friend=%s", friend)
+                    )
+                )
+            ).print(),
             Matchers.containsString("document+shared")
         );
         MatcherAssert.assertThat(

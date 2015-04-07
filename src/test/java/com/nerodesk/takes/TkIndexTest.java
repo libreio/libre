@@ -52,7 +52,7 @@ public final class TkIndexTest {
     @Test
     public void returnsXml() throws Exception {
         MatcherAssert.assertThat(
-            new RsPrint(new TkIndex(new RqFake()).act()).printBody(),
+            new RsPrint(new TkIndex().act(new RqFake())).printBody(),
             XhtmlMatchers.hasXPath("/page/millis")
         );
     }
@@ -65,9 +65,9 @@ public final class TkIndexTest {
     public void returnsHtml() throws Exception {
         MatcherAssert.assertThat(
             new RsPrint(
-                new TkIndex(
+                new TkIndex().act(
                     new RqWithHeader(new RqFake(), "Accept: text/html")
-                ).act()
+                )
             ).printBody(),
             XhtmlMatchers.hasXPath("/xhtml:html")
         );

@@ -27,28 +27,37 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.takes;
+package com.nerodesk.om.mock;
 
-import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
+import com.nerodesk.om.Doc;
+import java.util.Arrays;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
- * Index.
+ * Tests for {@link MkBatch}.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Felipe Pina (felipe.pina@protonmail.com)
  * @version $Id$
- * @since 0.1
+ * @since 0.4
  */
-public final class TkIndex implements Take {
+public final class MkBatchTest {
 
-    @Override
-    public Response act(final Request req) throws IOException {
-        return new RsPage(
-            "/xsl/home.xsl",
-            req
+    /**
+     * MkBatch can accept multiple documents.
+     */
+    @Test
+    public void acceptsMultipleDocs() {
+        final Doc[] docs = {
+            Mockito.mock(Doc.class),
+            Mockito.mock(Doc.class),
+            Mockito.mock(Doc.class),
+        };
+        MatcherAssert.assertThat(
+            new MkBatch(docs).list(),
+            Matchers.equalTo(Arrays.asList(docs))
         );
     }
 
