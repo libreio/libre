@@ -38,42 +38,61 @@
         </title>
     </xsl:template>
     <xsl:template match="page" mode="body">
-        <p>
-            <xsl:text>My docs:</xsl:text>
-        </p>
+        <h2>
+            <xsl:text>My Documents</xsl:text>
+        </h2>
         <form method="post" action="{links/link[@rel='upload']/@href}"
             enctype="multipart/form-data">
             <input name="file" type="file"/>
-            <input name="upload" type="submit"/>
+            <button type="submit">Upload</button>
         </form>
         <xsl:apply-templates select="docs"/>
     </xsl:template>
     <xsl:template match="docs[doc]">
-        <ul>
-            <xsl:apply-templates select="doc"/>
-        </ul>
+        <table>
+            <thead>
+                <tr>
+                    <td><xsl:text>Name</xsl:text></td>
+                    <td><xsl:text>Size</xsl:text></td>
+                    <td><xsl:text>Created</xsl:text></td>
+                    <td><xsl:text>Types</xsl:text></td>
+                    <td><xsl:text>Options</xsl:text></td>
+                    <td><xsl:text>Friends</xsl:text></td>
+                </tr>
+            </thead>
+            <tbody>
+                <xsl:apply-templates select="doc"/>
+            </tbody>
+        </table>
     </xsl:template>
     <xsl:template match="doc">
-        <li>
-            <xsl:value-of select="name"/>
-            <xsl:text>, </xsl:text>
-            <xsl:value-of select="size"/>
-            <xsl:text> bytes, </xsl:text>
-            <!--
-            @todo #101:30min Creation date of document should be displayed using
-             ISO_8601 combined date time and timezone
-             (e.g. 2007-04-05T12:30-02:00). Right now it is just a unix
-             timestamp.
-            -->
-            <xsl:value-of select="created"/>
-            <xsl:text>, </xsl:text>
-            <xsl:value-of select="type"/>
-            <xsl:text> </xsl:text>
-            <a href="{read}">read</a>
-            <xsl:text> | </xsl:text>
-            <a href="{delete}">delete</a>
-            <xsl:apply-templates select="friends"/>
-        </li>
+        <tr>
+            <td><xsl:value-of select="name"/></td>
+            <td>
+                <xsl:value-of select="size"/>
+                <xsl:text> bytes</xsl:text>
+            </td>
+            <td>
+                <!--
+                @todo #101:30min Creation date of document should be displayed using
+                 ISO_8601 combined date time and timezone
+                 (e.g. 2007-04-05T12:30-02:00). Right now it is just a unix
+                 timestamp.
+                -->
+                <xsl:value-of select="created"/>
+            </td>
+            <td>
+                <xsl:value-of select="type"/>
+            </td>
+            <td>
+                <a href="{read}">read</a>
+                <xsl:text> | </xsl:text>
+                <a href="{delete}">delete</a>
+            </td>
+            <td>
+                <xsl:apply-templates select="friends"/>
+            </td>
+        </tr>
     </xsl:template>
     <xsl:template match="friends">
         <ul>
