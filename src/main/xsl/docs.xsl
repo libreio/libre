@@ -43,59 +43,77 @@
             <input name="create" type="submit"/>
         </form>
         <hr/>
-        <p>
-            <xsl:text>My docs:</xsl:text>
-        </p>
+        <h2>
+            <xsl:text>My Documents</xsl:text>
+        </h2>
         <form method="post" action="{links/link[@rel='upload']/@href}"
             enctype="multipart/form-data">
             <input name="file" type="file"/>
-            <input name="upload" type="submit"/>
+            <button type="submit">Upload</button>
         </form>
         <xsl:apply-templates select="docs"/>
+        <p>
+            <xsl:text>
+                At the moment maximum document size is 10Mb.
+                The system is still in beta testing mode,
+                please excuse minor defects.
+            </xsl:text>
+        </p>
     </xsl:template>
     <xsl:template match="docs[doc]">
-        <ul>
-            <xsl:apply-templates select="doc"/>
-        </ul>
+        <table style="width:100%">
+            <thead>
+                <tr>
+                    <th><xsl:text>File</xsl:text></th>
+                    <th><xsl:text>Options</xsl:text></th>
+                    <th><xsl:text>Friends</xsl:text></th>
+                </tr>
+            </thead>
+            <tbody>
+                <xsl:apply-templates select="doc"/>
+            </tbody>
+        </table>
     </xsl:template>
     <xsl:template match="doc">
-        <li>
-            <xsl:value-of select="name"/>
-            <xsl:text>, </xsl:text>
-            <xsl:value-of select="size"/>
-            <xsl:text> bytes, </xsl:text>
-            <!--
-            @todo #101:30min Creation date of document should be displayed using
-             ISO_8601 combined date time and timezone
-             (e.g. 2007-04-05T12:30-02:00). Right now it is just a unix
-             timestamp.
-            -->
-            <xsl:value-of select="created"/>
-            <xsl:text>, </xsl:text>
-            <xsl:value-of select="type"/>
-            <xsl:text> </xsl:text>
-            <a href="{read}">read</a>
-            <xsl:text> | </xsl:text>
-            <a href="{delete}">delete</a>
-            <xsl:apply-templates select="friends"/>
-        </li>
+        <tr>
+            <td>
+                <a href="{read}" style="display:block">
+                    <xsl:value-of select="name"/>
+                </a>
+                <small>
+                    <xsl:value-of select="size"/>
+                    <xsl:text> bytes, </xsl:text>
+                    <xsl:text>created on </xsl:text>
+                    <!--
+                    @todo #101:30min Creation date of document should be displayed using
+                     ISO_8601 combined date time and timezone
+                     (e.g. 2007-04-05T12:30-02:00). Right now it is just a unix
+                     timestamp.
+                    -->
+                    <xsl:value-of select="created"/>
+                </small>
+            </td>
+            <td>
+                <a href="{delete}">delete</a>
+            </td>
+            <td>
+                <xsl:apply-templates select="friends"/>
+            </td>
+        </tr>
     </xsl:template>
     <xsl:template match="friends">
-        <ul>
-            <xsl:apply-templates select="friend"/>
-            <li>
-                <form action="{../add-friend}" method="post">
-                    <input name="friend" placeholder="share with..."/>
-                    <input type="submit"/>
-                </form>
-            </li>
-        </ul>
+        <xsl:apply-templates select="friend"/>
+        <form action="{../add-friend}" method="post">
+            <input name="friend" type="text" placeholder="email"/>
+            <button>Share</button>
+        </form>
     </xsl:template>
     <xsl:template match="friend">
-        <li>
+        <span>
             <xsl:value-of select="name"/>
-            <xsl:text> </xsl:text>
-            <a href="{eject}">eject</a>
-        </li>
+            <xsl:text> (</xsl:text>
+            <a href="{eject}">stop</a>
+            <xsl:text>) </xsl:text>
+        </span>
     </xsl:template>
 </xsl:stylesheet>

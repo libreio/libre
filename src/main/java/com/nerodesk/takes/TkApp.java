@@ -84,6 +84,7 @@ import org.takes.tk.TkWrap;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle ClassFanOutComplexityCheck (500 lines)
  * @checkstyle ExcessiveMethodLength (500 lines)
+ * @checkstyle MultipleStringLiteralsCheck (500 lines)
  * @todo #68:30min Error page should be an HTML page with stacktrace.
  *  See how it's done in Rultor (com.rultor.web.App.fallback).
  *  This implies adding velocity template and some styles.
@@ -119,11 +120,31 @@ public final class TkApp extends TkWrap {
                 new TkRedirect()
             ),
             new FkRegex(
-                "/xsl/.*",
-                new TkWithType(new TkClasspath(), "text/xsl")
+                "/xsl/[a-z]+\\.xsl",
+                new TkWithType(
+                    new TkFork(
+                        new FkHitRefresh(
+                            new File("./src/main/xsl"),
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    new VerboseProcess(
+                                        new ProcessBuilder(
+                                            "mvn",
+                                            "htmlcompressor:xml"
+                                        )
+                                    ).stdout();
+                                }
+                            },
+                            new TkFiles("./target/classes")
+                        ),
+                        new FkFixed(new TkClasspath())
+                    ),
+                    "text/xsl"
+                )
             ),
             new FkRegex(
-                "/css/.*",
+                "/css/[a-z]+\\.css",
                 new TkWithType(
                     new TkFork(
                         new FkHitRefresh(
@@ -148,7 +169,7 @@ public final class TkApp extends TkWrap {
                 )
             ),
             new FkRegex(
-                "/images/.*\\.png",
+                "/images/[a-z]+\\.png",
                 new TkWithType(new TkClasspath(), MediaType.PNG.toString())
             ),
             new FkRegex("/robots.txt", ""),
