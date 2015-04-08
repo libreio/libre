@@ -59,9 +59,9 @@
         <table style="width:100%">
             <thead>
                 <tr>
-                    <td><xsl:text>File</xsl:text></td>
-                    <td><xsl:text>Options</xsl:text></td>
-                    <td><xsl:text>Friends</xsl:text></td>
+                    <th><xsl:text>File</xsl:text></th>
+                    <th><xsl:text>Options</xsl:text></th>
+                    <th><xsl:text>Friends</xsl:text></th>
                 </tr>
             </thead>
             <tbody>
