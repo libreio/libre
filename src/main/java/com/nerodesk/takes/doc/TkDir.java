@@ -47,9 +47,9 @@ import org.takes.tk.TkEmpty;
 public final class TkDir implements Take {
 
     // @todo #150:30min This is initial implementation and is not
-    //   doing anything useful yet. We should implement ability to create
-    //   directories here. Moreover there should be also way to edit them,
-    //   remove and attach existing documents.
+    //  doing anything useful yet. We should implement ability to create
+    //  directories here. Moreover there should be also way to edit them,
+    //  remove and attach existing documents.
     @Override
     public Response act(final Request req) throws IOException {
         return new TkFork(
