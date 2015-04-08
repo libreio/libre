@@ -47,15 +47,19 @@
             <button type="submit">Upload</button>
         </form>
         <xsl:apply-templates select="docs"/>
+        <p>
+            <xsl:text>
+                At the moment maximum document size is 10Mb.
+                The system is still in beta testing mode,
+                please excuse minor defects.
+            </xsl:text>
+        </p>
     </xsl:template>
     <xsl:template match="docs[doc]">
         <table>
             <thead>
                 <tr>
-                    <td><xsl:text>Name</xsl:text></td>
-                    <td><xsl:text>Size</xsl:text></td>
-                    <td><xsl:text>Created</xsl:text></td>
-                    <td><xsl:text>Types</xsl:text></td>
+                    <td><xsl:text>File</xsl:text></td>
                     <td><xsl:text>Options</xsl:text></td>
                     <td><xsl:text>Friends</xsl:text></td>
                 </tr>
@@ -67,26 +71,28 @@
     </xsl:template>
     <xsl:template match="doc">
         <tr>
-            <td><xsl:value-of select="name"/></td>
             <td>
-                <xsl:value-of select="size"/>
-                <xsl:text> bytes</xsl:text>
+                <a href="{read}">
+                    <xsl:value-of select="name"/>
+                </a>
+                <br/>
+                <small>
+                    <xsl:value-of select="size"/>
+                    <xsl:text> bytes</xsl:text>
+                </small>
+                <br/>
+                <small>
+                    <xsl:text>Create on </xsl:text>
+                    <!--
+                    @todo #101:30min Creation date of document should be displayed using
+                     ISO_8601 combined date time and timezone
+                     (e.g. 2007-04-05T12:30-02:00). Right now it is just a unix
+                     timestamp.
+                    -->
+                    <xsl:value-of select="created"/>
+                </small>
             </td>
             <td>
-                <!--
-                @todo #101:30min Creation date of document should be displayed using
-                 ISO_8601 combined date time and timezone
-                 (e.g. 2007-04-05T12:30-02:00). Right now it is just a unix
-                 timestamp.
-                -->
-                <xsl:value-of select="created"/>
-            </td>
-            <td>
-                <xsl:value-of select="type"/>
-            </td>
-            <td>
-                <a href="{read}">read</a>
-                <xsl:text> | </xsl:text>
                 <a href="{delete}">delete</a>
             </td>
             <td>
@@ -95,21 +101,18 @@
         </tr>
     </xsl:template>
     <xsl:template match="friends">
-        <ul>
-            <xsl:apply-templates select="friend"/>
-            <li>
-                <form action="{../add-friend}" method="post">
-                    <input name="friend" placeholder="share with..."/>
-                    <input type="submit"/>
-                </form>
-            </li>
-        </ul>
+        <xsl:apply-templates select="friend"/>
+        <form action="{../add-friend}" method="post">
+            <input name="friend" type="text" placeholder="email"/>
+            <button>Share</button>
+        </form>
     </xsl:template>
     <xsl:template match="friend">
-        <li>
+        <span>
             <xsl:value-of select="name"/>
-            <xsl:text> </xsl:text>
-            <a href="{eject}">eject</a>
-        </li>
+            <xsl:text> (</xsl:text>
+            <a href="{eject}">stop</a>
+            <xsl:text>) </xsl:text>
+        </span>
     </xsl:template>
 </xsl:stylesheet>
