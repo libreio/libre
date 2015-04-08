@@ -56,7 +56,7 @@
         </p>
     </xsl:template>
     <xsl:template match="docs[doc]">
-        <table>
+        <table style="width:100%">
             <thead>
                 <tr>
                     <td><xsl:text>File</xsl:text></td>
@@ -72,17 +72,13 @@
     <xsl:template match="doc">
         <tr>
             <td>
-                <a href="{read}">
+                <a href="{read}" style="display:block">
                     <xsl:value-of select="name"/>
                 </a>
-                <br/>
                 <small>
                     <xsl:value-of select="size"/>
-                    <xsl:text> bytes</xsl:text>
-                </small>
-                <br/>
-                <small>
-                    <xsl:text>Create on </xsl:text>
+                    <xsl:text> bytes, </xsl:text>
+                    <xsl:text>created on </xsl:text>
                     <!--
                     @todo #101:30min Creation date of document should be displayed using
                      ISO_8601 combined date time and timezone
