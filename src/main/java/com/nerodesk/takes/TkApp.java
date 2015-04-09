@@ -30,7 +30,6 @@
 package com.nerodesk.takes;
 
 import com.google.common.net.MediaType;
-import com.jcabi.log.Logger;
 import com.jcabi.log.VerboseProcess;
 import com.jcabi.manifests.Manifests;
 import com.nerodesk.om.Base;
@@ -38,11 +37,7 @@ import com.nerodesk.takes.doc.TkDir;
 import com.nerodesk.takes.doc.TkDoc;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.regex.Pattern;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.takes.Response;
 import org.takes.Take;
 import org.takes.facets.auth.PsByFlag;
 import org.takes.facets.auth.PsChain;
@@ -57,10 +52,8 @@ import org.takes.facets.auth.codecs.CcSafe;
 import org.takes.facets.auth.codecs.CcSalted;
 import org.takes.facets.auth.codecs.CcXOR;
 import org.takes.facets.auth.social.PsFacebook;
-import org.takes.facets.fallback.Fallback;
 import org.takes.facets.fallback.FbChain;
 import org.takes.facets.fallback.FbStatus;
-import org.takes.facets.fallback.RqFallback;
 import org.takes.facets.fallback.TkFallback;
 import org.takes.facets.flash.TkFlash;
 import org.takes.facets.fork.FkAnonymous;
@@ -70,7 +63,6 @@ import org.takes.facets.fork.FkHitRefresh;
 import org.takes.facets.fork.FkParams;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkFork;
-import org.takes.rs.RsHTML;
 import org.takes.tk.TkClasspath;
 import org.takes.tk.TkFiles;
 import org.takes.tk.TkFixed;
@@ -210,25 +202,7 @@ public final class TkApp extends TkWrap {
             new FbChain(
                 // @checkstyle MagicNumberCheck (1 line)
                 new FbStatus(404, new TkFixed(new RsNotFound())),
-                new Fallback() {
-                    @Override
-                    public Iterator<Response> route(final RqFallback req) {
-                        final String exc = ExceptionUtils.getStackTrace(
-                            req.throwable()
-                        );
-                        Logger.info(this, "Exception thrown\n%s", exc);
-                        return Collections.singleton(
-                            Response.class.cast(
-                                new RsHTML(
-                                    String.format(
-                                        "oops, something went wrong!\n%s",
-                                        exc
-                                    )
-                                )
-                            )
-                        ).iterator();
-                    }
-                }
+                new FbError()
             )
         );
     }
