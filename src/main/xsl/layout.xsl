@@ -34,38 +34,73 @@
         <html lang="en">
             <head>
                 <meta charset="UTF-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <meta name="description" content="nerodesk"/>
                 <meta name="keywords" content="cloud file storage"/>
                 <meta name="author" content="nerodesk.com"/>
+                <link rel="stylesheet" type="text/css" media="all" href="//yegor256.github.io/tacit/tacit-0.1.1.min.css"/>
                 <link rel="stylesheet" type="text/css" media="all" href="/css/main.css?{version/revision}"/>
                 <xsl:apply-templates select="." mode="head"/>
             </head>
             <body>
-                <header>
-                    <img class="logo" src="/images/logo.png"/>
-                </header>
-                <nav role="navigation" class="menu">
-                    <xsl:if test="not(identity)">
-                        <span>
-                            <a href="{links/link[@rel='takes:facebook']/@href}" title="login via Facebook">
-                                <xsl:text>login</xsl:text>
-                            </a>
-                        </span>
-                    </xsl:if>
-                    <xsl:apply-templates select="identity"/>
-                    <xsl:apply-templates select="version"/>
-                    <xsl:apply-templates select="user"/>
-                    <xsl:apply-templates select="flash"/>
-                </nav>
-                <xsl:apply-templates select="." mode="body"/>
+                <section>
+                    <header>
+                        <nav>
+                            <ul>
+                                <li>
+                                    <img style="width:192px;height:42px;" src="/images/logo.png"/>
+                                </li>
+                            </ul>
+                        </nav>
+                        <nav role="navigation" class="navbar navbar-center">
+                            <ul>
+                                <xsl:if test="not(identity)">
+                                    <li>
+                                        <a href="{links/link[@rel='takes:facebook']/@href}" title="login via Facebook">
+                                            <xsl:text>login</xsl:text>
+                                        </a>
+                                    </li>
+                                </xsl:if>
+                                <xsl:apply-templates select="identity"/>
+                                <xsl:apply-templates select="user"/>
+                                <xsl:apply-templates select="flash"/>
+                                <li title="total amount of bytes stored in your account">
+                                    <!-- @todo #102:30min This value is hardcoded for now but should be connected to Docs.size() value and present total amount of bytes in user friendly form stored in account. -->
+                                    <xsl:text>[47 mb]</xsl:text>
+                                </li>
+                            </ul>
+                        </nav>
+                    </header>
+                    <article>
+                        <xsl:apply-templates select="." mode="body"/>
+                    </article>
+                    <footer>
+                        <nav>
+                            <ul>
+                                <li>
+                                    <xsl:text>&#169; Nerodesk.com, 2015</xsl:text>
+                                </li>
+                                <li>
+                                    <xsl:text>Source code is open at </xsl:text>
+                                    <a href="https://github.com/teamed/nerodesk">Github</a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <nav>
+                            <ul>
+                                <xsl:apply-templates select="version"/>
+                            </ul>
+                        </nav>
+                    </footer>
+                </section>
             </body>
         </html>
     </xsl:template>
     <xsl:template match="version">
-        <span title="currently deployed version is {name}">
-            <xsl:value-of select="name"/>
-        </span>
-        <span title="server time to build this page">
+        <li title="currently deployed version is {name}">
+            <small><xsl:value-of select="name"/></small>
+        </li>
+        <li title="server time to build this page">
             <xsl:attribute name="style">
                 <xsl:text>color:</xsl:text>
                 <xsl:choose>
@@ -80,11 +115,13 @@
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:attribute>
-            <xsl:call-template name="millis">
-                <xsl:with-param name="millis" select="/page/millis"/>
-            </xsl:call-template>
-        </span>
-        <span title="server load average">
+            <small>
+                <xsl:call-template name="millis">
+                    <xsl:with-param name="millis" select="/page/millis"/>
+                </xsl:call-template>
+            </small>
+        </li>
+        <li title="server load average">
             <xsl:attribute name="style">
                 <xsl:text>color:</xsl:text>
                 <xsl:choose>
@@ -99,15 +136,11 @@
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:attribute>
-            <xsl:value-of select="/page/@sla"/>
-        </span>
-        <span title="total amount of bytes stored in your account">
-            <!-- @todo #102:30min This value is hardcoded for now but should be connected to Docs.size() value and present total amount of bytes in user friendly form stored in account. -->
-            <xsl:text>[47 mb]</xsl:text>
-        </span>
+            <small><xsl:value-of select="/page/@sla"/></small>
+        </li>
     </xsl:template>
     <xsl:template match="user">
-        <span title="current user balance">
+        <li title="current user balance">
             <xsl:text>$</xsl:text>
             <xsl:value-of select="format-number(balance div 100, '0.00')"/>
             <!--
@@ -115,7 +148,7 @@
              the transactions performed on the account and make the above
              balance a link to the account page.
             -->
-        </span>
+        </li>
     </xsl:template>
     <xsl:template match="flash">
         <div>
@@ -147,19 +180,19 @@
         </div>
     </xsl:template>
     <xsl:template match="identity[urn!='urn:test:1']">
-        <span title="Facebook account logged in: {urn}">
+        <li title="Facebook account logged in: {urn}">
             <xsl:value-of select="name"/>
-        </span>
-        <span>
+        </li>
+        <li>
             <a title="log out" href="{/page/links/link[@rel='takes:logout']/@href}">
                 <xsl:text>logout</xsl:text>
             </a>
-        </span>
+        </li>
     </xsl:template>
     <xsl:template match="identity[urn='urn:test:1']">
-        <span>
+        <li>
             <xsl:text>tester</xsl:text>
-        </span>
+        </li>
     </xsl:template>
     <xsl:template name="millis">
         <xsl:param name="millis"/>

@@ -27,55 +27,31 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.aws;
+package com.nerodesk.takes.doc;
 
-import com.jcabi.s3.mock.MkBucket;
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.takes.rq.RqFake;
 
 /**
- * Tests for {@link AwsUser}.
+ * Tests for {@code TsDir}.
  *
- * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
- * @author Carlos Alexandro Becker (caarlos0@gmail.com)
+ * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @version $Id$
- * @since 0.3
+ * @since 0.4
  */
-public final class AwsUserTest {
+public final class TkDirTest {
 
     /**
-     * Temporary folder.
-     * @checkstyle VisibilityModifierCheck (3 lines)
-     */
-    @Rule
-    public final transient TemporaryFolder folder = new TemporaryFolder();
-
-    /**
-     * AwsUser can obtain its user documents.
-     * @throws Exception in case of error.
+     * TsDir can return Take.
+     * @throws Exception If fails.
      */
     @Test
-    public void obtainsDocs() throws Exception {
+    public void returnsTake() throws Exception {
         MatcherAssert.assertThat(
-            new AwsUser(
-                new MkBucket(this.folder.newFile(), "1"), "user1"
-            ).docs(),
+            new TkDir().act(new RqFake("POST", "/dir/create")),
             Matchers.notNullValue()
         );
-    }
-
-    /**
-     * AwsUser conforms to equals and hashCode contract.
-     */
-    @Test
-    public void conformsToEqualsHashCodeContract() {
-        EqualsVerifier.forClass(AwsUser.class)
-            .suppress(Warning.TRANSIENT_FIELDS)
-            .verify();
     }
 }

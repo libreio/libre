@@ -80,7 +80,8 @@ public final class TkDocs implements Take {
                 public Iterable<Directive> toXembly() throws IOException {
                     return TkDocs.this.list(user, req);
                 }
-            }
+            },
+            new XeLink("mkdir", "/dir/create")
         );
     }
 

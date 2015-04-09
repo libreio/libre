@@ -27,55 +27,29 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.aws;
+package com.nerodesk.om;
 
-import com.jcabi.s3.mock.MkBucket;
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Rule;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 /**
- * Tests for {@link AwsUser}.
+ * Tests for {@code ThresholdInputStream}.
  *
- * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
- * @author Carlos Alexandro Becker (caarlos0@gmail.com)
+ * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @version $Id$
- * @since 0.3
+ * @since 0.4
  */
-public final class AwsUserTest {
+public final class ThresholdInputStreamTest {
 
     /**
-     * Temporary folder.
-     * @checkstyle VisibilityModifierCheck (3 lines)
+     * ThresholdInputStream can throw LimitReachedException exception.
+     * @throws java.io.IOException In case of error
      */
-    @Rule
-    public final transient TemporaryFolder folder = new TemporaryFolder();
-
-    /**
-     * AwsUser can obtain its user documents.
-     * @throws Exception in case of error.
-     */
-    @Test
-    public void obtainsDocs() throws Exception {
-        MatcherAssert.assertThat(
-            new AwsUser(
-                new MkBucket(this.folder.newFile(), "1"), "user1"
-            ).docs(),
-            Matchers.notNullValue()
-        );
-    }
-
-    /**
-     * AwsUser conforms to equals and hashCode contract.
-     */
-    @Test
-    public void conformsToEqualsHashCodeContract() {
-        EqualsVerifier.forClass(AwsUser.class)
-            .suppress(Warning.TRANSIENT_FIELDS)
-            .verify();
+    @Test(expected = ThresholdInputStream.LimitReachedException.class)
+    public void throwsLimitReachedException() throws IOException {
+        new ThresholdInputStream(
+            new ByteArrayInputStream("testcase".getBytes()), 0
+        ).read();
     }
 }
