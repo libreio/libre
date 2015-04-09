@@ -182,10 +182,11 @@ public final class TkApp extends TkWrap {
         return new TkFallback(
             take,
             new FbChain(
+                // @checkstyle MagicNumberCheck (1 line)
                 new FbStatus(404, new TkFixed(new RsNotFound())),
                 new Fallback() {
                     @Override
-                    public Iterator<Response> route(final RqFallback req) throws IOException {
+                    public Iterator<Response> route(final RqFallback req) {
                         final String exc = ExceptionUtils.getStackTrace(
                             req.throwable()
                         );
