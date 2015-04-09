@@ -81,17 +81,18 @@ public final class TsDoc implements Takes {
         final Doc doc = this.base.user(
             new RqAuth(req).identity().urn()
         ).docs().doc(file);
+        final String friend = "friend";
         return new TsFork(
             new FkRegex("/doc/read", new TkRead(doc)),
             new FkRegex("/doc/delete", new TkDelete(doc)),
             new FkRegex("/doc/write", new TkWrite(doc, req)),
             new FkRegex(
                 "/doc/add-friend",
-                new TkAddFriend(doc, new RqForm(req).param("friend"))
+                new TkAddFriend(doc, new RqForm(req).param(friend))
             ),
             new FkRegex(
                 "/doc/eject-friend",
-                new TkEjectFriend(doc, href.param("friend"))
+                new TkEjectFriend(doc, href.param(friend))
             )
         ).route(req);
     }
