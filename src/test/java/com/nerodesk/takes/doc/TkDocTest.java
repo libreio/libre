@@ -41,70 +41,70 @@ import org.takes.facets.auth.codecs.CcPlain;
 import org.takes.rq.RqFake;
 
 /**
- * Tests for {@link TsDoc}.
+ * Tests for {@link TkDoc}.
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
  */
-public final class TsDocTest {
+public final class TkDocTest {
     /**
-     * TsDoc can route to file reading.
+     * TkDoc can route to file reading.
      * @throws Exception If something goes wrong
      */
     @Test
     public void routesToFileReading() throws Exception {
         MatcherAssert.assertThat(
-            new TsDoc(new MkBase()).route(this.request("/doc/read?file=name")),
+            new TkDoc(new MkBase()).act(this.request("/doc/read?file=name")),
             Matchers.instanceOf(TkRead.class)
         );
     }
 
     /**
-     * TsDoc can route to file removal.
+     * TkDoc can route to file removal.
      * @throws Exception If something goes wrong
      */
     @Test
     public void routesToFileRemoval() throws Exception {
         MatcherAssert.assertThat(
-            new TsDoc(new MkBase())
-                .route(this.request("/doc/delete?file=name")),
+            new TkDoc(new MkBase())
+                .act(this.request("/doc/delete?file=name")),
             Matchers.instanceOf(TkDelete.class)
         );
     }
 
     /**
-     * TsDoc can route to file writing.
+     * TkDoc can route to file writing.
      * @throws Exception If something goes wrong
      */
     @Test
     public void routesToFileWriting() throws Exception {
         MatcherAssert.assertThat(
-            new TsDoc(new MkBase()).route(this.request("/doc/write?file=name")),
+            new TkDoc(new MkBase()).act(this.request("/doc/write?file=name")),
             Matchers.instanceOf(TkWrite.class)
         );
     }
 
     /**
-     * TsDoc can route to friend addition.
+     * TkDoc can route to friend addition.
      * @throws Exception If something goes wrong
      */
     @Test
     public void routesToFriendAddition() throws Exception {
         MatcherAssert.assertThat(
-            new TsDoc(new MkBase())
-                .route(this.request("/doc/add-friend?file=name")),
+            new TkDoc(new MkBase())
+                .act(this.request("/doc/add-friend?file=name")),
             Matchers.instanceOf(TkAddFriend.class)
         );
     }
 
     /**
-     * TsDoc can route to friend ejection.
+     * TkDoc can route to friend ejection.
      * @throws Exception If something goes wrong
      */
     @Test
     public void routesToFriendEjection() throws Exception {
         MatcherAssert.assertThat(
-            new TsDoc(new MkBase())
-                .route(this.request("/doc/eject-friend?file=name")),
+            new TkDoc(new MkBase())
+                .act(this.request("/doc/eject-friend?file=name")),
             Matchers.instanceOf(TkEjectFriend.class)
         );
     }

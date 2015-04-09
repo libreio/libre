@@ -31,10 +31,12 @@ package com.nerodesk.takes.doc;
 
 import com.nerodesk.om.Doc;
 import java.io.IOException;
+import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
 import org.takes.facets.flash.RsFlash;
 import org.takes.facets.forward.RsForward;
+import org.takes.rq.RqHref;
 
 /**
  * Reject friend.
@@ -51,26 +53,21 @@ final class TkEjectFriend implements Take {
     private final transient Doc doc;
 
     /**
-     * Names of friends (URN).
-     */
-    private final transient Iterable<String> friends;
-
-    /**
      * Ctor.
      * @param src Source document to read from
-     * @param names Name of Friend
      */
-    TkEjectFriend(final Doc src, final Iterable<String> names) {
+    TkEjectFriend(final Doc src) {
         this.doc = src;
-        this.friends = names;
     }
 
     @Override
-    public Response act() throws IOException {
-        for (final String friend : this.friends) {
-            this.doc.friends().eject(friend);
-        }
-        return new RsForward(new RsFlash("friend ejected"));
+    public Response act(final Request req) throws IOException {
+        final String friend = new RqHref(req).href()
+            .param("friend").iterator().next();
+        this.doc.friends().eject(friend);
+        return new RsForward(
+            new RsFlash(String.format("friend \"%s\" ejected", friend))
+        );
     }
 
 }

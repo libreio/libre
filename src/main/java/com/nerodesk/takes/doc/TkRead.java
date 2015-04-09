@@ -33,6 +33,7 @@ import com.nerodesk.om.Doc;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
 import org.takes.rs.RsWithBody;
@@ -60,7 +61,7 @@ final class TkRead implements Take {
     }
 
     @Override
-    public Response act() throws IOException {
+    public Response act(final Request req) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         this.doc.read(baos);
         return new RsWithBody(new ByteArrayInputStream(baos.toByteArray()));

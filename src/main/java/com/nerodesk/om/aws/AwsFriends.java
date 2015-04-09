@@ -42,9 +42,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
- * AWS-based version of Doc.
+ * AWS-based version of friends.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
@@ -167,7 +168,7 @@ final class AwsFriends implements Friends {
             final ObjectMetadata meta = ocket.meta();
             final String header = meta.getUserMetaDataOf(AwsFriends.HEADER);
             if (header != null) {
-                friends.addAll(Arrays.asList(header.split(";")));
+                friends.addAll(Arrays.asList(StringUtils.split(header, ';')));
             }
         }
         return friends;

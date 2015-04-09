@@ -29,6 +29,7 @@
  */
 package com.nerodesk.takes.doc;
 
+import com.google.common.collect.Lists;
 import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
 import com.nerodesk.om.mock.MkBase;
@@ -36,6 +37,7 @@ import java.util.Collections;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
 
 /**
@@ -50,22 +52,31 @@ public final class TkAddFriendTest {
     /**
      * TkAddFriend can add a friend.
      * @throws Exception If fails.
-     * @todo #144:15min We should add an assertion where we will check if the
-     *  added friend is in fact present in doc.friends(). However, class
-     *  MkFriends is not yet implemented, so it returns nothing. When it is
-     *  implemented let's add that assertion to make this test more robust and
-     *  comprehensive.
      */
     @Test
     public void addsFriend() throws Exception {
         final Docs docs = new MkBase().user("urn:test:1").docs();
         final Doc doc = docs.doc("hey");
-        final String friend = "Bob";
+        final String friend = "The Dude";
+        MatcherAssert.assertThat(
+            Lists.newArrayList(doc.friends().names()),
+            Matchers.not(Matchers.hasItem(friend))
+        );
         MatcherAssert.assertThat(
             new RsPrint(
-                new TkAddFriend(doc, Collections.singleton(friend)).act()
+                new TkAddFriend(doc).act(
+                    new RqFake(
+                        "POST",
+                        "/",
+                        String.format("friend=%s", friend)
+                    )
+                )
             ).print(),
             Matchers.containsString("document+shared")
+        );
+        MatcherAssert.assertThat(
+            Lists.newArrayList(doc.friends().names()),
+            Matchers.hasItem(friend)
         );
     }
 

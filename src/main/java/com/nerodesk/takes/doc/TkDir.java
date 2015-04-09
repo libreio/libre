@@ -27,55 +27,33 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.aws;
+package com.nerodesk.takes.doc;
 
-import com.jcabi.s3.mock.MkBucket;
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import java.io.IOException;
+import org.takes.Request;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.facets.fork.FkRegex;
+import org.takes.facets.fork.TkFork;
+import org.takes.tk.TkEmpty;
 
 /**
- * Tests for {@link AwsUser}.
+ * Takes for a directory.
  *
- * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
- * @author Carlos Alexandro Becker (caarlos0@gmail.com)
+ * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
  * @version $Id$
- * @since 0.3
+ * @since 0.4
  */
-public final class AwsUserTest {
+public final class TkDir implements Take {
 
-    /**
-     * Temporary folder.
-     * @checkstyle VisibilityModifierCheck (3 lines)
-     */
-    @Rule
-    public final transient TemporaryFolder folder = new TemporaryFolder();
-
-    /**
-     * AwsUser can obtain its user documents.
-     * @throws Exception in case of error.
-     */
-    @Test
-    public void obtainsDocs() throws Exception {
-        MatcherAssert.assertThat(
-            new AwsUser(
-                new MkBucket(this.folder.newFile(), "1"), "user1"
-            ).docs(),
-            Matchers.notNullValue()
-        );
-    }
-
-    /**
-     * AwsUser conforms to equals and hashCode contract.
-     */
-    @Test
-    public void conformsToEqualsHashCodeContract() {
-        EqualsVerifier.forClass(AwsUser.class)
-            .suppress(Warning.TRANSIENT_FIELDS)
-            .verify();
+    // @todo #150:30min This is initial implementation and is not
+    //  doing anything useful yet. We should implement ability to create
+    //  directories here. Moreover there should be also way to edit them,
+    //  remove and attach existing documents.
+    @Override
+    public Response act(final Request req) throws IOException {
+        return new TkFork(
+            new FkRegex("/dir/create", new TkEmpty())
+        ).act(req);
     }
 }

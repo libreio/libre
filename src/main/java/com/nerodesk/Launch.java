@@ -35,7 +35,7 @@ import com.jcabi.s3.retry.ReBucket;
 import com.nerodesk.om.Base;
 import com.nerodesk.om.aws.AwsBase;
 import com.nerodesk.om.mock.MkBase;
-import com.nerodesk.takes.TsApp;
+import com.nerodesk.takes.TkApp;
 import java.io.IOException;
 import java.util.Arrays;
 import org.takes.http.Exit;
@@ -78,7 +78,7 @@ public final class Launch {
      */
     public void exec() throws IOException {
         new FtCLI(
-            new TsApp(Launch.base()),
+            new TkApp(Launch.base()),
             this.arguments
         ).start(Exit.NEVER);
     }

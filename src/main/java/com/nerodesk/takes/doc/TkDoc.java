@@ -35,13 +35,12 @@ import com.nerodesk.takes.RqDisposition;
 import java.io.IOException;
 import java.util.Iterator;
 import org.takes.Request;
+import org.takes.Response;
 import org.takes.Take;
-import org.takes.Takes;
 import org.takes.facets.auth.RqAuth;
 import org.takes.facets.fork.FkRegex;
-import org.takes.facets.fork.TsFork;
+import org.takes.facets.fork.TkFork;
 import org.takes.misc.Href;
-import org.takes.rq.RqForm;
 import org.takes.rq.RqHref;
 import org.takes.rq.RqMultipart;
 
@@ -54,7 +53,7 @@ import org.takes.rq.RqMultipart;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  * @checkstyle MultipleStringLiteralsCheck (500 lines)
  */
-public final class TsDoc implements Takes {
+public final class TkDoc implements Take {
 
     /**
      * Base.
@@ -65,12 +64,12 @@ public final class TsDoc implements Takes {
      * Ctor.
      * @param bse Base
      */
-    public TsDoc(final Base bse) {
+    public TkDoc(final Base bse) {
         this.base = bse;
     }
 
     @Override
-    public Take route(final Request req) throws IOException {
+    public Response act(final Request req) throws IOException {
         final Href href = new RqHref(req).href();
         final String key = "file";
         final String file = this.filename(
@@ -81,20 +80,13 @@ public final class TsDoc implements Takes {
         final Doc doc = this.base.user(
             new RqAuth(req).identity().urn()
         ).docs().doc(file);
-        final String friend = "friend";
-        return new TsFork(
+        return new TkFork(
             new FkRegex("/doc/read", new TkRead(doc)),
             new FkRegex("/doc/delete", new TkDelete(doc)),
-            new FkRegex("/doc/write", new TkWrite(doc, req)),
-            new FkRegex(
-                "/doc/add-friend",
-                new TkAddFriend(doc, new RqForm(req).param(friend))
-            ),
-            new FkRegex(
-                "/doc/eject-friend",
-                new TkEjectFriend(doc, href.param(friend))
-            )
-        ).route(req);
+            new FkRegex("/doc/write", new TkWrite(doc)),
+            new FkRegex("/doc/add-friend", new TkAddFriend(doc)),
+            new FkRegex("/doc/eject-friend", new TkEjectFriend(doc))
+        ).act(req);
     }
 
     /**
@@ -107,7 +99,7 @@ public final class TsDoc implements Takes {
      */
     private String filename(final Request req, final String key,
         final Iterator<String> param) throws IOException {
-        String name;
+        final String name;
         if (param.hasNext()) {
             name = param.next();
         } else {

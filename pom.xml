@@ -173,7 +173,7 @@
         <dependency>
             <groupId>org.takes</groupId>
             <artifactId>takes</artifactId>
-            <version>0.11.2</version>
+            <version>0.12.2</version>
         </dependency>
         <dependency>
             <groupId>com.restfb</groupId>
@@ -286,21 +286,21 @@
                 <groupId>com.tunyk.mvn.plugins.htmlcompressor</groupId>
                 <artifactId>htmlcompressor-maven-plugin</artifactId>
                 <version>1.3</version>
+                <configuration>
+                    <srcFolder>${basedir}/src/main/xsl</srcFolder>
+                    <targetFolder>${project.build.outputDirectory}/xsl</targetFolder>
+                    <fileExt>
+                        <ext>xsl</ext>
+                    </fileExt>
+                    <removeIntertagSpaces>false</removeIntertagSpaces>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>compress-xsl</id>
+                        <id>default-cli</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>xml</goal>
                         </goals>
-                        <configuration>
-                            <srcFolder>${basedir}/src/main/xsl</srcFolder>
-                            <targetFolder>${project.build.outputDirectory}/xsl</targetFolder>
-                            <fileExt>
-                                <ext>xsl</ext>
-                            </fileExt>
-                            <removeIntertagSpaces>false</removeIntertagSpaces>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -395,12 +395,7 @@
                                  raise it back to 75.
                                 -->
                                 <totalBranchRate>50</totalBranchRate>
-                                <!--
-                                @todo #97:30min Line coverage is intentionally lowered here,
-                                 in order to get version 0.2 out of the door. Let's
-                                 raise it back to 75.
-                                -->
-                                <totalLineRate>70</totalLineRate>
+                                <totalLineRate>75</totalLineRate>
                             </check>
                         </configuration>
                         <executions>
