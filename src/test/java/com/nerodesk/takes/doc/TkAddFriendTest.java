@@ -33,7 +33,6 @@ import com.google.common.collect.Lists;
 import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
 import com.nerodesk.om.mock.MkBase;
-import java.util.Collections;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;

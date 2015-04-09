@@ -38,6 +38,7 @@ import org.junit.Test;
 import org.takes.Request;
 import org.takes.facets.auth.Identity;
 import org.takes.facets.auth.codecs.CcPlain;
+import org.takes.facets.forward.RsForward;
 import org.takes.rq.RqFake;
 
 /**
@@ -47,43 +48,6 @@ import org.takes.rq.RqFake;
  */
 public final class TkDocTest {
     /**
-     * TkDoc can route to file reading.
-     * @throws Exception If something goes wrong
-     */
-    @Test
-    public void routesToFileReading() throws Exception {
-        MatcherAssert.assertThat(
-            new TkDoc(new MkBase()).act(this.request("/doc/read?file=name")),
-            Matchers.instanceOf(TkRead.class)
-        );
-    }
-
-    /**
-     * TkDoc can route to file removal.
-     * @throws Exception If something goes wrong
-     */
-    @Test
-    public void routesToFileRemoval() throws Exception {
-        MatcherAssert.assertThat(
-            new TkDoc(new MkBase())
-                .act(this.request("/doc/delete?file=name")),
-            Matchers.instanceOf(TkDelete.class)
-        );
-    }
-
-    /**
-     * TkDoc can route to file writing.
-     * @throws Exception If something goes wrong
-     */
-    @Test
-    public void routesToFileWriting() throws Exception {
-        MatcherAssert.assertThat(
-            new TkDoc(new MkBase()).act(this.request("/doc/write?file=name")),
-            Matchers.instanceOf(TkWrite.class)
-        );
-    }
-
-    /**
      * TkDoc can route to friend addition.
      * @throws Exception If something goes wrong
      */
@@ -91,8 +55,8 @@ public final class TkDocTest {
     public void routesToFriendAddition() throws Exception {
         MatcherAssert.assertThat(
             new TkDoc(new MkBase())
-                .act(this.request("/doc/add-friend?file=name")),
-            Matchers.instanceOf(TkAddFriend.class)
+                .act(this.request("/doc/add-friend?file=name", "friend=one")),
+            Matchers.instanceOf(RsForward.class)
         );
     }
 
@@ -104,30 +68,33 @@ public final class TkDocTest {
     public void routesToFriendEjection() throws Exception {
         MatcherAssert.assertThat(
             new TkDoc(new MkBase())
-                .act(this.request("/doc/eject-friend?file=name")),
-            Matchers.instanceOf(TkEjectFriend.class)
+                .act(this.request("/doc/eject-friend?file=name&friend", "")),
+            Matchers.instanceOf(RsForward.class)
         );
     }
+
     /**
      * Create a fake request with given path.
      * @param path Path in the request
+     * @param params POST params
      * @return Request created
      * @throws IOException In case of error
      */
-    private Request request(final String path) throws IOException {
+    private Request request(final String path, final String params)
+        throws IOException {
         return new RqFake(
             Arrays.asList(
                 String.format("GET %s", path),
                 "Host: www.example.com",
                 "Content-Type: multipart/form-data",
                 String.format(
-                    "TsAuth: %s",
+                    "TkAuth: %s",
                     new String(
                         new CcPlain()
                             .encode(new Identity.Simple("urn:test:1"))
                     )
                 )
-            ), ""
+            ), params
         );
     }
 }
