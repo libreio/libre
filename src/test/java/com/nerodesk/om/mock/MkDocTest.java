@@ -150,7 +150,7 @@ public final class MkDocTest {
      */
     @Test
     public void guessesContentType() throws IOException {
-        final File file = new File(this.folder.newFolder(), "findout");
+        final File file = new File(this.folder.newFolder(), "findout.txt");
         final String content = "Ordinary text content.";
         final Doc doc = new MkDoc(file, "", "");
         doc.write(
