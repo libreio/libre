@@ -39,10 +39,9 @@ import java.io.InputStream;
  * @author Paul Polishchuk (ppol@ua.fm)
  * @version $Id$
  * @since 0.4
- * @todo #89:30min Create a tests for the ThresholdInputStream class.
- *  We need to make sure that it's obey the InputStream contract
- *  and throws an exception when maximum read bytes limit is reached.
- *  Also please remove this class form cobertura excludes after that.
+ * @todo #180:30min Increase test coverage for the ThresholdInputStream class.
+ *  Please remove this class form cobertura excludes if entire class is covered
+ *  properly.
  */
 final class ThresholdInputStream extends InputStream {
 
