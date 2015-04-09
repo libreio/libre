@@ -49,6 +49,7 @@ public final class FbErrorTest {
 
     /**
      * FbError can display error message.
+     * @throws IOException If unsuccessful.
      */
     @Test
     public void displaysErrorMsg() throws IOException {
