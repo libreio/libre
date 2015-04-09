@@ -381,6 +381,7 @@
                             <instrumentation>
                                 <excludes>
                                     <exclude>com/nerodesk/om/ThresholdInputStream.class</exclude>
+                                    <exclude>com/nerodesk/Launch.class</exclude>
                                 </excludes>
                             </instrumentation>
                             <check>
