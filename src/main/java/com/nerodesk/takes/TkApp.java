@@ -37,9 +37,10 @@ import com.nerodesk.om.Base;
 import com.nerodesk.takes.doc.TkDoc;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.takes.NotFoundException;
 import org.takes.Response;
 import org.takes.Take;
 import org.takes.facets.auth.PsByFlag;
@@ -56,6 +57,8 @@ import org.takes.facets.auth.codecs.CcSalted;
 import org.takes.facets.auth.codecs.CcXOR;
 import org.takes.facets.auth.social.PsFacebook;
 import org.takes.facets.fallback.Fallback;
+import org.takes.facets.fallback.FbChain;
+import org.takes.facets.fallback.FbStatus;
 import org.takes.facets.fallback.RqFallback;
 import org.takes.facets.fallback.TkFallback;
 import org.takes.facets.flash.TkFlash;
@@ -69,6 +72,7 @@ import org.takes.facets.fork.TkFork;
 import org.takes.rs.RsHTML;
 import org.takes.tk.TkClasspath;
 import org.takes.tk.TkFiles;
+import org.takes.tk.TkFixed;
 import org.takes.tk.TkGreedy;
 import org.takes.tk.TkRedirect;
 import org.takes.tk.TkVerbose;
@@ -177,25 +181,28 @@ public final class TkApp extends TkWrap {
     private static Take fallback(final Take take) {
         return new TkFallback(
             take,
-            new Fallback() {
-                @Override
-                public Response act(final RqFallback req) {
-                    if (NotFoundException.class.isInstance(req.throwable())) {
-                        return new RsNotFound();
-                    } else {
+            new FbChain(
+                new FbStatus(404, new TkFixed(new RsNotFound())),
+                new Fallback() {
+                    @Override
+                    public Iterator<Response> route(final RqFallback req) throws IOException {
                         final String exc = ExceptionUtils.getStackTrace(
                             req.throwable()
                         );
                         Logger.info(this, "Exception thrown\n%s", exc);
-                        return new RsHTML(
-                            String.format(
-                                "oops, something went wrong!\n%s",
-                                exc
+                        return Collections.singleton(
+                            Response.class.cast(
+                                new RsHTML(
+                                    String.format(
+                                        "oops, something went wrong!\n%s",
+                                        exc
+                                    )
+                                )
                             )
-                        );
+                        ).iterator();
                     }
                 }
-            }
+            )
         );
     }
 
