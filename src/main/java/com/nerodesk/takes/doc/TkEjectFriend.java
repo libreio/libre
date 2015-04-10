@@ -62,7 +62,7 @@ final class TkEjectFriend implements Take {
 
     @Override
     public Response act(final Request req) throws IOException {
-        final String friend = new RqHref(req).href()
+        final String friend = new RqHref.Base(req).href()
             .param("friend").iterator().next();
         this.doc.friends().eject(friend);
         return new RsForward(

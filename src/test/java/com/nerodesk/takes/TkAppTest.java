@@ -73,10 +73,6 @@ import org.takes.http.FtRemote;
  *  read should be implemented as well.
  *  Let's start from proper tests. See example for partitioned write
  *  AppTest.uploadsBigFile()
- * @todo #160:30min Test readsFileWithSpecialCharactersInName and
- *  deletesFileWithSpecialCharactersInName are disabled because of a bug in
- *  takes 0.11.2, when yegor256/takes#126 is resolved and a new takes with this
- *  fix is released add it to the pom.xml and uncomment those tests.
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class TkAppTest {
@@ -182,7 +178,6 @@ public final class TkAppTest {
      * @throws Exception If fails
      */
     @Test
-    @Ignore
     public void readsFileWithSpecialCharactersInName() throws Exception {
         final Base base = new MkBase();
         final String name = "[][].txt";
@@ -211,7 +206,6 @@ public final class TkAppTest {
      * @throws Exception If fails
      */
     @Test
-    @Ignore
     public void deletesFileWithSpecialCharactersInName() throws Exception {
         final Base base = new MkBase();
         final String name = "[][].txt";

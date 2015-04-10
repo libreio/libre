@@ -73,7 +73,7 @@ public final class TkDoc implements Take {
     //  splitting, it should be covered by unit tests.
     @Override
     public Response act(final Request req) throws IOException {
-        final Href href = new RqHref(req).href();
+        final Href href = new RqHref.Base(req).href();
         final String key = "file";
         final String file = this.filename(
             req,
