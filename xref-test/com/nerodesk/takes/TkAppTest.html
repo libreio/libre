@@ -403,11 +403,11 @@
 <a class="jxr_linenumber" name="L395" href="#L395">395</a>     }
 <a class="jxr_linenumber" name="L396" href="#L396">396</a> 
 <a class="jxr_linenumber" name="L397" href="#L397">397</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L398" href="#L398">398</a> <em class="jxr_javadoccomment">     * Application can show error page.</em>
+<a class="jxr_linenumber" name="L398" href="#L398">398</a> <em class="jxr_javadoccomment">     * Application can show 'page not found' page.</em>
 <a class="jxr_linenumber" name="L399" href="#L399">399</a> <em class="jxr_javadoccomment">     * @throws Exception If fails</em>
 <a class="jxr_linenumber" name="L400" href="#L400">400</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L401" href="#L401">401</a>     @Test
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> showsErrorPage() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> showsPageNotFound() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L403" href="#L403">403</a>         <strong class="jxr_keyword">final</strong> Base base = <strong class="jxr_keyword">new</strong> MkBase();
 <a class="jxr_linenumber" name="L404" href="#L404">404</a>         <strong class="jxr_keyword">new</strong> FtRemote(<strong class="jxr_keyword">new</strong> TkApp(base)).exec(
 <a class="jxr_linenumber" name="L405" href="#L405">405</a>             <strong class="jxr_keyword">new</strong> FtRemote.Script() {
@@ -418,7 +418,7 @@
 <a class="jxr_linenumber" name="L410" href="#L410">410</a>                         .fetch()
 <a class="jxr_linenumber" name="L411" href="#L411">411</a>                         .as(RestResponse.<strong class="jxr_keyword">class</strong>)
 <a class="jxr_linenumber" name="L412" href="#L412">412</a>                         .assertStatus(HttpURLConnection.HTTP_OK)
-<a class="jxr_linenumber" name="L413" href="#L413">413</a>                         .assertBody(Matchers.startsWith(<span class="jxr_string">"oops, something "</span>));
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>                         .assertBody(Matchers.startsWith(<span class="jxr_string">"Page not found!"</span>));
 <a class="jxr_linenumber" name="L414" href="#L414">414</a>                 }
 <a class="jxr_linenumber" name="L415" href="#L415">415</a>             }
 <a class="jxr_linenumber" name="L416" href="#L416">416</a>         );
