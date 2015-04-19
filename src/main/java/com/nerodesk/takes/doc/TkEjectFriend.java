@@ -62,8 +62,9 @@ final class TkEjectFriend implements Take {
 
     @Override
     public Response act(final Request req) throws IOException {
-        final String friend = new RqHref(req).href()
-            .param("friend").iterator().next();
+        final String friend = new RqHref.Smart(
+            new RqHref.Base(req)
+        ).single("friend");
         this.doc.friends().eject(friend);
         return new RsForward(
             new RsFlash(String.format("friend \"%s\" ejected", friend))

@@ -86,58 +86,56 @@
                                 </li>
                             </ul>
                         </nav>
-                        <nav>
-                            <ul>
-                                <xsl:apply-templates select="version"/>
-                            </ul>
-                        </nav>
                     </footer>
                 </section>
+                <div id="version">
+                    <xsl:apply-templates select="version"/>
+                </div>
             </body>
         </html>
     </xsl:template>
     <xsl:template match="version">
-        <li title="currently deployed version is {name}">
-            <small><xsl:value-of select="name"/></small>
-        </li>
-        <li title="server time to build this page">
-            <xsl:attribute name="style">
-                <xsl:text>color:</xsl:text>
-                <xsl:choose>
-                    <xsl:when test="/page/millis &gt; 5000">
-                        <xsl:text>red</xsl:text>
-                    </xsl:when>
-                    <xsl:when test="/page/millis &gt; 1000">
-                        <xsl:text>orange</xsl:text>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:text>inherit</xsl:text>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:attribute>
-            <small>
+        <ul>
+            <li title="currently deployed version is {name}">
+                <xsl:value-of select="name"/>
+            </li>
+            <li title="server time to build this page">
+                <xsl:attribute name="style">
+                    <xsl:text>color:</xsl:text>
+                    <xsl:choose>
+                        <xsl:when test="/page/millis &gt; 5000">
+                            <xsl:text>red</xsl:text>
+                        </xsl:when>
+                        <xsl:when test="/page/millis &gt; 1000">
+                            <xsl:text>orange</xsl:text>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:text>inherit</xsl:text>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:attribute>
                 <xsl:call-template name="millis">
                     <xsl:with-param name="millis" select="/page/millis"/>
                 </xsl:call-template>
-            </small>
-        </li>
-        <li title="server load average">
-            <xsl:attribute name="style">
-                <xsl:text>color:</xsl:text>
-                <xsl:choose>
-                    <xsl:when test="/page/@sla &gt; 6">
-                        <xsl:text>red</xsl:text>
-                    </xsl:when>
-                    <xsl:when test="/page/@sla &gt; 3">
-                        <xsl:text>orange</xsl:text>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:text>inherit</xsl:text>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:attribute>
-            <small><xsl:value-of select="/page/@sla"/></small>
-        </li>
+            </li>
+            <li title="server load average">
+                <xsl:attribute name="style">
+                    <xsl:text>color:</xsl:text>
+                    <xsl:choose>
+                        <xsl:when test="/page/@sla &gt; 6">
+                            <xsl:text>red</xsl:text>
+                        </xsl:when>
+                        <xsl:when test="/page/@sla &gt; 3">
+                            <xsl:text>orange</xsl:text>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:text>inherit</xsl:text>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:attribute>
+                <xsl:value-of select="/page/@sla"/>
+            </li>
+        </ul>
     </xsl:template>
     <xsl:template match="user">
         <li title="current user balance">

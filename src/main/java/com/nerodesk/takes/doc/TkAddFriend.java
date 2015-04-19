@@ -64,7 +64,9 @@ final class TkAddFriend implements Take {
 
     @Override
     public Response act(final Request req) throws IOException {
-        final String friend = new RqForm(req).param("friend").iterator().next();
+        final String friend = new RqForm.Smart(
+            new RqForm.Base(req)
+        ).single("friend");
         this.doc.friends().add(friend);
         return new RsForward(
             new RsFlash(

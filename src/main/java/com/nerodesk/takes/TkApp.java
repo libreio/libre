@@ -40,18 +40,9 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 import org.takes.Take;
 import org.takes.facets.auth.PsByFlag;
-import org.takes.facets.auth.PsChain;
-import org.takes.facets.auth.PsCookie;
-import org.takes.facets.auth.PsFake;
-import org.takes.facets.auth.PsLogout;
+import org.takes.facets.auth.PsEmpty;
 import org.takes.facets.auth.TkAuth;
 import org.takes.facets.auth.TkSecure;
-import org.takes.facets.auth.codecs.CcCompact;
-import org.takes.facets.auth.codecs.CcHex;
-import org.takes.facets.auth.codecs.CcSafe;
-import org.takes.facets.auth.codecs.CcSalted;
-import org.takes.facets.auth.codecs.CcXOR;
-import org.takes.facets.auth.social.PsFacebook;
 import org.takes.facets.fallback.FbChain;
 import org.takes.facets.fallback.FbStatus;
 import org.takes.facets.fallback.TkFallback;
@@ -216,32 +207,33 @@ public final class TkApp extends TkWrap {
         final String key = Manifests.read("Nerodesk-FacebookId");
         return new TkAuth(
             take,
-            new PsChain(
-                new PsFake(key.startsWith("XXXX") || key.startsWith("${")),
-                new PsByFlag(
-                    new PsByFlag.Pair(
-                        PsFacebook.class.getSimpleName(),
-                        new PsFacebook(
-                            key,
-                            Manifests.read("Nerodesk-FacebookSecret")
-                        )
-                    ),
-                    new PsByFlag.Pair(
-                        PsLogout.class.getSimpleName(),
-                        new PsLogout()
-                    )
-                ),
-                new PsCookie(
-                    new CcSafe(
-                        new CcHex(
-                            new CcXOR(
-                                new CcSalted(new CcCompact()),
-                                Manifests.read("Nerodesk-SecurityKey")
-                            )
-                        )
-                    )
-                )
-            )
+            new PsEmpty()
+//            new PsChain(
+//                new PsFake(key.startsWith("XXXX") || key.startsWith("${")),
+//                new PsByFlag(
+//                    new PsByFlag.Pair(
+//                        PsFacebook.class.getSimpleName(),
+//                        new PsFacebook(
+//                            key,
+//                            Manifests.read("Nerodesk-FacebookSecret")
+//                        )
+//                    ),
+//                    new PsByFlag.Pair(
+//                        PsLogout.class.getSimpleName(),
+//                        new PsLogout()
+//                    )
+//                ),
+//                new PsCookie(
+//                    new CcSafe(
+//                        new CcHex(
+//                            new CcXOR(
+//                                new CcSalted(new CcCompact()),
+//                                Manifests.read("Nerodesk-SecurityKey")
+//                            )
+//                        )
+//                    )
+//                )
+//            )
         );
     }
 

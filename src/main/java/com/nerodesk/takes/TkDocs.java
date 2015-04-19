@@ -101,7 +101,7 @@ public final class TkDocs implements Take {
         dirs.add("user").add("balance").set(
             Integer.toString(user.account().balance())
         ).up().up();
-        final Href home = new RqHref(req).href();
+        final Href home = new RqHref.Base(req).href();
         final Docs docs = user.docs();
         dirs.add("docs");
         for (final String name : docs.names()) {

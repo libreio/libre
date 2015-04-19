@@ -65,7 +65,7 @@ final class TkWrite implements Take {
 
     @Override
     public Response act(final Request req) throws IOException {
-        final RqMultipart multi = new RqMultipart(req);
+        final RqMultipart multi = new RqMultipart.Base(req);
         this.doc.write(multi.part("file").iterator().next().body());
         return new RsForward(new RsFlash("file uploaded"));
     }
