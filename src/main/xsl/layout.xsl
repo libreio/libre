@@ -44,7 +44,7 @@
             </head>
             <body>
                 <section style="height:100%">
-                    <xsl:test if="identity">
+                    <xsl:if test="identity">
                         <header>
                             <nav>
                                 <ul>
@@ -66,7 +66,7 @@
                                 </ul>
                             </nav>
                         </header>
-                    </xsl:test>
+                    </xsl:if>
                     <xsl:apply-templates select="." mode="body"/>
                     <xsl:if test="identity">
                         <footer>
