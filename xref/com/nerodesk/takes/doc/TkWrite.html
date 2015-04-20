@@ -73,7 +73,7 @@
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>  
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      @Override
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">public</strong> Response act(<strong class="jxr_keyword">final</strong> Request req) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>          <strong class="jxr_keyword">final</strong> RqMultipart multi = <strong class="jxr_keyword">new</strong> RqMultipart(req);
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>          <strong class="jxr_keyword">final</strong> RqMultipart multi = <strong class="jxr_keyword">new</strong> RqMultipart.Base(req);
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>          <strong class="jxr_keyword">this</strong>.doc.write(multi.part(<span class="jxr_string">"file"</span>).iterator().next().body());
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> RsForward(<strong class="jxr_keyword">new</strong> RsFlash(<span class="jxr_string">"file uploaded"</span>));
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>      }
