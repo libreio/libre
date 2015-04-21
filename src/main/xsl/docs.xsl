@@ -38,27 +38,29 @@
         </title>
     </xsl:template>
     <xsl:template match="page" mode="body">
-        <form method="post" action="{links/link[@rel='mkdir']/@href}">
-            <input name="name" type="text" placeholder="New directory name"/>
-            <input name="create" type="submit"/>
-        </form>
-        <hr/>
-        <h2>
-            <xsl:text>My Documents</xsl:text>
-        </h2>
-        <form method="post" action="{links/link[@rel='upload']/@href}"
-            enctype="multipart/form-data">
-            <input name="file" type="file"/>
-            <button type="submit">Upload</button>
-        </form>
-        <xsl:apply-templates select="docs"/>
-        <p>
+        <article>
+            <form method="post" action="{links/link[@rel='mkdir']/@href}">
+                <input name="name" type="text" placeholder="New directory name"/>
+                <input name="create" type="submit"/>
+            </form>
+            <hr/>
+            <h2>
+                <xsl:text>My Documents</xsl:text>
+            </h2>
+            <form method="post" action="{links/link[@rel='upload']/@href}"
+                enctype="multipart/form-data">
+                <input name="file" type="file"/>
+                <button type="submit">Upload</button>
+            </form>
+            <xsl:apply-templates select="docs"/>
+            <p>
             <xsl:text>
                 At the moment maximum document size is 10Mb.
                 The system is still in beta testing mode,
                 please excuse minor defects.
             </xsl:text>
-        </p>
+            </p>
+        </article>
     </xsl:template>
     <xsl:template match="docs[doc]">
         <table style="width:100%">

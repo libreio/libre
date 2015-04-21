@@ -169,6 +169,13 @@ public final class TkApp extends TkWrap {
                 "/images/[a-z]+\\.png",
                 new TkWithType(new TkClasspath(), MediaType.PNG.toString())
             ),
+            new FkRegex(
+                "/svg/[a-z]+\\.svg",
+                new TkWithType(
+                    new TkClasspath(),
+                    MediaType.SVG_UTF_8.toString()
+                )
+            ),
             new FkRegex("/robots.txt", ""),
             new FkRegex(
                 "/",

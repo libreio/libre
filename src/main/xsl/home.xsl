@@ -38,8 +38,42 @@
         </title>
     </xsl:template>
     <xsl:template match="page" mode="body">
-        <p>
-            <xsl:text>Nerodesk Open-Source Cloud Storage</xsl:text>
-        </p>
+        <div id="center">
+            <div>
+                <p>
+                    <img style="width:240px;" src="/images/logo.png"/>
+                </p>
+                <p>
+                    <xsl:text>Open-Source Cloud Storage</xsl:text>
+                </p>
+                <p>
+                    <xsl:text>Login with:</xsl:text>
+                </p>
+                <nav>
+                    <ul>
+                        <li>
+                            <a title="facebook" href="{links/link[@rel='takes:facebook']/@href}">
+                                <img src="/svg/facebook.svg" alt="facebook icon"/>
+                            </a>
+                        </li>
+                        <li>
+                            <a title="github" href="{links/link[@rel='takes:github']/@href}">
+                                <img src="/svg/github.svg" alt="github icon"/>
+                            </a>
+                        </li>
+                        <li>
+                            <a title="twitter" href="{links/link[@rel='takes:twitter']/@href}">
+                                <img src="/svg/twitter.svg" alt="twitter icon"/>
+                            </a>
+                        </li>
+                        <li>
+                            <a title="google+" href="{links/link[@rel='takes:google']/@href}">
+                                <img src="/svg/google.svg" alt="google icon"/>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </xsl:template>
 </xsl:stylesheet>

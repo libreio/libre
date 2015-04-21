@@ -107,7 +107,7 @@ public final class TkDoc implements Take {
             name = param.next();
         } else {
             name = new RqDisposition(
-                new RqMultipart(req).part(key).iterator().next()
+                new RqMultipart.Base(req).part(key).iterator().next()
             ).filename();
         }
         return name;

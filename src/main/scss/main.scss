@@ -28,3 +28,49 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@import url(//fonts.googleapis.com/css?family=Play);
+
+* {
+  font-family: 'Play', 'Helvetica Neue', 'Helvetica', sans-serif;
+}
+
+#version {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  border-top: 1px solid lightgray;
+  border-left: 1px solid lightgray;
+  background-color: #eee;
+  ul {
+    margin: 0;
+    color: gray;
+    li {
+      font-family: monospace;
+      font-size: 80%;
+      margin: 0 .4em;
+    }
+  }
+}
+
+#center {
+  width: 100%;
+  height: 100%;
+  display: table;
+  text-align: center;
+  p, ul {
+    text-align: center;
+  }
+  div {
+    vertical-align: middle;
+    display: table-cell;
+  }
+  ul li a {
+    img {
+      width: 50px;
+      height: 50px;
+    }
+    &:hover {
+      border-bottom: 5px solid black;
+    }
+  }
+}
