@@ -3,7 +3,6 @@ install: |-
   sudo gem install --no-rdoc --no-ri pdd
   sudo gem install --no-rdoc --no-ri est
 architect:
-- ggajos
 - yegor256
 - karato
 assets:
