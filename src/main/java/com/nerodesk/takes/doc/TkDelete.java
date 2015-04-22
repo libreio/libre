@@ -29,7 +29,7 @@
  */
 package com.nerodesk.takes.doc;
 
-import com.nerodesk.om.Doc;
+import com.nerodesk.om.Base;
 import java.io.IOException;
 import org.takes.Request;
 import org.takes.Response;
@@ -47,21 +47,21 @@ import org.takes.facets.forward.RsForward;
 final class TkDelete implements Take {
 
     /**
-     * Doc.
+     * Base.
      */
-    private final transient Doc doc;
+    private final transient Base base;
 
     /**
      * Ctor.
-     * @param src Source document to delete
+     * @param bse Base
      */
-    TkDelete(final Doc src) {
-        this.doc = src;
+    TkDelete(final Base bse) {
+        this.base = bse;
     }
 
     @Override
     public Response act(final Request req) throws IOException {
-        this.doc.delete();
+        new RqDoc(req, this.base).doc().delete();
         return new RsForward(
             new RsFlash("file deleted")
         );

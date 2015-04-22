@@ -30,23 +30,21 @@
 package com.nerodesk.takes.doc;
 
 import com.nerodesk.om.Base;
+import com.nerodesk.om.Doc;
+import com.nerodesk.takes.RqUser;
 import java.io.IOException;
 import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
-import org.takes.facets.fork.FkRegex;
-import org.takes.facets.fork.TkFork;
+import org.takes.rq.RqHref;
+import org.takes.rq.RqWrap;
 
 /**
- * Takes for a specific document.
+ * Request that understand the document.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.3
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @checkstyle MultipleStringLiteralsCheck (500 lines)
  */
-public final class TkDoc implements Take {
+final class RqDoc extends RqWrap {
 
     /**
      * Base.
@@ -55,21 +53,25 @@ public final class TkDoc implements Take {
 
     /**
      * Ctor.
+     * @param req Request
      * @param bse Base
      */
-    public TkDoc(final Base bse) {
+    RqDoc(final Request req, final Base bse) {
+        super(req);
         this.base = bse;
     }
 
-    @Override
-    public Response act(final Request req) throws IOException {
-        return new TkFork(
-            new FkRegex("/doc/read", new TkRead(this.base)),
-            new FkRegex("/doc/delete", new TkDelete(this.base)),
-            new FkRegex("/doc/write", new TkWrite(this.base)),
-            new FkRegex("/doc/add-friend", new TkAddFriend(this.base)),
-            new FkRegex("/doc/eject-friend", new TkEjectFriend(this.base))
-        ).act(req);
+    /**
+     * Get document we're working with.
+     * @return Document
+     * @throws IOException If fails
+     */
+    public Doc doc() throws IOException {
+        return new RqUser(this, this.base).user().docs().doc(
+            new RqHref.Smart(
+                new RqHref.Base(this)
+            ).single("file")
+        );
     }
 
 }

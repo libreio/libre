@@ -29,7 +29,7 @@
  */
 package com.nerodesk.takes.doc;
 
-import com.nerodesk.om.Doc;
+import com.nerodesk.om.Base;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -48,22 +48,22 @@ import org.takes.rs.RsWithBody;
 final class TkRead implements Take {
 
     /**
-     * Doc.
+     * Base.
      */
-    private final transient Doc doc;
+    private final transient Base base;
 
     /**
      * Ctor.
-     * @param src Source document to read from
+     * @param bse Base
      */
-    TkRead(final Doc src) {
-        this.doc = src;
+    TkRead(final Base bse) {
+        this.base = bse;
     }
 
     @Override
     public Response act(final Request req) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        this.doc.read(baos);
+        new RqDoc(req, this.base).doc().read(baos);
         return new RsWithBody(new ByteArrayInputStream(baos.toByteArray()));
     }
 
