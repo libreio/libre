@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -82,7 +83,14 @@ public final class MkFriends implements Friends {
 
     @Override
     public Iterable<String> names() {
-        return Arrays.asList(this.friends.list());
+        final String[] list = this.friends.list();
+        final Iterable<String> names;
+        if (list == null) {
+            names = Collections.emptyList();
+        } else {
+            names = Arrays.asList(list);
+        }
+        return names;
     }
 
     @Override
