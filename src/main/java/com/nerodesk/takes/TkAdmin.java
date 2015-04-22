@@ -47,10 +47,10 @@ import org.xembly.Directives;
  * @author Paul Polishchuk (ppol@ua.fm)
  * @version $Id$
  * @since 0.4
- * @todo #213 Admin page shows docs of currently logged in user only.
+ * @todo #213:30min Admin page shows docs of currently logged in user only.
  *  We need to show docs of all users. When done, please unignore
  *  TkAdminTest.returnsListOfDocsOfSeveralUsers() and check if it works.
- * @todo #213 Admin page should be accessible for predefined
+ * @todo #213:30min Admin page should be accessible for predefined
  *  and hardcoded urns. Now it is accessible for any registered user.
  *  Please, specify several urns and check if logged user is authorized
  *  to see admin page. If not - redirect to root (?)
