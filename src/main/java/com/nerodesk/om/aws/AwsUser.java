@@ -78,4 +78,9 @@ public final class AwsUser implements User {
     public Account account() {
         return Account.DUMMY;
     }
+
+    @Override
+    public String urn() {
+        return this.name;
+    }
 }
