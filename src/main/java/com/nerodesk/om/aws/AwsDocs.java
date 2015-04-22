@@ -91,7 +91,7 @@ final class AwsDocs implements Docs {
     public Doc doc(final String doc) {
         return new SmallDoc(
             new AwsDoc(this.bucket, this.user, doc),
-            // @checkstyle LineLength (1 line)
+            // @checkstyle MagicNumber (1 line)
             250_000_000L
         );
     }

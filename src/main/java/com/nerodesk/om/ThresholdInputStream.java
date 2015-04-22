@@ -78,9 +78,7 @@ final class ThresholdInputStream extends InputStream {
      * @param size The maximum number of bytes to return.
      *  Should be greater or equal to zero
      */
-    ThresholdInputStream(
-        final InputStream inp, final long size
-    ) {
+    ThresholdInputStream(final InputStream inp, final long size) {
         super();
         if (size < 0L) {
             throw new IllegalStateException(
