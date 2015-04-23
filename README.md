@@ -33,6 +33,18 @@ If you're on Windows:
 java -cp target\nerodesk.jar;target\deps\* com.nerodesk.Launch --port=8080
 ```
 
+### File and Folder Sharing
+
+By default, files and folders are visible only to the owner. However, files and folder
+permissions may be set by the owner. He can make them available to other users as being
+either read-only or read/write. He choose which users have access, or even make the file
+or folder publicly available. Shared folders will automatically cascade their sharing
+permissions to any files and subfolders.
+
+Users can also generate download links to any files that they own. This download link
+provides read-only access to files and can be used to share files with non-users, e.g.
+over email, Facebook, or anywhere else that links can be shared.
+
 ## Limitations
 
 **File Size**.
