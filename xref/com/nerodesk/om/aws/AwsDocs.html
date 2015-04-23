@@ -97,27 +97,31 @@
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>      @Override
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../com/nerodesk/om/Doc.html">Doc</a> doc(<strong class="jxr_keyword">final</strong> String doc) {
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../com/nerodesk/om/SmallDoc.html">SmallDoc</a>(<strong class="jxr_keyword">new</strong> <a href="../../../../com/nerodesk/om/aws/AwsDoc.html">AwsDoc</a>(<strong class="jxr_keyword">this</strong>.bucket, <strong class="jxr_keyword">this</strong>.user, doc));
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>      }
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>  
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>      @Override
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">long</strong> size() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>          <strong class="jxr_keyword">long</strong> total = 0;
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>          <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> String object : <strong class="jxr_keyword">this</strong>.bucket.list(<strong class="jxr_keyword">this</strong>.prefix())) {
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>              total += <strong class="jxr_keyword">this</strong>.bucket.ocket(object).meta().getContentLength();
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>         }
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>         <strong class="jxr_keyword">return</strong> total;
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>     }
-<a class="jxr_linenumber" name="L103" href="#L103">103</a> 
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L105" href="#L105">105</a> <em class="jxr_javadoccomment">     * Prefix.</em>
-<a class="jxr_linenumber" name="L106" href="#L106">106</a> <em class="jxr_javadoccomment">     * @return Prefix</em>
-<a class="jxr_linenumber" name="L107" href="#L107">107</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>     <strong class="jxr_keyword">private</strong> String prefix() {
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>         <strong class="jxr_keyword">return</strong> String.format(<span class="jxr_string">"%s/"</span>, <strong class="jxr_keyword">this</strong>.user);
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>     }
-<a class="jxr_linenumber" name="L111" href="#L111">111</a> 
-<a class="jxr_linenumber" name="L112" href="#L112">112</a> }
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../com/nerodesk/om/SmallDoc.html">SmallDoc</a>(
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>              <strong class="jxr_keyword">new</strong> <a href="../../../../com/nerodesk/om/aws/AwsDoc.html">AwsDoc</a>(<strong class="jxr_keyword">this</strong>.bucket, <strong class="jxr_keyword">this</strong>.user, doc),
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>              <em class="jxr_comment">// @checkstyle MagicNumber (1 line)</em>
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>              250_000_000L
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>          );
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>      }
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>  
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>      @Override
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">long</strong> size() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>         <strong class="jxr_keyword">long</strong> total = 0;
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> String object : <strong class="jxr_keyword">this</strong>.bucket.list(<strong class="jxr_keyword">this</strong>.prefix())) {
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>             total += <strong class="jxr_keyword">this</strong>.bucket.ocket(object).meta().getContentLength();
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>         }
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>         <strong class="jxr_keyword">return</strong> total;
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>     }
+<a class="jxr_linenumber" name="L107" href="#L107">107</a> 
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L109" href="#L109">109</a> <em class="jxr_javadoccomment">     * Prefix.</em>
+<a class="jxr_linenumber" name="L110" href="#L110">110</a> <em class="jxr_javadoccomment">     * @return Prefix</em>
+<a class="jxr_linenumber" name="L111" href="#L111">111</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>     <strong class="jxr_keyword">private</strong> String prefix() {
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>         <strong class="jxr_keyword">return</strong> String.format(<span class="jxr_string">"%s/"</span>, <strong class="jxr_keyword">this</strong>.user);
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>     }
+<a class="jxr_linenumber" name="L115" href="#L115">115</a> 
+<a class="jxr_linenumber" name="L116" href="#L116">116</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2015 <a href="http://www.nerodesk.com">Nerodesk, Inc.</a>. All rights reserved.</div>
