@@ -38,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
@@ -135,6 +136,17 @@ public final class MkDoc implements Doc {
             IOUtils.copy(input, output);
         }
         Logger.info(this, "%s saved", file);
+    }
+
+    @Override
+    public String shortUrl() {
+        String url = "No URL";
+        try {
+            url = this.file().toURI().toURL().toString();
+        } catch (final MalformedURLException ex) {
+            Logger.error(this, "Error happened: %s", ex.getMessage());
+        }
+        return url;
     }
 
     /**

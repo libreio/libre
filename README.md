@@ -16,6 +16,7 @@ Main features:
  - user can share any file with a few other users
  - user can see all their files in the web panel
  - user can manage file folders
+ - user can share files with shortened URLs
  - the entire code will be open source
  - the web panel will be hosted on Heroku
  - objects/files will be stored in Amazon S3 (in the future will be changed to Amazon EC2)

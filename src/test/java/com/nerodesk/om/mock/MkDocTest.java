@@ -206,4 +206,22 @@ public final class MkDocTest {
             )
         );
     }
+
+    /**
+     * MkDoc can retrieve file URL.
+     * @throws IOException In case of error
+     */
+    @Test
+    public void shortenUrl() throws IOException {
+        final File file = new File(this.folder.newFolder(), "url");
+        final String content = "shorten me";
+        final Doc doc = new MkDoc(file, "", "");
+        doc.write(
+            new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
+        );
+        MatcherAssert.assertThat(
+            doc.shortUrl(),
+            Matchers.equalTo(file.toURI().toURL().toString())
+        );
+    }
 }

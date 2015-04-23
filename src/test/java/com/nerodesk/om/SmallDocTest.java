@@ -93,4 +93,25 @@ public final class SmallDocTest {
             Matchers.equalTo(content)
         );
     }
+
+    /**
+     * SmallDoc can shorten a URL.
+     * @throws IOException In case of error.
+     */
+    @Test
+    public void shortenUrl() throws IOException {
+        final File file = new File(this.folder.newFolder(), "shorten");
+        final String content = "shorten me";
+        final Doc doc = new SmallDoc(
+            new MkDoc(file, "", ""),
+            Tv.HUNDRED
+        );
+        doc.write(
+            new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
+        );
+        MatcherAssert.assertThat(
+            doc.shortUrl(),
+            Matchers.equalTo(file.toURI().toURL().toString())
+        );
+    }
 }

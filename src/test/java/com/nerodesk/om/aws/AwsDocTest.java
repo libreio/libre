@@ -38,6 +38,7 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
@@ -123,6 +124,21 @@ public final class AwsDocTest {
         final String label = "writes";
         final AwsDoc doc = this.createDoc(label, label);
         MatcherAssert.assertThat(doc.exists(), Matchers.equalTo(true));
+    }
+
+    /**
+     * AwsDoc can shorten document URL.
+     * @throws IOException If unsuccessful.
+     */
+    @Test
+    @Ignore
+    public void shortenUrl() throws IOException {
+        final String label = "shorten";
+        final AwsDoc doc = this.createDoc(label, label);
+        MatcherAssert.assertThat(
+            doc.shortUrl(),
+            Matchers.equalTo(doc.shortUrl())
+        );
     }
 
     /**

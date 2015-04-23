@@ -100,4 +100,13 @@ public interface Doc {
      */
     void write(InputStream input) throws IOException;
 
+    /**
+     * Shorten the URL to the document.
+     * @return Shortened URL as a string.
+     * @todo #212:30min Method `shortUrl` should be executed from a proper place
+     *  on the UI in order to provide sharing short links functionality for
+     *  users.
+     */
+    String shortUrl();
+
 }

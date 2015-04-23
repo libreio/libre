@@ -124,4 +124,9 @@ public final class SmallDoc implements Doc {
             );
         }
     }
+
+    @Override
+    public String shortUrl() {
+        return this.decorated.shortUrl();
+    }
 }
