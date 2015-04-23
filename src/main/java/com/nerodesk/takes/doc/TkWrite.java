@@ -29,7 +29,10 @@
  */
 package com.nerodesk.takes.doc;
 
+import com.nerodesk.om.Base;
 import com.nerodesk.om.Doc;
+import com.nerodesk.takes.RqDisposition;
+import com.nerodesk.takes.RqUser;
 import java.io.IOException;
 import org.takes.Request;
 import org.takes.Response;
@@ -51,22 +54,26 @@ import org.takes.rq.RqMultipart;
 final class TkWrite implements Take {
 
     /**
-     * Doc.
+     * Base.
      */
-    private final transient Doc doc;
+    private final transient Base base;
 
     /**
      * Ctor.
-     * @param document Document
+     * @param bse Base
      */
-    TkWrite(final Doc document) {
-        this.doc = document;
+    TkWrite(final Base bse) {
+        this.base = bse;
     }
 
     @Override
     public Response act(final Request req) throws IOException {
         final RqMultipart multi = new RqMultipart.Base(req);
-        this.doc.write(multi.part("file").iterator().next().body());
+        final Request part = multi.part("file").iterator().next();
+        final Doc doc = new RqUser(req, this.base).user().docs().doc(
+            new RqDisposition(part).filename()
+        );
+        doc.write(part.body());
         return new RsForward(new RsFlash("file uploaded"));
     }
 

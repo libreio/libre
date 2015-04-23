@@ -186,7 +186,7 @@ public final class TkApp extends TkWrap {
             ),
             new FkRegex(
                 "/doc/.*",
-                new TkSecure(new TkGreedy(new TkDoc(base)))
+                new TkSecure(new TkDoc(base))
             ),
             new FkRegex(
                 "/dir/.*",

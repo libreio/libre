@@ -27,49 +27,51 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.takes.doc;
+package com.nerodesk.takes;
 
-import com.nerodesk.om.Base;
 import java.io.IOException;
 import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
-import org.takes.facets.fork.FkRegex;
-import org.takes.facets.fork.TkFork;
+import org.takes.facets.auth.Identity;
+import org.takes.facets.auth.TkAuth;
+import org.takes.facets.auth.codecs.CcPlain;
+import org.takes.rq.RqFake;
+import org.takes.rq.RqWithHeader;
+import org.takes.rq.RqWrap;
 
 /**
- * Takes for a specific document.
+ * Request with authenticated tester.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.3
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @checkstyle MultipleStringLiteralsCheck (500 lines)
+ * @since 0.4
  */
-public final class TkDoc implements Take {
-
-    /**
-     * Base.
-     */
-    private final transient Base base;
+public final class RqWithTester extends RqWrap {
 
     /**
      * Ctor.
-     * @param bse Base
+     * @throws IOException If fails
      */
-    public TkDoc(final Base bse) {
-        this.base = bse;
+    public RqWithTester() throws IOException {
+        this(new RqFake());
     }
 
-    @Override
-    public Response act(final Request req) throws IOException {
-        return new TkFork(
-            new FkRegex("/doc/read", new TkRead(this.base)),
-            new FkRegex("/doc/delete", new TkDelete(this.base)),
-            new FkRegex("/doc/write", new TkWrite(this.base)),
-            new FkRegex("/doc/add-friend", new TkAddFriend(this.base)),
-            new FkRegex("/doc/eject-friend", new TkEjectFriend(this.base))
-        ).act(req);
+    /**
+     * Ctor.
+     * @param req Original request
+     * @throws IOException If fails
+     */
+    public RqWithTester(final Request req) throws IOException {
+        super(
+            new RqWithHeader(
+                req,
+                TkAuth.class.getSimpleName(),
+                new String(
+                    new CcPlain().encode(
+                        new Identity.Simple("urn:test:1")
+                    )
+            )
+        )
+        );
     }
 
 }

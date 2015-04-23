@@ -84,7 +84,7 @@ public final class TkDocsTest {
                 "/page/user[balance=0]",
                 "/page/docs[count(doc)=2]",
                 "/page/docs/doc[name='test.txt']",
-                "/page/docs/doc/read"
+                "/page/docs/doc/links/link[@rel='read']"
             )
         );
     }
