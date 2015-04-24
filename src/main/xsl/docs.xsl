@@ -40,7 +40,7 @@
     <xsl:template match="page" mode="body">
         <article>
             <form method="post" action="{links/link[@rel='mkdir']/@href}">
-                <input name="name" type="text" placeholder="New directory name"/>
+                <input name="name" type="text" placeholder="New directory name" required="required"/>
                 <input name="create" type="submit"/>
             </form>
             <hr/>
@@ -49,7 +49,7 @@
             </h2>
             <form method="post" action="{links/link[@rel='upload']/@href}"
                 enctype="multipart/form-data">
-                <input name="file" type="file"/>
+                <input name="file" type="file" required="required"/>
                 <button type="submit">Upload</button>
             </form>
             <xsl:apply-templates select="docs"/>
@@ -87,12 +87,6 @@
                     <xsl:value-of select="size"/>
                     <xsl:text> bytes, </xsl:text>
                     <xsl:text>created on </xsl:text>
-                    <!--
-                    @todo #101:30min Creation date of document should be displayed using
-                     ISO_8601 combined date time and timezone
-                     (e.g. 2007-04-05T12:30-02:00). Right now it is just a unix
-                     timestamp.
-                    -->
                     <xsl:value-of select="created"/>
                 </small>
             </td>
