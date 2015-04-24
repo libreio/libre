@@ -69,6 +69,7 @@
                     <th><xsl:text>File</xsl:text></th>
                     <th><xsl:text>Options</xsl:text></th>
                     <th><xsl:text>Friends</xsl:text></th>
+                    <th><xsl:text>Permissions</xsl:text></th>
                 </tr>
             </thead>
             <tbody>
@@ -101,6 +102,9 @@
             <td>
                 <xsl:apply-templates select="friends"/>
             </td>
+            <td>
+                <xsl:apply-templates select="permissions"/>
+            </td>
         </tr>
     </xsl:template>
     <xsl:template match="friends">
@@ -117,5 +121,18 @@
             <a href="{eject}">stop</a>
             <xsl:text>) </xsl:text>
         </span>
+    </xsl:template>
+    <xsl:template match="permissions">
+        <form action="{set-permissions}" method="post">
+            <select name="visibility">
+                <option>Friends only</option>
+                <option>Public</option>
+            </select>
+            <select name="permission">
+                <option>Read-only</option>
+                <option>Read/Write</option>
+            </select>
+            <input type="submit"/>
+        </form>
     </xsl:template>
 </xsl:stylesheet>
