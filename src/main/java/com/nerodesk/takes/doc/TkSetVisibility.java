@@ -37,22 +37,20 @@ import org.takes.Take;
 import org.takes.rs.RsWithStatus;
 
 /**
- * Set file permissions.
+ * Set file visibility.
  *
  * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
  * @since 0.4
- * @todo #214:30min Let's implement the setting of file sharing permissions.
- *  When a request is received by this Take, it should read the appropriate
- *  parameters from the request, and set the permissions of the associated Doc
+ * @todo #214:30min Let's implement the setting of file visibility. When a
+ *  request is received by this Take, it should read the appropriate parameters
+ *  from the request, and set the permissions of the associated Doc
  *  accordingly. The parameter "visibility" should determine whether the file
- *  is visible only to the owner (i.e. private), shared to friends, or public.
- *  The parameter "permission" determines whether non-owners have read-only or
- *  read/write access. Note that we don't have this infrastructure for the Doc
- *  API yet, either, so you may want to start with a skeleton of that - use PDD
- *  to your advantage.
+ *  is private or public. Note that we don't have this functionality in the Doc
+ *  API yet, either, so you may want to start with a skeleton of that - use
+ *  PDD to your advantage.
  */
-public final class TkSetPermissions implements Take {
+public final class TkSetVisibility implements Take {
 
     @Override
     public Response act(final Request req) throws IOException {

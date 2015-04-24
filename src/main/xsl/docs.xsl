@@ -103,7 +103,7 @@
                 <xsl:apply-templates select="friends"/>
             </td>
             <td>
-                <xsl:apply-templates select="permissions"/>
+                <xsl:apply-templates select="visibility"/>
             </td>
         </tr>
     </xsl:template>
@@ -122,15 +122,11 @@
             <xsl:text>) </xsl:text>
         </span>
     </xsl:template>
-    <xsl:template match="permissions">
-        <form action="{set-permissions}" method="post">
+    <xsl:template match="visibility">
+        <form action="{set-visibility}" method="post">
             <select name="visibility">
-                <option>Friends only</option>
+                <option>Private</option>
                 <option>Public</option>
-            </select>
-            <select name="permission">
-                <option>Read-only</option>
-                <option>Read/Write</option>
             </select>
             <input type="submit"/>
         </form>

@@ -29,29 +29,29 @@
  */
 package com.nerodesk.takes;
 
-import com.nerodesk.takes.doc.TkSetPermissions;
+import com.nerodesk.takes.doc.TkSetVisibility;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.rq.RqFake;
 
 /**
- * Test case for {@link TkSetPermissions}.
+ * Test case for {@link TkSetVisibility}.
  *
  * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
  * @since 0.4
  */
-public final class TkSetPermissionsTest {
+public final class TkSetVisibilityTest {
 
     /**
-     * TkSetPermissions can return a response.
+     * TkSetVisibility can return a response.
      * @throws Exception If something goes wrong
      */
     @Test
     public void returnsResponse() throws Exception {
         MatcherAssert.assertThat(
-            new TkSetPermissions().act(new RqFake()),
+            new TkSetVisibility().act(new RqFake()),
             Matchers.notNullValue()
         );
     }
