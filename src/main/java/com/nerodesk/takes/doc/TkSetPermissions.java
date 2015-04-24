@@ -29,48 +29,34 @@
  */
 package com.nerodesk.takes.doc;
 
-import com.nerodesk.om.Base;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.facets.fork.FkRegex;
-import org.takes.facets.fork.TkFork;
+import org.takes.rs.RsWithStatus;
 
 /**
- * Takes for a specific document.
+ * Set file permissions.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
- * @since 0.3
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @checkstyle MultipleStringLiteralsCheck (500 lines)
+ * @since 0.4
+ * @todo #214:30min Let's implement the setting of file sharing permissions.
+ *  When a request is received by this Take, it should read the appropriate
+ *  parameters from the request, and set the permissions of the associated Doc
+ *  accordingly. The parameter "visibility" should determine whether the file
+ *  is visible only to the owner (i.e. private), shared to friends, or public.
+ *  The parameter "permission" determines whether non-owners have read-only or
+ *  read/write access. Note that we don't have this infrastructure for the Doc
+ *  API yet, either, so you may want to start with a skeleton of that - use PDD
+ *  to your advantage.
  */
-public final class TkDoc implements Take {
-
-    /**
-     * Base.
-     */
-    private final transient Base base;
-
-    /**
-     * Ctor.
-     * @param bse Base
-     */
-    public TkDoc(final Base bse) {
-        this.base = bse;
-    }
+public final class TkSetPermissions implements Take {
 
     @Override
     public Response act(final Request req) throws IOException {
-        return new TkFork(
-            new FkRegex("/doc/read", new TkRead(this.base)),
-            new FkRegex("/doc/delete", new TkDelete(this.base)),
-            new FkRegex("/doc/write", new TkWrite(this.base)),
-            new FkRegex("/doc/add-friend", new TkAddFriend(this.base)),
-            new FkRegex("/doc/eject-friend", new TkEjectFriend(this.base)),
-            new FkRegex("/doc/set-permissions", new TkSetPermissions())
-        ).act(req);
+        return new RsWithStatus(HttpURLConnection.HTTP_UNAVAILABLE);
     }
 
 }

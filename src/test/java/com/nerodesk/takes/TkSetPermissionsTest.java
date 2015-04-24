@@ -27,50 +27,33 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.takes.doc;
+package com.nerodesk.takes;
 
-import com.nerodesk.om.Base;
-import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
-import org.takes.facets.fork.FkRegex;
-import org.takes.facets.fork.TkFork;
+import com.nerodesk.takes.doc.TkSetPermissions;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.takes.rq.RqFake;
 
 /**
- * Takes for a specific document.
+ * Test case for {@link TkSetPermissions}.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
- * @since 0.3
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @checkstyle MultipleStringLiteralsCheck (500 lines)
+ * @since 0.4
  */
-public final class TkDoc implements Take {
+public final class TkSetPermissionsTest {
 
     /**
-     * Base.
+     * TkSetPermissions can return a response.
+     * @throws Exception If something goes wrong
      */
-    private final transient Base base;
-
-    /**
-     * Ctor.
-     * @param bse Base
-     */
-    public TkDoc(final Base bse) {
-        this.base = bse;
-    }
-
-    @Override
-    public Response act(final Request req) throws IOException {
-        return new TkFork(
-            new FkRegex("/doc/read", new TkRead(this.base)),
-            new FkRegex("/doc/delete", new TkDelete(this.base)),
-            new FkRegex("/doc/write", new TkWrite(this.base)),
-            new FkRegex("/doc/add-friend", new TkAddFriend(this.base)),
-            new FkRegex("/doc/eject-friend", new TkEjectFriend(this.base)),
-            new FkRegex("/doc/set-permissions", new TkSetPermissions())
-        ).act(req);
+    @Test
+    public void returnsResponse() throws Exception {
+        MatcherAssert.assertThat(
+            new TkSetPermissions().act(new RqFake()),
+            Matchers.notNullValue()
+        );
     }
 
 }
