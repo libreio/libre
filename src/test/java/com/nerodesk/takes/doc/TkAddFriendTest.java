@@ -30,12 +30,15 @@
 package com.nerodesk.takes.doc;
 
 import com.google.common.collect.Lists;
+import com.nerodesk.om.Base;
 import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
 import com.nerodesk.om.mock.MkBase;
+import com.nerodesk.takes.RqWithTester;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.takes.misc.Href;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
 
@@ -54,8 +57,10 @@ public final class TkAddFriendTest {
      */
     @Test
     public void addsFriend() throws Exception {
-        final Docs docs = new MkBase().user("urn:test:1").docs();
-        final Doc doc = docs.doc("hey");
+        final Base base = new MkBase();
+        final Docs docs = base.user("urn:test:1").docs();
+        final String name = "hey.txt";
+        final Doc doc = docs.doc(name);
         final String friend = "The Dude";
         MatcherAssert.assertThat(
             Lists.newArrayList(doc.friends().names()),
@@ -63,11 +68,14 @@ public final class TkAddFriendTest {
         );
         MatcherAssert.assertThat(
             new RsPrint(
-                new TkAddFriend(doc).act(
-                    new RqFake(
-                        "POST",
-                        "/",
-                        String.format("friend=%s", friend)
+                new TkAddFriend(base).act(
+                    new RqWithTester(
+                        new RqFake(
+                            "POST",
+                            new Href()
+                                .with("file", name)
+                                .with("friend", friend)
+                        )
                     )
                 )
             ).print(),
