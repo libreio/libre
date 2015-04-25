@@ -105,6 +105,21 @@ public final class SmallDoc implements Doc {
     }
 
     @Override
+    public boolean isDir() throws IOException {
+        return this.decorated.isDir();
+    }
+
+    @Override
+    public void mkDir() throws IOException {
+        this.decorated.mkDir();
+    }
+
+    @Override
+    public void rmDir(final boolean force) throws IOException {
+        this.decorated.rmDir(force);
+    }
+
+    @Override
     public void read(final OutputStream output) throws IOException {
         this.decorated.read(output);
     }

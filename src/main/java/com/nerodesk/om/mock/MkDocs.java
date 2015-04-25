@@ -36,6 +36,8 @@ import com.nerodesk.om.Docs;
 import com.nerodesk.om.SmallDoc;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
@@ -70,21 +72,34 @@ public final class MkDocs implements Docs {
         this.dir.mkdirs();
     }
 
+    /**
+     * Recursive list user directory files and folders.
+     * @return List of file and directory names.
+     */
     @Override
     public List<String> names() {
-        return Lists.transform(
-            Lists.newArrayList(
-                FileUtils.listFiles(
-                    this.dir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE
-                )
-            ),
-            new Function<File, String>() {
-                @Override
-                public String apply(final File input) {
-                    return input.getName();
-                }
-            }
-        );
+        final File root = new File(this.dir, this.name);
+        final List<String> result;
+        if (root.exists()) {
+            final Collection<File> list = FileUtils.listFilesAndDirs(
+                    root,
+                    TrueFileFilter.INSTANCE,
+                    TrueFileFilter.INSTANCE
+            );
+            list.remove(root);
+            result = Lists.transform(
+                    Lists.newArrayList(list),
+                    new Function<File, String>() {
+                        @Override
+                        public String apply(final File input) {
+                            return input.getName();
+                        }
+                    }
+            );
+        } else {
+            result = Collections.emptyList();
+        }
+        return result;
     }
 
     @Override

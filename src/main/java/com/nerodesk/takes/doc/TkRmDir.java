@@ -30,45 +30,67 @@
 package com.nerodesk.takes.doc;
 
 import com.nerodesk.om.Base;
+import com.nerodesk.om.Docs;
+import com.nerodesk.takes.RqUser;
 import java.io.IOException;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.facets.fork.FkRegex;
-import org.takes.facets.fork.TkFork;
+import org.takes.facets.flash.RsFlash;
+import org.takes.facets.forward.RsForward;
+import org.takes.rq.RqForm;
 
 /**
- * Takes for a directory.
+ * Remove directory (tree).
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
+ * @author Dmitry Koudryavtsev (juliasoft@mail.ru)
  * @version $Id$
- * @since 0.4
+ * @since 0.2
  */
-public final class TkDir implements Take {
-
+public final class TkRmDir implements Take {
     /**
      * Base.
      */
     private final transient Base base;
 
     /**
+     * Force rmDir.
+     */
+    private final transient boolean force;
+
+    /**
+     * Ctor.
+     * @param bse Base
+     * @param frc If true - force remove dirs.
+     */
+    TkRmDir(final Base bse, final boolean frc) {
+        this.base = bse;
+        this.force = frc;
+    }
+
+    /**
      * Ctor.
      * @param bse Base
      */
-    public TkDir(final Base bse) {
+    TkRmDir(final Base bse) {
         this.base = bse;
+        this.force = false;
     }
 
-    // @todo #150:30min This is initial implementation and is not
-    //  doing anything useful yet. We should implement ability to create
-    //  directories here. Moreover there should be also way to edit them,
-    //  remove and attach existing documents.
+    /**
+     * Process remove.
+     * @param req Request.
+     * @return Response.
+     * @throws IOException On error.
+     */
     @Override
     public Response act(final Request req) throws IOException {
-        return new TkFork(
-            new FkRegex("/dir/create", new TkMkDir(this.base)),
-            new FkRegex("/dir/rmdir", new TkRmDir(this.base)),
-            new FkRegex("/dir/rmdir/force", new TkRmDir(this.base, true))
-        ).act(req);
+        final RqForm frm = new RqForm.Base(req);
+        final Iterable<String> dirNames = frm.param("name");
+        final Docs docs = new RqUser(req, this.base).user().docs();
+        for (final String dirName : dirNames) {
+            docs.doc(dirName).rmDir(this.force);
+        }
+        return new RsForward(new RsFlash("direciory removed"));
     }
 }

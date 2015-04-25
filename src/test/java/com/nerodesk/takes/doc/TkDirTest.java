@@ -29,10 +29,14 @@
  */
 package com.nerodesk.takes.doc;
 
+import com.nerodesk.om.Base;
+import com.nerodesk.om.mock.MkBase;
+import com.nerodesk.takes.RqWithTester;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.rq.RqFake;
+import org.takes.rq.RqWithHeader;
 
 /**
  * Tests for {@code TsDir}.
@@ -49,8 +53,16 @@ public final class TkDirTest {
      */
     @Test
     public void returnsTake() throws Exception {
+        final Base base = new MkBase();
         MatcherAssert.assertThat(
-            new TkDir().act(new RqFake("POST", "/dir/create")),
+            new TkMkDir(base).act(
+                new RqWithTester(
+                    new RqWithHeader(
+                        new RqFake("POST", "/dir/create"),
+                        "name", "qqq"
+                    )
+                )
+            ),
             Matchers.notNullValue()
         );
     }

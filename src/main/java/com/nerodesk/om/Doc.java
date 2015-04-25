@@ -73,6 +73,26 @@ public interface Doc {
     String type() throws IOException;
 
     /**
+     * Is directory (folder).
+     * @return Returns true if document is directory.
+     * @throws IOException On I/O error.
+     */
+    boolean isDir() throws IOException;
+
+    /**
+     * Creates directory.
+     * @throws IOException On I/O error.
+     */
+    void mkDir() throws IOException;
+
+    /**
+     * Remove directory.
+     * @param force If true - drop even non-empty.
+     * @throws IOException On I/O error.
+     */
+    void rmDir(final boolean force) throws IOException;
+
+    /**
      * Timestamp when the document was created.
      * @return Date in UTC.
      * @throws IOException If fails

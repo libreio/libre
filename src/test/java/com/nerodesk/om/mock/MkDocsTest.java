@@ -29,6 +29,7 @@
  */
 package com.nerodesk.om.mock;
 
+import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
@@ -78,6 +79,71 @@ public final class MkDocsTest {
         MatcherAssert.assertThat(
             docs.names(),
             Matchers.contains(files)
+        );
+    }
+
+    /**
+     * Test create directory.
+     * @throws IOException If test fail.
+     */
+    @Test
+    public void testMkDir() throws IOException {
+        final String[] dirs = new String[] {"tmp1", "tmp2"};
+        final MkDocs docs = new MkDocs(this.temp.newFolder(), "temp");
+        for (final String dir : dirs) {
+            docs.doc(dir).mkDir();
+        }
+        MatcherAssert.assertThat(
+                docs.names(),
+                Matchers.containsInAnyOrder(dirs)
+        );
+    }
+
+    /**
+     * Test non-force remove directory.
+     * @throws IOException If test fail.
+     */
+    @Test
+    public void testRmDir() throws IOException {
+        final String[] dirs = new String[] {"tmp10", "tmp20"};
+        final MkDocs docs = new MkDocs(this.temp.newFolder(), "temp10");
+        for (final String dir : dirs) {
+            docs.doc(dir).mkDir();
+        }
+        MatcherAssert.assertThat(
+                docs.names(),
+                Matchers.containsInAnyOrder(dirs)
+        );
+        for (final String dir : dirs) {
+            docs.doc(dir).rmDir(false);
+        }
+        MatcherAssert.assertThat(
+                docs.names(),
+                Matchers.not(Matchers.contains(dirs))
+        );
+    }
+
+    /**
+     * Test force remove directory.
+     * @throws IOException If test fail.
+     */
+    @Test
+    public void testForceRmDir() throws IOException {
+        final String[] dirs = new String[] {"tmp11", "tmp12"};
+        final MkDocs docs = new MkDocs(this.temp.newFolder(), "temp111");
+        for (final String dir : dirs) {
+            docs.doc(dir).mkDir();
+        }
+        MatcherAssert.assertThat(
+                docs.names(),
+                Matchers.containsInAnyOrder(dirs)
+        );
+        for (final String dir : dirs) {
+            docs.doc(dir).rmDir(true);
+        }
+        MatcherAssert.assertThat(
+                docs.names(),
+                Matchers.not(Matchers.contains(dirs))
         );
     }
 
