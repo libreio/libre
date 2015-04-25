@@ -80,7 +80,7 @@
     <xsl:template match="doc">
         <tr>
             <td>
-                <a href="{read}" style="display:block">
+                <a href="{links/link[@rel='read']/@href}" style="display:block">
                     <xsl:value-of select="name"/>
                 </a>
                 <small>
@@ -97,7 +97,7 @@
                 </small>
             </td>
             <td>
-                <a href="{delete}">delete</a>
+                <a href="{links/link[@rel='delete']/@href}">delete</a>
             </td>
             <td>
                 <xsl:apply-templates select="friends"/>
@@ -109,7 +109,7 @@
     </xsl:template>
     <xsl:template match="friends">
         <xsl:apply-templates select="friend"/>
-        <form action="{../add-friend}" method="post">
+        <form action="{../links/link[@rel='add-friend']/@href}" method="post">
             <input name="friend" type="text" placeholder="email"/>
             <button>Share</button>
         </form>

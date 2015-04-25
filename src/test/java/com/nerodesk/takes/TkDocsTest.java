@@ -34,6 +34,8 @@ import com.nerodesk.om.Base;
 import com.nerodesk.om.User;
 import com.nerodesk.om.mock.MkBase;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.takes.facets.auth.Identity;
@@ -42,6 +44,7 @@ import org.takes.facets.auth.codecs.CcPlain;
 import org.takes.rq.RqFake;
 import org.takes.rq.RqWithHeader;
 import org.takes.rs.RsPrint;
+import org.takes.rs.RsXSLT;
 
 /**
  * Tests for {@code TkDocs}.
@@ -54,13 +57,18 @@ import org.takes.rs.RsPrint;
 public final class TkDocsTest {
 
     /**
+     * Fake user URN.
+     */
+    private static final String FAKE_URN = "urn:test:1";
+
+    /**
      * TkDocs can return a list of docs.
      * @throws Exception If fails.
      */
     @Test
     public void returnsListOfDocs() throws Exception {
         final Base base = new MkBase();
-        final String urn = "urn:test:1";
+        final String urn = TkDocsTest.FAKE_URN;
         final User user = base.user(urn);
         user.docs().doc("test.txt").write(
             new ByteArrayInputStream("hello, world!".getBytes())
@@ -85,6 +93,52 @@ public final class TkDocsTest {
                 "/page/docs[count(doc)=2]",
                 "/page/docs/doc[name='test.txt']",
                 "/page/docs/doc/links/link[@rel='read']"
+            )
+        );
+    }
+
+    /**
+     * TkDocs can add document links in HTML.
+     * @throws IOException In case of error
+     */
+    @Test
+    public void addsDocumentLinksInHTML() throws IOException {
+        final Base base = new MkBase();
+        final String file = "test3.txt";
+        base.user(TkDocsTest.FAKE_URN).docs()
+            .doc(file).write(new ByteArrayInputStream("hi".getBytes()));
+        MatcherAssert.assertThat(
+            IOUtils.toString(
+                new RsXSLT(
+                    new TkDocs(base).act(
+                        new RqWithHeader(
+                            new RqFake(),
+                            TkAuth.class.getSimpleName(),
+                            new String(
+                                new CcPlain().encode(
+                                    new Identity.Simple(TkDocsTest.FAKE_URN)
+                                )
+                            )
+                        )
+                    )
+                ).body()
+            ),
+            XhtmlMatchers.hasXPaths(
+                String.format(
+                    // @checkstyle LineLength (1 line)
+                    "//xhtml:a[@href='http://www.example.com/doc/read?file=%s']",
+                    file
+                ),
+                String.format(
+                    // @checkstyle LineLength (1 line)
+                    "//xhtml:a[@href='http://www.example.com/doc/delete?file=%s']",
+                    file
+                ),
+                String.format(
+                    // @checkstyle LineLength (1 line)
+                    "//xhtml:form[@action='http://www.example.com/doc/add-friend?file=%s']",
+                    file
+                )
             )
         );
     }
