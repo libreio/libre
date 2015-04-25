@@ -135,8 +135,9 @@ public final class MkDocTest {
     public void writesToFile() throws IOException {
         final File file = new File(this.folder.newFolder(), "writable");
         final String content = "store";
+        final byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
         new MkDoc(file, "", "").write(
-            new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
+            new ByteArrayInputStream(bytes), bytes.length
         );
         MatcherAssert.assertThat(
             Files.toString(file, StandardCharsets.UTF_8),
@@ -153,8 +154,9 @@ public final class MkDocTest {
         final File file = new File(this.folder.newFolder(), "findout");
         final String content = "Ordinary text content.";
         final Doc doc = new MkDoc(file, "", "");
+        final byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
         doc.write(
-            new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
+            new ByteArrayInputStream(bytes), bytes.length
         );
         MatcherAssert.assertThat(
             doc.type(),
@@ -171,8 +173,9 @@ public final class MkDocTest {
         final File file = new File(this.folder.newFolder(), "size");
         final String content = "count me";
         final Doc doc = new MkDoc(file, "", "");
+        final byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
         doc.write(
-            new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
+            new ByteArrayInputStream(bytes), bytes.length
         );
         MatcherAssert.assertThat(
             doc.size(),
@@ -190,8 +193,9 @@ public final class MkDocTest {
         final String content = "some content";
         final long before = System.currentTimeMillis();
         final Doc doc = new MkDoc(file, "", "");
+        final byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
         doc.write(
-            new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
+            new ByteArrayInputStream(bytes), bytes.length
         );
         final long after = System.currentTimeMillis();
         MatcherAssert.assertThat(

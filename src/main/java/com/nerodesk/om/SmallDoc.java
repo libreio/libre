@@ -110,10 +110,11 @@ public final class SmallDoc implements Doc {
     }
 
     @Override
-    public void write(final InputStream input) throws IOException {
+    public void write(final InputStream input, final long size)
+        throws IOException {
         try {
             this.decorated.write(
-                new ThresholdInputStream(input, this.mlength)
+                new ThresholdInputStream(input, this.mlength), size
             );
         } catch (final ThresholdInputStream.LimitReachedException exc) {
             throw new IllegalArgumentException(

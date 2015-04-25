@@ -128,7 +128,8 @@ public final class MkDoc implements Doc {
     }
 
     @Override
-    public void write(final InputStream input) throws IOException {
+    public void write(final InputStream input, final long size)
+        throws IOException {
         final File file = this.file();
         FileUtils.touch(file);
         try (final FileOutputStream output = new FileOutputStream(file)) {

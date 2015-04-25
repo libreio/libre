@@ -153,8 +153,9 @@ public final class TkAppTest {
     public void returnsFileContent() throws Exception {
         final Base base = new MkBase();
         final String name = "test.txt";
+        final byte[] bytes = "hello, world!".getBytes();
         base.user(TkAppTest.FAKE_URN).docs().doc(name).write(
-            new ByteArrayInputStream("hello, world!".getBytes())
+            new ByteArrayInputStream(bytes), bytes.length
         );
         final TkApp app = new TkApp(base);
         new FtRemote(app).exec(
@@ -183,7 +184,7 @@ public final class TkAppTest {
         final String name = "[][].txt";
         final String data = "fake data";
         base.user(TkAppTest.FAKE_URN).docs().doc(name).write(
-            new ByteArrayInputStream(data.getBytes())
+            new ByteArrayInputStream(data.getBytes()), data.getBytes().length
         );
         new FtRemote(new TkApp(base)).exec(
             new FtRemote.Script() {
@@ -211,7 +212,7 @@ public final class TkAppTest {
         final String name = "[][].txt";
         final String data = "fake data";
         base.user(TkAppTest.FAKE_URN).docs().doc(name).write(
-            new ByteArrayInputStream(data.getBytes())
+            new ByteArrayInputStream(data.getBytes()), data.getBytes().length
         );
         MatcherAssert.assertThat(
             base.user(TkAppTest.FAKE_URN).docs().names(),
@@ -246,7 +247,7 @@ public final class TkAppTest {
         final String name = "test.dat";
         final byte[] content = new byte[]{0x00, 0x0a, (byte) 0xff, (byte) 0xfe};
         base.user(TkAppTest.FAKE_URN).docs().doc(name).write(
-            new ByteArrayInputStream(content)
+            new ByteArrayInputStream(content), content.length
         );
         new FtRemote(new TkApp(base)).exec(
             new FtRemote.Script() {
