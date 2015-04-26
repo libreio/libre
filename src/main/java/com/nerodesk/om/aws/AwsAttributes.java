@@ -27,61 +27,48 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om;
+package com.nerodesk.om.aws;
 
-import com.jcabi.aspects.Immutable;
+import com.jcabi.aspects.Tv;
+import com.nerodesk.om.Attributes;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.util.Date;
+import lombok.EqualsAndHashCode;
 
 /**
- * Document.
+ * Aws based document attributes.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
- * @since 0.2
+ * @since 0.4
+ * @todo #243:30min Implement storage and retrieval of visible status of the
+ *  document, by implementing methods `visible` and `show` below. Don't forget
+ *  to test it first.
  */
-@Immutable
-public interface Doc {
+@EqualsAndHashCode
+public final class AwsAttributes implements Attributes {
+    @Override
+    public long size() throws IOException {
+        return Tv.MILLION;
+    }
 
-    /**
-     * Does it exist?
-     * @return TRUE if exists
-     * @throws IOException If fails
-     */
-    boolean exists() throws IOException;
+    @Override
+    public String type() throws IOException {
+        return "application/octet-stream";
+    }
 
-    /**
-     * Delete it (fails if the document is not mine).
-     * @throws IOException If fails
-     */
-    void delete() throws IOException;
+    @Override
+    public Date created() throws IOException {
+        return new Date();
+    }
 
-    /**
-     * Everybody who has access to this document.
-     * @return Friends
-     * @throws IOException If fails
-     */
-    Friends friends() throws IOException;
+    @Override
+    public boolean visible() throws IOException {
+        return true;
+    }
 
-    /**
-     * Read its entire content into this output stream.
-     * @param output Output stream
-     * @throws IOException If fails
-     */
-    void read(OutputStream output) throws IOException;
-
-    /**
-     * Write its entire content from this input stream.
-     * @param input Input stream
-     * @throws IOException If fails
-     */
-    void write(InputStream input) throws IOException;
-
-    /**
-     * Docuemnt attributes.
-     * @return Attributes
-     * @throws IOException If fails
-     */
-    Attributes attributes() throws IOException;
+    @Override
+    public void show(final boolean shown) throws IOException {
+        // do nothing
+    }
 }

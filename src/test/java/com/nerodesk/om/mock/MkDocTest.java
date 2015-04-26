@@ -30,13 +30,11 @@
 package com.nerodesk.om.mock;
 
 import com.google.common.io.Files;
-import com.nerodesk.om.Doc;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
@@ -141,69 +139,6 @@ public final class MkDocTest {
         MatcherAssert.assertThat(
             Files.toString(file, StandardCharsets.UTF_8),
             Matchers.equalTo(content)
-        );
-    }
-
-    /**
-     * MkDoc can guess content type.
-     * @throws IOException In case of error
-     */
-    @Test
-    public void guessesContentType() throws IOException {
-        final File file = new File(this.folder.newFolder(), "findout");
-        final String content = "Ordinary text content.";
-        final Doc doc = new MkDoc(file, "", "");
-        doc.write(
-            new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
-        );
-        MatcherAssert.assertThat(
-            doc.type(),
-            Matchers.notNullValue()
-        );
-    }
-
-    /**
-     * MkDoc can count bytes in document.
-     * @throws IOException In case of error
-     */
-    @Test
-    public void countsBytesInDocument() throws IOException {
-        final File file = new File(this.folder.newFolder(), "size");
-        final String content = "count me";
-        final Doc doc = new MkDoc(file, "", "");
-        doc.write(
-            new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
-        );
-        MatcherAssert.assertThat(
-            doc.size(),
-            Matchers.equalTo((long) content.length())
-        );
-    }
-
-    /**
-     * MkDoc can retrieve file creation time.
-     * @throws IOException In case of error
-     */
-    @Test
-    public void retrievesFileCreationTime() throws IOException {
-        final File file = new File(this.folder.newFolder(), "time");
-        final String content = "some content";
-        final long before = System.currentTimeMillis();
-        final Doc doc = new MkDoc(file, "", "");
-        doc.write(
-            new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
-        );
-        final long after = System.currentTimeMillis();
-        MatcherAssert.assertThat(
-            TimeUnit.MILLISECONDS.toSeconds(doc.created().getTime()),
-            Matchers.allOf(
-                Matchers.greaterThanOrEqualTo(
-                    TimeUnit.MILLISECONDS.toSeconds(before)
-                ),
-                Matchers.lessThanOrEqualTo(
-                    TimeUnit.MILLISECONDS.toSeconds(after)
-                )
-            )
         );
     }
 }
