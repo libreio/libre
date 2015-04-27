@@ -57,7 +57,8 @@ public final class TkReadTest {
     public void readsFileContent() throws Exception {
         final Base base = new MkBase();
         final Doc doc = base.user("urn:test:1").docs().doc("hey");
-        doc.write(IOUtils.toInputStream("hello, world!"));
+        final String input = "hello, world!";
+        doc.write(IOUtils.toInputStream(input), input.getBytes().length);
         MatcherAssert.assertThat(
             new RsPrint(
                 new TkRead(base).act(

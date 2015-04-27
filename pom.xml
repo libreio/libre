@@ -71,16 +71,16 @@
     </developers>
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/teamed/nerodesk/issues</url>
+        <url>https://github.com/nerodesk/nerodesk/issues</url>
     </issueManagement>
     <scm>
-        <connection>scm:git:git@github.com:teamed/nerodesk.git</connection>
-        <developerConnection>scm:git:git@github.com:teamed/nerodesk.git</developerConnection>
-        <url>https://github.com/teamed/nerodesk</url>
+        <connection>scm:git:git@github.com:nerodesk/nerodesk.git</connection>
+        <developerConnection>scm:git:git@github.com:nerodesk/nerodesk.git</developerConnection>
+        <url>https://github.com/nerodesk/nerodesk</url>
     </scm>
     <ciManagement>
         <system>travis</system>
-        <url>https://travis-ci.org/teamed/nerodesk</url>
+        <url>https://travis-ci.org/nerodesk/nerodesk</url>
     </ciManagement>
     <distributionManagement>
         <site>

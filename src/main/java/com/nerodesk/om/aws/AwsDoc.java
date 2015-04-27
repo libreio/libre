@@ -115,13 +115,18 @@ final class AwsDoc implements Doc {
     }
 
     @Override
-    public void write(final InputStream input) throws IOException {
+    public void write(final InputStream input, final long size)
+        throws IOException {
         final Ocket ocket = this.ocket();
         if (ocket.exists()
             && ocket.meta().getUserMetaDataOf(AwsDoc.HEADER) != null) {
             throw new IllegalStateException("you can't write to this doc");
         }
-        ocket.write(input, new ObjectMetadata());
+        final ObjectMetadata meta = new ObjectMetadata();
+        if (size > 0) {
+            meta.setContentLength(size);
+        }
+        ocket.write(input, meta);
         Logger.info(this, "%s written", ocket);
     }
 

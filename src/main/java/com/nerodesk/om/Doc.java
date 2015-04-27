@@ -74,9 +74,10 @@ public interface Doc {
     /**
      * Write its entire content from this input stream.
      * @param input Input stream
+     * @param size Size of the stream in bytes
      * @throws IOException If fails
      */
-    void write(InputStream input) throws IOException;
+    void write(InputStream input, long size) throws IOException;
 
     /**
      * Docuemnt attributes.

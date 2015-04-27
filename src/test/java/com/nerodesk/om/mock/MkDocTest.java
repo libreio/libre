@@ -133,8 +133,9 @@ public final class MkDocTest {
     public void writesToFile() throws IOException {
         final File file = new File(this.folder.newFolder(), "writable");
         final String content = "store";
+        final byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
         new MkDoc(file, "", "").write(
-            new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
+            new ByteArrayInputStream(bytes), bytes.length
         );
         MatcherAssert.assertThat(
             Files.toString(file, StandardCharsets.UTF_8),
