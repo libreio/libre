@@ -77,7 +77,7 @@
                                     </li>
                                     <li>
                                         <xsl:text>Source code is open at </xsl:text>
-                                        <a href="https://github.com/teamed/nerodesk">Github</a>
+                                        <a href="https://github.com/nerodesk/nerodesk">Github</a>
                                     </li>
                                 </ul>
                             </nav>

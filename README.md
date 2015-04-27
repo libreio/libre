@@ -1,9 +1,9 @@
 <img src="http://www.nerodesk.com/logo_large.png" width="384px" height="85px"/>
 
 [![Made By Teamed.io](http://img.teamed.io/btn.svg)](http://www.teamed.io)
-[![DevOps By Rultor.com](http://www.rultor.com/b/teamed/nerodesk)](http://www.rultor.com/p/teamed/nerodesk)
+[![DevOps By Rultor.com](http://www.rultor.com/b/nerodesk/nerodesk)](http://www.rultor.com/p/nerodesk/nerodesk)
 
-[![Build Status](https://travis-ci.org/teamed/nerodesk.svg?branch=master)](https://travis-ci.org/teamed/nerodesk)
+[![Build Status](https://travis-ci.org/nerodesk/nerodesk.svg?branch=master)](https://travis-ci.org/nerodesk/nerodesk)
 
 Open-Source Cloud Storage
 
@@ -80,4 +80,4 @@ $ mvn clean integration-test -Phit-refresh -Dport=8080
 ## Got questions?
 
 If you have questions or general suggestions, don't hesitate to submit
-a new [Github issue](https://github.com/teamed/nerodesk/issues/new).
+a new [Github issue](https://github.com/nerodesk/nerodesk/issues/new).
