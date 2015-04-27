@@ -62,11 +62,13 @@ public final class TkDocsTest {
         final Base base = new MkBase();
         final String urn = "urn:test:1";
         final User user = base.user(urn);
+        final byte[] helloworld = "hello, world!".getBytes();
         user.docs().doc("test.txt").write(
-            new ByteArrayInputStream("hello, world!".getBytes())
+            new ByteArrayInputStream(helloworld), helloworld.length
         );
+        final byte[] hello = "hello!".getBytes();
         user.docs().doc("test-2.txt").write(
-            new ByteArrayInputStream("hello!".getBytes())
+            new ByteArrayInputStream(hello), hello.length
         );
         MatcherAssert.assertThat(
             new RsPrint(

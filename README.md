@@ -1,9 +1,9 @@
 <img src="http://www.nerodesk.com/logo_large.png" width="384px" height="85px"/>
 
 [![Made By Teamed.io](http://img.teamed.io/btn.svg)](http://www.teamed.io)
-[![DevOps By Rultor.com](http://www.rultor.com/b/teamed/nerodesk)](http://www.rultor.com/p/teamed/nerodesk)
+[![DevOps By Rultor.com](http://www.rultor.com/b/nerodesk/nerodesk)](http://www.rultor.com/p/nerodesk/nerodesk)
 
-[![Build Status](https://travis-ci.org/teamed/nerodesk.svg?branch=master)](https://travis-ci.org/teamed/nerodesk)
+[![Build Status](https://travis-ci.org/nerodesk/nerodesk.svg?branch=master)](https://travis-ci.org/nerodesk/nerodesk)
 
 Open-Source Cloud Storage
 
@@ -34,6 +34,12 @@ If you're on Windows:
 java -cp target\nerodesk.jar;target\deps\* com.nerodesk.Launch --port=8080
 ```
 
+### File and Folder Visibility
+
+By default, files and folders are private, i.e. visible only to the owner. However, file
+and folder visibility may be set to public by the owner. Shared folders will
+automatically cascade their visibility to any contained files and subfolders.
+
 ## Limitations
 
 **File Size**.
@@ -58,6 +64,12 @@ sending us your pull request please run full Maven build:
 $ mvn clean install -Pqulice,cobertura
 ```
 
+Don't forget to set your default encoding to UTF-8. On Windows:
+
+```
+SET JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8
+```
+
 To avoid build errors use maven 3.2+. Minimum Java version is 1.7.
 
 To start a web server locally run:
@@ -69,4 +81,4 @@ $ mvn clean integration-test -Phit-refresh -Dport=8080
 ## Got questions?
 
 If you have questions or general suggestions, don't hesitate to submit
-a new [Github issue](https://github.com/teamed/nerodesk/issues/new).
+a new [Github issue](https://github.com/nerodesk/nerodesk/issues/new).

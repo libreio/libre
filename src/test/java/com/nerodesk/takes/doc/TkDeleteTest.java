@@ -59,7 +59,8 @@ public final class TkDeleteTest {
         final Base base = new MkBase();
         final Docs docs = base.user("urn:test:1").docs();
         final Doc doc = docs.doc("hey");
-        doc.write(IOUtils.toInputStream("hello, world!"));
+        final String input = "hello, world!";
+        doc.write(IOUtils.toInputStream(input), input.getBytes().length);
         MatcherAssert.assertThat(
             new RsPrint(
                 new TkDelete(base).act(

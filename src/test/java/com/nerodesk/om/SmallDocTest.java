@@ -66,8 +66,9 @@ public final class SmallDocTest {
     public void writesTheDoc() throws IOException {
         final File file = new File(this.folder.newFolder(), "writable");
         final String content = "store";
+        final byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
         new SmallDoc(new MkDoc(file, "", "")).write(
-            new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
+            new ByteArrayInputStream(bytes), bytes.length
         );
         MatcherAssert.assertThat(
             Files.toString(file, StandardCharsets.UTF_8),
@@ -85,8 +86,9 @@ public final class SmallDocTest {
             this.folder.newFolder(), "big_file"
         );
         final String content = StringUtils.repeat('b', 101);
-        new SmallDoc(new MkDoc(file, "", ""), (long) Tv.HUNDRED).write(
-            new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
+        final byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
+        new SmallDoc(new MkDoc(file, "", ""), Tv.HUNDRED).write(
+            new ByteArrayInputStream(bytes), bytes.length
         );
         MatcherAssert.assertThat(
             Files.toString(file, StandardCharsets.UTF_8),
@@ -106,8 +108,9 @@ public final class SmallDocTest {
             new MkDoc(file, "", ""),
             Tv.HUNDRED
         );
+        final byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
         doc.write(
-            new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))
+            new ByteArrayInputStream(bytes), bytes.length
         );
         MatcherAssert.assertThat(
             doc.shortUrl(),

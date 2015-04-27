@@ -68,7 +68,8 @@ public final class TkDoc implements Take {
             new FkRegex("/doc/delete", new TkDelete(this.base)),
             new FkRegex("/doc/write", new TkWrite(this.base)),
             new FkRegex("/doc/add-friend", new TkAddFriend(this.base)),
-            new FkRegex("/doc/eject-friend", new TkEjectFriend(this.base))
+            new FkRegex("/doc/eject-friend", new TkEjectFriend(this.base)),
+            new FkRegex("/doc/set-visibility", new TkSetVisibility())
         ).act(req);
     }
 
