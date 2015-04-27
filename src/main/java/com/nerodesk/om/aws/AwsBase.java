@@ -31,6 +31,7 @@ package com.nerodesk.om.aws;
 
 import com.jcabi.s3.Bucket;
 import com.nerodesk.om.Base;
+import com.nerodesk.om.Invitations;
 import com.nerodesk.om.User;
 import lombok.EqualsAndHashCode;
 
@@ -60,5 +61,10 @@ public final class AwsBase implements Base {
     @Override
     public User user(final String urn) {
         return new AwsUser(this.bucket, urn);
+    }
+
+    @Override
+    public Invitations invitations() {
+        return new AwsInvitations();
     }
 }
