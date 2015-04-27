@@ -140,13 +140,11 @@ public final class MkDoc implements Doc {
 
     @Override
     public String shortUrl() {
-        String url = "No URL";
         try {
-            url = this.file().toURI().toURL().toString();
+            return this.file().toURI().toURL().toString();
         } catch (final MalformedURLException ex) {
-            Logger.error(this, "Error happened: %s", ex.getMessage());
+            throw new IllegalStateException(ex);
         }
-        return url;
     }
 
     /**
