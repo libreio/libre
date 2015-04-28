@@ -30,21 +30,27 @@
 package com.nerodesk.takes.doc;
 
 import com.nerodesk.om.Base;
+import com.nerodesk.om.Docs;
+import com.nerodesk.takes.RqUser;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.facets.fork.FkRegex;
-import org.takes.facets.fork.TkFork;
+import org.takes.facets.flash.RsFlash;
+import org.takes.facets.forward.RsForward;
+import org.takes.rq.RqForm;
 
 /**
- * Takes for a directory.
+ * Create directory tree.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
+ * @author Dmitry Koudryavtsev (juliasoft@mail.ru)
  * @version $Id$
- * @since 0.4
+ * @since 0.2
  */
-public final class TkDir implements Take {
+public final class TkMkDir implements Take {
 
     /**
      * Base.
@@ -53,22 +59,35 @@ public final class TkDir implements Take {
 
     /**
      * Ctor.
+     *
      * @param bse Base
      */
-    public TkDir(final Base bse) {
+    TkMkDir(final Base bse) {
         this.base = bse;
     }
 
-    // @todo #150:30min This is initial implementation and is not
-    //  doing anything useful yet. We should implement ability to create
-    //  directories here. Moreover there should be also way to edit them,
-    //  remove and attach existing documents.
+    /**
+     * Process create.
+     * @param req Request.
+     * @return Response.
+     * @throws IOException On error.
+     */
     @Override
     public Response act(final Request req) throws IOException {
-        return new TkFork(
-            new FkRegex("/dir/create", new TkMkDir(this.base)),
-            new FkRegex("/dir/rmdir", new TkRmDir(this.base)),
-            new FkRegex("/dir/rmdir/force", new TkRmDir(this.base, true))
-        ).act(req);
+        final RqForm frm = new RqForm.Base(req);
+        final Iterable<String> dirNames = frm.param("name");
+        final List<String> dirs = new ArrayList<>(1);
+        final Docs docs = new RqUser(req, this.base).user().docs();
+        for (final String dirName : dirNames) {
+            docs.doc(dirName).mkDir();
+            dirs.add(dirName);
+        }
+        return new RsForward(
+            new RsFlash(
+                String.format(
+                    "direciory %s created", StringUtils.join(dirs, ", ")
+                )
+            )
+        );
     }
 }

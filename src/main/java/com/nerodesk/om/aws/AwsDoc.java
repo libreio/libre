@@ -42,6 +42,7 @@ import java.io.OutputStream;
 import java.util.Date;
 import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * AWS-based version of Doc.
@@ -61,6 +62,11 @@ final class AwsDoc implements Doc {
      * Header with a list of friends.
      */
     public static final String HEADER = "x-ndk-redirect";
+
+    /**
+     * Directory tag.
+     */
+    public static final String DIR = "x-dir";
 
     /**
      * Bucket.
@@ -112,6 +118,39 @@ final class AwsDoc implements Doc {
     @Override
     public Date created() throws IOException {
         return new Date();
+    }
+
+    @Override
+    public boolean isDir() throws IOException {
+        final String dir = this.ocket().meta().getUserMetaDataOf(AwsDoc.DIR);
+        return StringUtils.isNotBlank(dir) && Boolean.valueOf(dir);
+    }
+
+    /**
+     * Make AWS "direcory".
+     * @todo: Implement AWS metadata create for "directory"
+     * @throws IOException On error.
+     */
+    @Override
+    public void mkDir() throws IOException {
+        final Ocket ocket = this.ocket();
+        if (!ocket.exists()) {
+            Logger.info(this, "%s dir created", ocket);
+        }
+    }
+
+    /**
+     * Remove AWS directory.
+     * @todo: Implement AWS metadata remove for "directory"
+     * @param force If true - drop even non-empty.
+     * @throws IOException On error.
+     */
+    @Override
+    public void rmDir(final boolean force) throws IOException {
+        final Ocket ocket = this.ocket();
+        if (ocket.exists()) {
+            Logger.info(this, "%s dir removed", ocket);
+        }
     }
 
     @Override

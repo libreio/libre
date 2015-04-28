@@ -107,6 +107,40 @@ public final class MkDoc implements Doc {
     }
 
     @Override
+    public boolean isDir() throws IOException {
+        return this.file().isDirectory();
+    }
+
+    /**
+     * Make directory.
+     * @throws IOException On I/O error.
+     */
+    @Override
+    public void mkDir() throws IOException {
+        if (!this.file().exists()) {
+            FileUtils.forceMkdir(this.file());
+            Logger.info(this, "%s dir created", this.file());
+        }
+    }
+
+    /**
+     * Remove directory.
+     * @param force If true - drop even non-empty.
+     * @throws IOException On I/O error.
+     */
+    @Override
+    public void rmDir(final boolean force) throws IOException {
+        if (this.file().exists()) {
+            if (force) {
+                FileUtils.forceDelete(this.file());
+                Logger.info(this, "%s dir removed", this.file());
+            } else {
+                this.file().delete();
+            }
+        }
+    }
+
+    @Override
     public Date created() throws IOException {
         return new Date(
             Files.readAttributes(

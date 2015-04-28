@@ -40,6 +40,7 @@ import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -57,6 +58,45 @@ import org.mockito.stubbing.Answer;
  * @since 0.3
  */
 public final class AwsDocTest {
+
+    /**
+     * Check directory metadata created on AWS.
+     * @todo: implement AWS code.
+     * @throws IOException If test fail.
+     */
+    @Test
+    public void testAwsMkDir() throws IOException {
+        final String label = RandomStringUtils.randomAlphanumeric(8);
+        final AwsDoc doc = this.createDoc(label, label);
+        doc.mkDir();
+    }
+
+    /**
+     * Check directory metadata removed on AWS in non-force mode.
+     * @todo: implement AWS code.
+     * @throws IOException If test fail.
+     */
+    @Test
+    public void testAwsRmDir() throws IOException {
+        final String label = RandomStringUtils.randomAlphanumeric(8);
+        final AwsDoc doc = this.createDoc(label, label);
+        doc.mkDir();
+        doc.rmDir(false);
+    }
+
+    /**
+     * Check directory metadata removed on AWS in force mode.
+     * @todo: implement AWS code.
+     * @throws IOException If test fail.
+     */
+    @Test
+    public void testAwsRmDirForce() throws IOException {
+        final String label = RandomStringUtils.randomAlphanumeric(8);
+        final AwsDoc doc = this.createDoc(label, label);
+        doc.mkDir();
+        doc.rmDir(true);
+    }
+
     /**
      * AwsDoc can verify if it exists.
      * @throws Exception in case of error.
@@ -66,8 +106,9 @@ public final class AwsDocTest {
         final String label = "document-label";
         final Bucket bucket = this.mockBucket(label);
         MatcherAssert.assertThat(
-            new AwsDoc(bucket, "user-urn", "non-existent-document").exists(),
-            Matchers.is(false)
+                new AwsDoc(bucket, "user-urn", "non-existent-document")
+                        .exists(),
+                Matchers.is(false)
         );
     }
 
@@ -199,4 +240,5 @@ public final class AwsDocTest {
         );
         return doc;
     }
+
 }

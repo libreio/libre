@@ -34,6 +34,8 @@ import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
 import com.nerodesk.om.User;
 import java.io.IOException;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -58,6 +60,11 @@ import org.xembly.Directives;
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkDocs implements Take {
+    /**
+     * File Date-Time formatter.
+     */
+    private static final DateTimeFormatter FMT = ISODateTimeFormat
+            .dateTimeNoMillis();
 
     /**
      * Base.
@@ -130,8 +137,8 @@ public final class TkDocs implements Take {
                     new Directives()
                         .add("name").set(name).up()
                         .add("size").set(Long.toString(doc.size())).up()
-                        .add("created")
-                        .set(Long.toString(doc.created().getTime())).up()
+                        .add("created").set(FMT.print(doc.created().getTime()))
+                            .up()
                         .add("type").set(doc.type()).up()
                         .add("name").set(name)
                 ),
