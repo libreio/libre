@@ -65,20 +65,21 @@
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> readsFileContent() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>          <strong class="jxr_keyword">final</strong> Base base = <strong class="jxr_keyword">new</strong> MkBase();
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>          <strong class="jxr_keyword">final</strong> Doc doc = base.user(<span class="jxr_string">"urn:test:1"</span>).docs().doc(<span class="jxr_string">"hey"</span>);
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>          doc.write(IOUtils.toInputStream(<span class="jxr_string">"hello, world!"</span>));
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>          MatcherAssert.assertThat(
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>              <strong class="jxr_keyword">new</strong> RsPrint(
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>                  <strong class="jxr_keyword">new</strong> TkRead(base).act(
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>                      <strong class="jxr_keyword">new</strong> <a href="../../../../com/nerodesk/takes/RqWithTester.html">RqWithTester</a>(
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>                          <strong class="jxr_keyword">new</strong> RqFake(<span class="jxr_string">"GET"</span>, <span class="jxr_string">"/?file=hey"</span>)
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>                      )
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>                  )
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>              ).printBody(),
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>              Matchers.endsWith(<span class="jxr_string">"world!"</span>)
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>          );
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>      }
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>  
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>  }
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>          <strong class="jxr_keyword">final</strong> String input = <span class="jxr_string">"hello, world!"</span>;
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>          doc.write(IOUtils.toInputStream(input), input.getBytes().length);
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>          MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>              <strong class="jxr_keyword">new</strong> RsPrint(
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>                  <strong class="jxr_keyword">new</strong> TkRead(base).act(
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>                      <strong class="jxr_keyword">new</strong> <a href="../../../../com/nerodesk/takes/RqWithTester.html">RqWithTester</a>(
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>                          <strong class="jxr_keyword">new</strong> RqFake(<span class="jxr_string">"GET"</span>, <span class="jxr_string">"/?file=hey"</span>)
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>                      )
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>                  )
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>              ).printBody(),
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>              Matchers.endsWith(<span class="jxr_string">"world!"</span>)
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          );
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>      }
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>  
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2015 <a href="http://www.nerodesk.com">Nerodesk, Inc.</a>. All rights reserved.</div>

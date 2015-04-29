@@ -136,23 +136,24 @@
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>     }
 <a class="jxr_linenumber" name="L129" href="#L129">129</a> 
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>     @Override
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> write(<strong class="jxr_keyword">final</strong> InputStream input) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>         <strong class="jxr_keyword">final</strong> File file = <strong class="jxr_keyword">this</strong>.file();
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>         FileUtils.touch(file);
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>         <strong class="jxr_keyword">try</strong> (<strong class="jxr_keyword">final</strong> FileOutputStream output = <strong class="jxr_keyword">new</strong> FileOutputStream(file)) {
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>             IOUtils.copy(input, output);
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>         }
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>         Logger.info(<strong class="jxr_keyword">this</strong>, <span class="jxr_string">"%s saved"</span>, file);
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>     }
-<a class="jxr_linenumber" name="L139" href="#L139">139</a> 
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L141" href="#L141">141</a> <em class="jxr_javadoccomment">     * File.</em>
-<a class="jxr_linenumber" name="L142" href="#L142">142</a> <em class="jxr_javadoccomment">     * @return File</em>
-<a class="jxr_linenumber" name="L143" href="#L143">143</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>     <strong class="jxr_keyword">private</strong> File file() {
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> File(<strong class="jxr_keyword">new</strong> File(<strong class="jxr_keyword">this</strong>.dir, <strong class="jxr_keyword">this</strong>.user), <strong class="jxr_keyword">this</strong>.label);
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>     }
-<a class="jxr_linenumber" name="L147" href="#L147">147</a> }
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> write(<strong class="jxr_keyword">final</strong> InputStream input, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> size)
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>         <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>         <strong class="jxr_keyword">final</strong> File file = <strong class="jxr_keyword">this</strong>.file();
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>         FileUtils.touch(file);
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>         <strong class="jxr_keyword">try</strong> (<strong class="jxr_keyword">final</strong> FileOutputStream output = <strong class="jxr_keyword">new</strong> FileOutputStream(file)) {
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>             IOUtils.copy(input, output);
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>         }
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>         Logger.info(<strong class="jxr_keyword">this</strong>, <span class="jxr_string">"%s saved"</span>, file);
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>     }
+<a class="jxr_linenumber" name="L140" href="#L140">140</a> 
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L142" href="#L142">142</a> <em class="jxr_javadoccomment">     * File.</em>
+<a class="jxr_linenumber" name="L143" href="#L143">143</a> <em class="jxr_javadoccomment">     * @return File</em>
+<a class="jxr_linenumber" name="L144" href="#L144">144</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>     <strong class="jxr_keyword">private</strong> File file() {
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> File(<strong class="jxr_keyword">new</strong> File(<strong class="jxr_keyword">this</strong>.dir, <strong class="jxr_keyword">this</strong>.user), <strong class="jxr_keyword">this</strong>.label);
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>     }
+<a class="jxr_linenumber" name="L148" href="#L148">148</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2015 <a href="http://www.nerodesk.com">Nerodesk, Inc.</a>. All rights reserved.</div>

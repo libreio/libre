@@ -70,33 +70,35 @@
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          <strong class="jxr_keyword">final</strong> Base base = <strong class="jxr_keyword">new</strong> MkBase();
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          <strong class="jxr_keyword">final</strong> String urn = <span class="jxr_string">"urn:test:1"</span>;
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>          <strong class="jxr_keyword">final</strong> User user = base.user(urn);
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>          user.docs().doc(<span class="jxr_string">"test.txt"</span>).write(
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>              <strong class="jxr_keyword">new</strong> ByteArrayInputStream(<span class="jxr_string">"hello, world!"</span>.getBytes())
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>          );
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>          user.docs().doc(<span class="jxr_string">"test-2.txt"</span>).write(
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>              <strong class="jxr_keyword">new</strong> ByteArrayInputStream(<span class="jxr_string">"hello!"</span>.getBytes())
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>          );
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>          MatcherAssert.assertThat(
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>              <strong class="jxr_keyword">new</strong> RsPrint(
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>                  <strong class="jxr_keyword">new</strong> TkDocs(base).act(
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>                      <strong class="jxr_keyword">new</strong> RqWithHeader(
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>                          <strong class="jxr_keyword">new</strong> RqFake(),
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>                          TkAuth.<strong class="jxr_keyword">class</strong>.getSimpleName(),
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>                          <strong class="jxr_keyword">new</strong> String(
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>                              <strong class="jxr_keyword">new</strong> CcPlain().encode(<strong class="jxr_keyword">new</strong> Identity.Simple(urn))
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>                          )
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>                      )
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>                  )
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>              ).printBody(),
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>              XhtmlMatchers.hasXPaths(
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>                  <span class="jxr_string">"/page/user[balance=0]"</span>,
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>                  <span class="jxr_string">"/page/docs[count(doc)=2]"</span>,
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>                  <span class="jxr_string">"/page/docs/doc[name='test.txt']"</span>,
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>                  <span class="jxr_string">"/page/docs/doc/links/link[@rel='read']"</span>
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>              )
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>          );
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>      }
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>  }
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>          <strong class="jxr_keyword">final</strong> byte[] helloworld = <span class="jxr_string">"hello, world!"</span>.getBytes();
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>          user.docs().doc(<span class="jxr_string">"test.txt"</span>).write(
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>              <strong class="jxr_keyword">new</strong> ByteArrayInputStream(helloworld), helloworld.length
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>          );
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          <strong class="jxr_keyword">final</strong> byte[] hello = <span class="jxr_string">"hello!"</span>.getBytes();
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          user.docs().doc(<span class="jxr_string">"test-2.txt"</span>).write(
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>              <strong class="jxr_keyword">new</strong> ByteArrayInputStream(hello), hello.length
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>          );
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>              <strong class="jxr_keyword">new</strong> RsPrint(
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>                  <strong class="jxr_keyword">new</strong> TkDocs(base).act(
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>                      <strong class="jxr_keyword">new</strong> RqWithHeader(
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>                          <strong class="jxr_keyword">new</strong> RqFake(),
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>                          TkAuth.<strong class="jxr_keyword">class</strong>.getSimpleName(),
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>                          <strong class="jxr_keyword">new</strong> String(
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>                              <strong class="jxr_keyword">new</strong> CcPlain().encode(<strong class="jxr_keyword">new</strong> Identity.Simple(urn))
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>                          )
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>                      )
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>                  )
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>              ).printBody(),
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>              XhtmlMatchers.hasXPaths(
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>                  <span class="jxr_string">"/page/user[balance=0]"</span>,
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>                  <span class="jxr_string">"/page/docs[count(doc)=2]"</span>,
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>                  <span class="jxr_string">"/page/docs/doc[name='test.txt']"</span>,
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>                  <span class="jxr_string">"/page/docs/doc/links/link[@rel='read']"</span>
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>              )
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>          );
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>      }
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2015 <a href="http://www.nerodesk.com">Nerodesk, Inc.</a>. All rights reserved.</div>
