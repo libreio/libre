@@ -30,6 +30,7 @@
 package com.nerodesk.om.mock;
 
 import com.jcabi.log.Logger;
+import com.nerodesk.om.Attributes;
 import com.nerodesk.om.Doc;
 import com.nerodesk.om.Friends;
 import java.io.File;
@@ -39,9 +40,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Date;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -69,6 +67,11 @@ public final class MkDoc implements Doc {
     private final transient String label;
 
     /**
+     * Document attributes.
+     */
+    private final transient Attributes attrs;
+
+    /**
      * Ctor.
      * @param file Directory
      * @param urn URN
@@ -78,6 +81,7 @@ public final class MkDoc implements Doc {
         this.dir = file;
         this.user = urn;
         this.label = name;
+        this.attrs = new MkAttributes(this.file());
     }
 
     @Override
@@ -91,29 +95,6 @@ public final class MkDoc implements Doc {
         if (!file.delete()) {
             throw new IOException(String.format("Failed to delete %s", file));
         }
-    }
-
-    @Override
-    public long size() throws IOException {
-        return FileUtils.sizeOf(this.file());
-    }
-
-    @Override
-    public String type() throws IOException {
-        String type = Files.probeContentType(this.file().toPath());
-        if (type == null) {
-            type = "unknown";
-        }
-        return type;
-    }
-
-    @Override
-    public Date created() throws IOException {
-        return new Date(
-            Files.readAttributes(
-                this.file().toPath(), BasicFileAttributes.class
-            ).creationTime().toMillis()
-        );
     }
 
     @Override
@@ -146,6 +127,11 @@ public final class MkDoc implements Doc {
         } catch (final MalformedURLException ex) {
             throw new IllegalStateException(ex);
         }
+    }
+
+    @Override
+    public Attributes attributes() throws IOException {
+        return this.attrs;
     }
 
     /**
