@@ -27,62 +27,73 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om;
+package com.nerodesk.om.mock;
 
-import com.jcabi.aspects.Immutable;
+import com.nerodesk.om.Attributes;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Date;
+import org.apache.commons.io.FileUtils;
 
 /**
- * Document.
+ * Mock of document attributes.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
- * @since 0.2
+ * @since 0.4
  */
-@Immutable
-public interface Doc {
+public final class MkAttributes implements Attributes {
 
     /**
-     * Does it exist?
-     * @return TRUE if exists
-     * @throws IOException If fails
+     * File of document.
      */
-    boolean exists() throws IOException;
+    private final transient File file;
 
     /**
-     * Delete it (fails if the document is not mine).
-     * @throws IOException If fails
+     * Document shown to the public.
      */
-    void delete() throws IOException;
+    private transient boolean shown;
 
     /**
-     * Everybody who has access to this document.
-     * @return Friends
-     * @throws IOException If fails
+     * Constructor.
+     * @param fle File to use
      */
-    Friends friends() throws IOException;
+    public MkAttributes(final File fle) {
+        this.file = fle;
+    }
 
-    /**
-     * Read its entire content into this output stream.
-     * @param output Output stream
-     * @throws IOException If fails
-     */
-    void read(OutputStream output) throws IOException;
+    @Override
+    public long size() throws IOException {
+        return FileUtils.sizeOf(this.file);
+    }
 
-    /**
-     * Write its entire content from this input stream.
-     * @param input Input stream
-     * @param size Size of the stream in bytes
-     * @throws IOException If fails
-     */
-    void write(InputStream input, long size) throws IOException;
+    @Override
+    public String type() throws IOException {
+        String type = Files.probeContentType(this.file.toPath());
+        if (type == null) {
+            type = "unknown";
+        }
+        return type;
+    }
 
-    /**
-     * Docuemnt attributes.
-     * @return Attributes
-     * @throws IOException If fails
-     */
-    Attributes attributes() throws IOException;
+    @Override
+    public Date created() throws IOException {
+        return new Date(
+            Files.readAttributes(
+                this.file.toPath(), BasicFileAttributes.class
+            ).creationTime().toMillis()
+        );
+    }
+
+    @Override
+    public boolean visible() throws IOException {
+        return this.shown;
+    }
+
+    @Override
+    public void show(final boolean shwn) throws IOException {
+        this.shown = shwn;
+    }
 }

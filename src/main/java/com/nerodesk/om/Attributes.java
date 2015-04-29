@@ -29,60 +29,49 @@
  */
 package com.nerodesk.om;
 
-import com.jcabi.aspects.Immutable;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.util.Date;
 
 /**
- * Document.
- *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * Document attributes.
+ * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
- * @since 0.2
+ * @since 0.4
  */
-@Immutable
-public interface Doc {
-
+public interface Attributes {
     /**
-     * Does it exist?
-     * @return TRUE if exists
+     * Size of the document in bytes.
+     * @return Number of bytes
      * @throws IOException If fails
      */
-    boolean exists() throws IOException;
+    long size() throws IOException;
 
     /**
-     * Delete it (fails if the document is not mine).
+     * Mime type of the document.
+     * @return Mime type.
      * @throws IOException If fails
      */
-    void delete() throws IOException;
+    String type() throws IOException;
 
     /**
-     * Everybody who has access to this document.
-     * @return Friends
+     * Timestamp when the document was created.
+     * @return Date in UTC.
      * @throws IOException If fails
      */
-    Friends friends() throws IOException;
+    Date created() throws IOException;
 
     /**
-     * Read its entire content into this output stream.
-     * @param output Output stream
+     * Whether given document is public.
+     * @return True if it is public, false if it is private.
      * @throws IOException If fails
      */
-    void read(OutputStream output) throws IOException;
+    boolean visible() throws IOException;
 
     /**
-     * Write its entire content from this input stream.
-     * @param input Input stream
-     * @param size Size of the stream in bytes
+     * Show given document to the public or hide it.
+     * @param shown True if document should be public, false otherwise
      * @throws IOException If fails
      */
-    void write(InputStream input, long size) throws IOException;
+    void show(boolean shown) throws IOException;
 
-    /**
-     * Docuemnt attributes.
-     * @return Attributes
-     * @throws IOException If fails
-     */
-    Attributes attributes() throws IOException;
 }
