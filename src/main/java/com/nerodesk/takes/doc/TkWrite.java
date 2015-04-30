@@ -34,13 +34,12 @@ import com.nerodesk.om.Doc;
 import com.nerodesk.takes.RqDisposition;
 import com.nerodesk.takes.RqUser;
 import java.io.IOException;
-import java.util.Iterator;
+import java.io.InputStream;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
 import org.takes.facets.flash.RsFlash;
 import org.takes.facets.forward.RsForward;
-import org.takes.rq.RqHeaders;
 import org.takes.rq.RqMultipart;
 
 /**
@@ -75,15 +74,8 @@ final class TkWrite implements Take {
         final Doc doc = new RqUser(req, this.base).user().docs().doc(
             new RqDisposition(part).filename()
         );
-        final Iterator<String> header = new RqHeaders(multi)
-            .header("Content-Length").iterator();
-        final long size;
-        if (header.hasNext()) {
-            size = Long.parseLong(header.next());
-        } else {
-            size = 0;
-        }
-        doc.write(part.body(), size);
+        final InputStream body = part.body();
+        doc.write(body, body.available());
         return new RsForward(new RsFlash("file uploaded"));
     }
 
