@@ -128,7 +128,6 @@ public final class TkDocsTest {
             ),
             XhtmlMatchers.hasXPaths(
                 String.format(
-                    // @checkstyle LineLength (1 line)
                     "//xhtml:a[@href='%s']",
                     doc.shortUrl()
                 )
