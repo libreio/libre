@@ -128,7 +128,7 @@ final class AwsDoc implements Doc {
             meta.setContentLength(size);
         }
         ocket.write(input, meta);
-        Logger.info(this, "%s written", ocket);
+        Logger.info(this, "%d bytes saved to %s", size, ocket.key());
     }
 
     @Override
