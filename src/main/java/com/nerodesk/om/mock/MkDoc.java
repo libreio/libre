@@ -115,7 +115,8 @@ public final class MkDoc implements Doc {
         final File file = this.file();
         FileUtils.touch(file);
         try (final FileOutputStream output = new FileOutputStream(file)) {
-            IOUtils.copy(input, output);
+            final int count = IOUtils.copy(input, output);
+            IOUtils.write(new byte[(int) size - count], output);
         }
         Logger.info(this, "%s saved", file);
     }

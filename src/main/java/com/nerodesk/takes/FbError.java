@@ -29,7 +29,6 @@
  */
 package com.nerodesk.takes;
 
-import com.jcabi.log.Logger;
 import java.util.Collections;
 import java.util.Iterator;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -59,7 +58,6 @@ public final class FbError extends FbWrap {
                     final String exc = ExceptionUtils.getStackTrace(
                         req.throwable()
                     );
-                    Logger.info(this, "Exception thrown\n%s", exc);
                     return Collections.<Response>singleton(
                         new RsHTML(
                             String.format(
