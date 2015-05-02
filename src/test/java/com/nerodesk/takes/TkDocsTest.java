@@ -69,8 +69,7 @@ public final class TkDocsTest {
     @Test
     public void returnsListOfDocs() throws Exception {
         final Base base = new MkBase();
-        final String urn = "urn:test:1";
-        final User user = base.user(urn);
+        final User user = base.user(TkDocsTest.FAKE_URN);
         final byte[] helloworld = "hello, world!".getBytes();
         user.docs().doc("test.txt").write(
             new ByteArrayInputStream(helloworld), helloworld.length
@@ -86,7 +85,9 @@ public final class TkDocsTest {
                         new RqFake(),
                         TkAuth.class.getSimpleName(),
                         new String(
-                            new CcPlain().encode(new Identity.Simple(urn))
+                            new CcPlain().encode(
+                                new Identity.Simple(TkDocsTest.FAKE_URN)
+                            )
                         )
                     )
                 )
