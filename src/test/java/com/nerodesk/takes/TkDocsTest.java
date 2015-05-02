@@ -127,10 +127,7 @@ public final class TkDocsTest {
                 ).body()
             ),
             XhtmlMatchers.hasXPaths(
-                String.format(
-                    "//xhtml:a[@href='%s']",
-                    doc.shortUrl()
-                )
+                String.format("//xhtml:a[@href='%s']", doc.shortUrl())
             )
         );
     }
