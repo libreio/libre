@@ -96,7 +96,7 @@
                     <xsl:value-of select="created"/>
                 </small>
                 <small>
-                    <a href="{links/link[@rel='shortlink']/@href}" style="display:block">
+                    <a href="{links/link[@rel='short']/@href}" style="display:block">
                         link
                     </a>
                 </small>

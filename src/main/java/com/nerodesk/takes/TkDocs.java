@@ -138,7 +138,7 @@ public final class TkDocs implements Take {
                         .add("name").set(name)
                 ),
                 new XeLink("read", home.path("read")),
-                new XeLink("shortlink", new Href(doc.shortUrl())),
+                new XeLink("short", new Href(doc.shortUrl())),
                 new XeLink("delete", home.path("delete")),
                 new XeLink("add-friend", home.path("add-friend")),
                 new XeAppend(
