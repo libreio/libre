@@ -37,6 +37,7 @@ import org.takes.facets.fallback.Fallback;
 import org.takes.facets.fallback.FbWrap;
 import org.takes.facets.fallback.RqFallback;
 import org.takes.rs.RsHTML;
+import org.takes.rs.RsWithStatus;
 
 /**
  * Fallback for error.
@@ -59,11 +60,14 @@ public final class FbError extends FbWrap {
                         req.throwable()
                     );
                     return Collections.<Response>singleton(
-                        new RsHTML(
-                            String.format(
-                                "oops, something went wrong!\n%s",
-                                exc
-                            )
+                        new RsWithStatus(
+                            new RsHTML(
+                                String.format(
+                                    "oops, something went wrong!\n%s",
+                                    exc
+                                )
+                            ),
+                            req.code()
                         )
                     ).iterator();
                 }
