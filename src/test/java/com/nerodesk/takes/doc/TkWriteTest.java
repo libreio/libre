@@ -62,7 +62,8 @@ public final class TkWriteTest {
         final String file = "hey.txt";
         final String content = "hello, world!";
         final String body = Joiner.on("\r\n").join(
-            " --AaB03x",
+            // @checkstyle MultipleStringLiteralsCheck (1 line)
+            "--AaB03x",
             "Content-Disposition: form-data; name=\"name\"",
             "",
             file,

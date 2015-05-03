@@ -63,10 +63,9 @@ public final class RqDisposition extends RqWrap {
      */
     public RqDisposition(final Request req) throws IOException {
         super(req);
-        this.content = new RqHeaders(req)
-            .header("Content-Disposition")
-            .iterator()
-            .next();
+        this.content = new RqHeaders.Smart(
+            new RqHeaders.Base(req)
+        ).single("Content-Disposition");
     }
 
     /**

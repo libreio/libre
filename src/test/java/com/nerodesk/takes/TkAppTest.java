@@ -313,6 +313,7 @@ public final class TkAppTest {
                 @Override
                 public void exec(final URI home) throws IOException {
                     TkAppTest.write(home)
+                        .through(VerboseWire.class)
                         .fetch(
                             new ByteArrayInputStream(
                                 TkAppTest.multipart(name, file).getBytes()
@@ -434,7 +435,7 @@ public final class TkAppTest {
      */
     private static String multipart(final String name, final String content) {
         return Joiner.on("\r\n").join(
-            " --AaB03x",
+            "--AaB03x",
             "Content-Disposition: form-data; name=\"name\"",
             "",
             name,
