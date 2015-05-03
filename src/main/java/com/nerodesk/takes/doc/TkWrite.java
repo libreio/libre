@@ -71,7 +71,10 @@ final class TkWrite implements Take {
 
     @Override
     public Response act(final Request req) throws IOException {
-        Logger.info(this, "%d bytes incoming", new RqLengthAware(req).body().available());
+        Logger.info(
+            this, "%d bytes incoming",
+            new RqLengthAware(req).body().available()
+        );
         final RqMultipart multi = new RqMultipart.Base(req);
         final Request part = multi.part("file").iterator().next();
         final Doc doc = new RqUser(req, this.base).user().docs().doc(
