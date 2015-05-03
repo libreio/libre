@@ -37,15 +37,15 @@
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">package</strong> com.nerodesk.takes;
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> com.jcabi.log.Logger;
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> java.util.Collections;
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> java.util.Iterator;
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.exception.ExceptionUtils;
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> org.takes.Response;
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> org.takes.facets.fallback.Fallback;
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.takes.facets.fallback.FbWrap;
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.takes.facets.fallback.RqFallback;
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.takes.rs.RsHTML;
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">import</strong> java.util.Collections;
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">import</strong> java.util.Iterator;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <strong class="jxr_keyword">import</strong> org.apache.commons.lang3.exception.ExceptionUtils;
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">import</strong> org.takes.Response;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">import</strong> org.takes.facets.fallback.Fallback;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">import</strong> org.takes.facets.fallback.FbWrap;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.takes.facets.fallback.RqFallback;
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.takes.rs.RsHTML;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.takes.rs.RsWithStatus;
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  <em class="jxr_javadoccomment"> * Fallback for error.</em>
@@ -67,21 +67,23 @@
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>                      <strong class="jxr_keyword">final</strong> String exc = ExceptionUtils.getStackTrace(
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>                          req.throwable()
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>                      );
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>                      Logger.info(<strong class="jxr_keyword">this</strong>, <span class="jxr_string">"Exception thrown\n%s"</span>, exc);
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>                      <strong class="jxr_keyword">return</strong> Collections.&lt;Response&gt;singleton(
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>                          <strong class="jxr_keyword">new</strong> RsHTML(
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>                              String.format(
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>                                  <span class="jxr_string">"oops, something went wrong!\n%s"</span>,
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>                                  exc
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>                              )
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>                          )
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>                      ).iterator();
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>                  }
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>              }
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>          );
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>      }
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>  
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>  }
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>                      <strong class="jxr_keyword">return</strong> Collections.&lt;Response&gt;singleton(
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>                          <strong class="jxr_keyword">new</strong> RsWithStatus(
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>                              <strong class="jxr_keyword">new</strong> RsHTML(
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>                                  String.format(
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>                                      <span class="jxr_string">"oops, something went wrong!\n%s"</span>,
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>                                      exc
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>                                  )
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>                              ),
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>                              req.code()
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>                          )
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>                      ).iterator();
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>                  }
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>              }
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>          );
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>      }
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>  
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2015 <a href="http://www.nerodesk.com">Nerodesk, Inc.</a>. All rights reserved.</div>
