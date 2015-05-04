@@ -31,6 +31,7 @@ package com.nerodesk.takes;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.nerodesk.om.Base;
+import com.nerodesk.om.Doc;
 import com.nerodesk.om.User;
 import com.nerodesk.om.mock.MkBase;
 import java.io.ByteArrayInputStream;
@@ -68,13 +69,14 @@ public final class TkDocsTest {
     @Test
     public void returnsListOfDocs() throws Exception {
         final Base base = new MkBase();
-        final String urn = TkDocsTest.FAKE_URN;
-        final User user = base.user(urn);
+        final User user = base.user(TkDocsTest.FAKE_URN);
+        final byte[] helloworld = "hello, world!".getBytes();
         user.docs().doc("test.txt").write(
-            new ByteArrayInputStream("hello, world!".getBytes())
+            new ByteArrayInputStream(helloworld), helloworld.length
         );
+        final byte[] hello = "hello!".getBytes();
         user.docs().doc("test-2.txt").write(
-            new ByteArrayInputStream("hello!".getBytes())
+            new ByteArrayInputStream(hello), hello.length
         );
         MatcherAssert.assertThat(
             new RsPrint(
@@ -83,7 +85,9 @@ public final class TkDocsTest {
                         new RqFake(),
                         TkAuth.class.getSimpleName(),
                         new String(
-                            new CcPlain().encode(new Identity.Simple(urn))
+                            new CcPlain().encode(
+                                new Identity.Simple(TkDocsTest.FAKE_URN)
+                            )
                         )
                     )
                 )
@@ -98,6 +102,38 @@ public final class TkDocsTest {
     }
 
     /**
+     * TkDocs can add short link to document in HTML.
+     * @throws IOException In case of error
+     */
+    @Test
+    public void addsShortLinkInHTML() throws IOException {
+        final Base base = new MkBase();
+        final String file = "short.txt";
+        final Doc doc = base.user(TkDocsTest.FAKE_URN).docs().doc(file);
+        doc.write(new ByteArrayInputStream("hi".getBytes()), 2L);
+        MatcherAssert.assertThat(
+            IOUtils.toString(
+                new RsXSLT(
+                    new TkDocs(base).act(
+                        new RqWithHeader(
+                            new RqFake(),
+                            TkAuth.class.getSimpleName(),
+                            new String(
+                                new CcPlain().encode(
+                                    new Identity.Simple(TkDocsTest.FAKE_URN)
+                                )
+                            )
+                        )
+                    )
+                ).body()
+            ),
+            XhtmlMatchers.hasXPaths(
+                String.format("//xhtml:a[@href='%s']", doc.shortUrl())
+            )
+        );
+    }
+
+    /**
      * TkDocs can add document links in HTML.
      * @throws IOException In case of error
      */
@@ -105,8 +141,9 @@ public final class TkDocsTest {
     public void addsDocumentLinksInHTML() throws IOException {
         final Base base = new MkBase();
         final String file = "test3.txt";
+        final byte[] bytes = "hi!".getBytes();
         base.user(TkDocsTest.FAKE_URN).docs()
-            .doc(file).write(new ByteArrayInputStream("hi".getBytes()));
+            .doc(file).write(new ByteArrayInputStream(bytes), bytes.length);
         MatcherAssert.assertThat(
             IOUtils.toString(
                 new RsXSLT(

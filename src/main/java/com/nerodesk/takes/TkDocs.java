@@ -29,6 +29,7 @@
  */
 package com.nerodesk.takes;
 
+import com.nerodesk.om.Attributes;
 import com.nerodesk.om.Base;
 import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
@@ -123,19 +124,21 @@ public final class TkDocs implements Take {
         final Request req) throws IOException {
         final Href home = new RqHref.Base(req).href()
             .path("doc").with("file", name);
+        final Attributes attrs = doc.attributes();
         return new XeAppend(
             "doc",
             new XeChain(
                 new XeDirectives(
                     new Directives()
                         .add("name").set(name).up()
-                        .add("size").set(Long.toString(doc.size())).up()
+                        .add("size").set(Long.toString(attrs.size())).up()
                         .add("created")
-                        .set(Long.toString(doc.created().getTime())).up()
-                        .add("type").set(doc.type()).up()
+                        .set(Long.toString(attrs.created().getTime())).up()
+                        .add("type").set(attrs.type()).up()
                         .add("name").set(name)
                 ),
                 new XeLink("read", home.path("read")),
+                new XeLink("short", new Href(doc.shortUrl())),
                 new XeLink("delete", home.path("delete")),
                 new XeLink("add-friend", home.path("add-friend")),
                 new XeAppend(

@@ -1,9 +1,9 @@
 <img src="http://www.nerodesk.com/logo_large.png" width="384px" height="85px"/>
 
 [![Made By Teamed.io](http://img.teamed.io/btn.svg)](http://www.teamed.io)
-[![DevOps By Rultor.com](http://www.rultor.com/b/teamed/nerodesk)](http://www.rultor.com/p/teamed/nerodesk)
+[![DevOps By Rultor.com](http://www.rultor.com/b/nerodesk/nerodesk)](http://www.rultor.com/p/nerodesk/nerodesk)
 
-[![Build Status](https://travis-ci.org/teamed/nerodesk.svg?branch=master)](https://travis-ci.org/teamed/nerodesk)
+[![Build Status](https://travis-ci.org/nerodesk/nerodesk.svg?branch=master)](https://travis-ci.org/nerodesk/nerodesk)
 
 Open-Source Cloud Storage
 
@@ -16,6 +16,7 @@ Main features:
  - user can share any file with a few other users
  - user can see all their files in the web panel
  - user can manage file folders
+ - user can share files with shortened URLs
  - the entire code will be open source
  - the web panel will be hosted on Heroku
  - objects/files will be stored in Amazon S3 (in the future will be changed to Amazon EC2)
@@ -80,4 +81,4 @@ $ mvn clean integration-test -Phit-refresh -Dport=8080
 ## Got questions?
 
 If you have questions or general suggestions, don't hesitate to submit
-a new [Github issue](https://github.com/teamed/nerodesk/issues/new).
+a new [Github issue](https://github.com/nerodesk/nerodesk/issues/new).

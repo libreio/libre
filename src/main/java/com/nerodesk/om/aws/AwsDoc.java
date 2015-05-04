@@ -30,16 +30,16 @@
 package com.nerodesk.om.aws;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.jcabi.aspects.Tv;
 import com.jcabi.log.Logger;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
+import com.nerodesk.om.Attributes;
 import com.nerodesk.om.Doc;
 import com.nerodesk.om.Friends;
+import com.rosaloves.bitlyj.Bitly;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Date;
 import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 
@@ -100,21 +100,6 @@ final class AwsDoc implements Doc {
     }
 
     @Override
-    public long size() throws IOException {
-        return Tv.MILLION;
-    }
-
-    @Override
-    public String type() throws IOException {
-        return "application/octet-stream";
-    }
-
-    @Override
-    public Date created() throws IOException {
-        return new Date();
-    }
-
-    @Override
     public Friends friends() {
         return new AwsFriends(this.bucket, this.user, this.label);
     }
@@ -131,14 +116,38 @@ final class AwsDoc implements Doc {
     }
 
     @Override
-    public void write(final InputStream input) throws IOException {
+    public void write(final InputStream input, final long size)
+        throws IOException {
         final Ocket ocket = this.ocket();
         if (ocket.exists()
             && ocket.meta().getUserMetaDataOf(AwsDoc.HEADER) != null) {
             throw new IllegalStateException("you can't write to this doc");
         }
-        ocket.write(input, new ObjectMetadata());
-        Logger.info(this, "%s written", ocket);
+        final ObjectMetadata meta = new ObjectMetadata();
+        if (size > 0) {
+            meta.setContentLength(size);
+        }
+        ocket.write(input, meta);
+        Logger.info(this, "%d bytes saved to %s", size, ocket.key());
+    }
+
+    @Override
+    public String shortUrl() {
+        // @checkstyle MethodBodyCommentsCheck (5 lines)
+        // @todo #212:30min Implementation has to be replaced with the correct
+        //  one using the correct authentication for the bit.ly data and the
+        //  correctly generated url to the actual document. After that fix and
+        //  un-ignore the test `com.nerodesk.om.aws.AwsDocTest.shortenUrl()` to
+        //  match some real data.
+        return Bitly
+            .as("dummy_user", "dummy_api")
+            .call(Bitly.shorten("dummy_url"))
+            .getShortUrl();
+    }
+
+    @Override
+    public Attributes attributes() throws IOException {
+        return new AwsAttributes();
     }
 
     /**

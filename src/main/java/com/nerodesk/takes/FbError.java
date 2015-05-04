@@ -29,7 +29,6 @@
  */
 package com.nerodesk.takes;
 
-import com.jcabi.log.Logger;
 import java.util.Collections;
 import java.util.Iterator;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -37,7 +36,8 @@ import org.takes.Response;
 import org.takes.facets.fallback.Fallback;
 import org.takes.facets.fallback.FbWrap;
 import org.takes.facets.fallback.RqFallback;
-import org.takes.rs.RsHTML;
+import org.takes.rs.RsText;
+import org.takes.rs.RsWithStatus;
 
 /**
  * Fallback for error.
@@ -59,13 +59,15 @@ public final class FbError extends FbWrap {
                     final String exc = ExceptionUtils.getStackTrace(
                         req.throwable()
                     );
-                    Logger.info(this, "Exception thrown\n%s", exc);
                     return Collections.<Response>singleton(
-                        new RsHTML(
-                            String.format(
-                                "oops, something went wrong!\n%s",
-                                exc
-                            )
+                        new RsWithStatus(
+                            new RsText(
+                                String.format(
+                                    "oops, something went wrong!\n%s",
+                                    exc
+                                )
+                            ),
+                            req.code()
                         )
                     ).iterator();
                 }

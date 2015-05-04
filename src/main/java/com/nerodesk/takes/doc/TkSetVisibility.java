@@ -42,13 +42,10 @@ import org.takes.rs.RsWithStatus;
  * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
  * @since 0.4
- * @todo #214:30min Let's implement the setting of file visibility. When a
- *  request is received by this Take, it should read the appropriate parameters
- *  from the request, and set the permissions of the associated Doc
- *  accordingly. The parameter "visibility" should determine whether the file
- *  is private or public. Note that we don't have this functionality in the Doc
- *  API yet, either, so you may want to start with a skeleton of that - use
- *  PDD to your advantage.
+ * @todo #243:30min Implement setting of document visibility using method
+ *  `show` from `Attributes`. Update docs.xsl and TkDocs with correct link to
+ *  this class. docs.xsl should also show the current state of document
+ *  public/private status (using `Attributes.visible` method).
  */
 public final class TkSetVisibility implements Take {
 

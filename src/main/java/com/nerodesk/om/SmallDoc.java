@@ -32,7 +32,6 @@ package com.nerodesk.om;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Date;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -85,21 +84,6 @@ public final class SmallDoc implements Doc {
     }
 
     @Override
-    public long size() throws IOException {
-        return this.decorated.size();
-    }
-
-    @Override
-    public String type() throws IOException {
-        return this.decorated.type();
-    }
-
-    @Override
-    public Date created() throws IOException {
-        return this.decorated.created();
-    }
-
-    @Override
     public Friends friends() throws IOException {
         return this.decorated.friends();
     }
@@ -110,10 +94,11 @@ public final class SmallDoc implements Doc {
     }
 
     @Override
-    public void write(final InputStream input) throws IOException {
+    public void write(final InputStream input, final long size)
+        throws IOException {
         try {
             this.decorated.write(
-                new ThresholdInputStream(input, this.mlength)
+                new ThresholdInputStream(input, this.mlength), size
             );
         } catch (final ThresholdInputStream.LimitReachedException exc) {
             throw new IllegalArgumentException(
@@ -123,5 +108,15 @@ public final class SmallDoc implements Doc {
                 ), exc
             );
         }
+    }
+
+    @Override
+    public String shortUrl() {
+        return this.decorated.shortUrl();
+    }
+
+    @Override
+    public Attributes attributes() throws IOException {
+        return this.decorated.attributes();
     }
 }

@@ -60,8 +60,10 @@ public final class TkWriteTest {
         final Base base = new MkBase();
         final User user = base.user("urn:test:1");
         final String file = "hey.txt";
+        final String content = "hello, world!";
         final String body = Joiner.on("\r\n").join(
-            " --AaB03x",
+            // @checkstyle MultipleStringLiteralsCheck (1 line)
+            "--AaB03x",
             "Content-Disposition: form-data; name=\"name\"",
             "",
             file,
@@ -73,7 +75,7 @@ public final class TkWriteTest {
             ),
             "Content-Transfer-Encoding: utf-8",
             "",
-            "hello, world!",
+            content,
             "--AaB03x--"
         );
         MatcherAssert.assertThat(
@@ -81,8 +83,13 @@ public final class TkWriteTest {
                 new TkWrite(base).act(
                     new RqWithTester(
                         new RqWithHeader(
-                            new RqFake("POST", "/", body),
-                            "Content-Type: multipart/form-data; boundary=AaB03x"
+                            new RqWithHeader(
+                                new RqFake("POST", "/", body),
+                                "Content-Type",
+                                "multipart/form-data; boundary=AaB03x"
+                            ),
+                            "Content-length",
+                            String.valueOf(body.length())
                         )
                     )
                 )
@@ -93,7 +100,7 @@ public final class TkWriteTest {
         user.docs().doc(file).read(baos);
         MatcherAssert.assertThat(
             new String(baos.toByteArray()),
-            Matchers.endsWith("world!")
+            Matchers.equalTo(content)
         );
     }
 
