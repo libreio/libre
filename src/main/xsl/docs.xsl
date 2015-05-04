@@ -95,6 +95,11 @@
                     -->
                     <xsl:value-of select="created"/>
                 </small>
+                <small>
+                    <a href="{links/link[@rel='short']/@href}" style="display:block">
+                        link
+                    </a>
+                </small>
             </td>
             <td>
                 <a href="{delete}">delete</a>
