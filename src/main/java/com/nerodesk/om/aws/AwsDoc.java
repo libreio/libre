@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
+import org.takes.misc.Href;
 
 /**
  * AWS-based version of Doc.
@@ -140,8 +141,14 @@ final class AwsDoc implements Doc {
         //  un-ignore the test `com.nerodesk.om.aws.AwsDocTest.shortenUrl()` to
         //  match some real data.
         return Bitly
-            .as("dummy_user", "dummy_api")
-            .call(Bitly.shorten("dummy_url"))
+            .as("Nerodesk", "5f7c4f6303470093740b66d3f0b7d47e0367e893")
+            .call(
+                Bitly.shorten(
+                    new Href("http://www.nerodesk.com/doc/read").with(
+                        "file", this.label
+                    ).toString()
+                )
+            )
             .getShortUrl();
     }
 
