@@ -141,7 +141,7 @@ final class AwsDoc implements Doc {
         //  un-ignore the test `com.nerodesk.om.aws.AwsDocTest.shortenUrl()` to
         //  match some real data.
         return Bitly
-            .as("Nerodesk", "5f7c4f6303470093740b66d3f0b7d47e0367e893")
+            .as("nerodesk", "R_95c4f6c85c67498bba37a73872577410")
             .call(
                 Bitly.shorten(
                     new Href("http://www.nerodesk.com/doc/read").with(
