@@ -1,9 +1,9 @@
 <img src="http://www.nerodesk.com/logo_large.png" width="384px" height="85px"/>
 
 [![Made By Teamed.io](http://img.teamed.io/btn.svg)](http://www.teamed.io)
-[![DevOps By Rultor.com](http://www.rultor.com/b/nerodesk/nerodesk)](http://www.rultor.com/p/nerodesk/nerodesk)
+[![DevOps By Rultor.com](http://www.rultor.com/b/Nerodesk/nerodesk)](http://www.rultor.com/p/Nerodesk/nerodesk)
 
-[![Build Status](https://travis-ci.org/nerodesk/nerodesk.svg?branch=master)](https://travis-ci.org/nerodesk/nerodesk)
+[![Build Status](https://travis-ci.org/Nerodesk/nerodesk.svg?branch=master)](https://travis-ci.org/Nerodesk/nerodesk)
 
 Open-Source Cloud Storage
 
