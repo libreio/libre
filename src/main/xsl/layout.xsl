@@ -149,8 +149,27 @@
         <nav role="navigation">
             <ul>
                 <li title="account size">
-                    <xsl:value-of select="format-number(size div 1024, '0')"/>
-                    <xsl:text>Kb</xsl:text>
+                 <xsl:choose>
+                  <xsl:when test="size &gt;= 1073741824">
+                   <xsl:value-of select="format-number(size div 1073741824, '#,###')"/>
+                   <xsl:text>Gb</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="size &gt;= 1048576">
+                   <xsl:value-of select="format-number(size div 1048576, '#,###')"/>
+                   <xsl:text>Mb</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="size &gt;= 1024">
+                   <xsl:value-of select="format-number(size div 1024, '#,###')"/>
+                   <xsl:text>Kb</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="size &gt; 0 and size &lt; 1024">
+                   <xsl:value-of select="format-number(size div 0, '#,###')"/>
+                   <xsl:text>bytes</xsl:text>
+                  </xsl:when>
+                  <xsl:otherwise>
+                   <xsl:text>0 bytes</xsl:text>
+                  </xsl:otherwise>
+                 </xsl:choose>
                 </li>
             </ul>
         </nav>
