@@ -87,4 +87,4 @@ a new [Github issue](https://github.com/nerodesk/nerodesk/issues/new).
 
 Copyright (c) 2015, nerodesk.com. All rights reserved.
 
-License information is in `LICENSE.txt`.
+License information can be found in `LICENSE.txt`.
