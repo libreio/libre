@@ -55,9 +55,7 @@
             <xsl:apply-templates select="docs"/>
             <p>
             <xsl:text>
-                At the moment maximum document size is 10Mb.
-                The system is still in beta testing mode,
-                please excuse minor defects.
+                Nerodesk is currently in beta testing mode.
             </xsl:text>
             </p>
         </article>
