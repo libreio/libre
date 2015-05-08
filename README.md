@@ -81,10 +81,10 @@ $ mvn clean integration-test -Phit-refresh -Dport=8080
 ## Got questions?
 
 If you have questions or general suggestions, don't hesitate to submit
-a new [Github issue](https://github.com/nerodesk/nerodesk/issues/new).
+a new [GitHub issue](https://github.com/nerodesk/nerodesk/issues/new).
 
 ## License & Copyright
 
 Copyright (c) 2015, nerodesk.com. All rights reserved.
 
-License information can be found in `LICENSE.txt`.
+License information can be found [here](https://github.com/Nerodesk/nerodesk/blob/master/LICENSE.txt)
