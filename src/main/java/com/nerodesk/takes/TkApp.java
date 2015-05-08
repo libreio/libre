@@ -181,7 +181,7 @@ public final class TkApp extends TkWrap {
                 "/",
                 new TkFork(
                     new FkAuthenticated(new TkDocs(base)),
-                    new FkAnonymous(new TkIndex())
+                    new FkAnonymous(new TkIndex(base))
                 )
             ),
             new FkRegex(

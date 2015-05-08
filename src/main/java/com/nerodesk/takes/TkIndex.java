@@ -29,6 +29,7 @@
  */
 package com.nerodesk.takes;
 
+import com.nerodesk.om.Base;
 import java.io.IOException;
 import org.takes.Request;
 import org.takes.Response;
@@ -44,11 +45,25 @@ import org.takes.Take;
  */
 public final class TkIndex implements Take {
 
+    /**
+     * Base.
+     */
+    private final transient Base base;
+
+    /**
+     * Ctor.
+     * @param bse Base
+     */
+    public TkIndex(final Base bse) {
+        this.base = bse;
+    }
+
     @Override
     public Response act(final Request req) throws IOException {
         return new RsPage(
             "/xsl/home.xsl",
-            req
+            req,
+            this.base
         );
     }
 

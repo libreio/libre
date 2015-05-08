@@ -83,6 +83,7 @@ public final class TkDocs implements Take {
         return new RsPage(
             "/xsl/docs.xsl",
             req,
+            this.base,
             new XeLink("upload", "/doc/write"),
             new XeAppend(
                 "user",

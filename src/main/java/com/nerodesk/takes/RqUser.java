@@ -33,6 +33,7 @@ import com.nerodesk.om.Base;
 import com.nerodesk.om.User;
 import java.io.IOException;
 import org.takes.Request;
+import org.takes.facets.auth.Identity;
 import org.takes.facets.auth.RqAuth;
 import org.takes.rq.RqWrap;
 
@@ -67,6 +68,15 @@ public final class RqUser extends RqWrap {
      */
     public User user() throws IOException {
         return this.base.user(new RqAuth(this).identity().urn());
+    }
+
+    /**
+     * User is authenticated?
+     * @return TRUE if authenticated
+     * @throws IOException If fails
+     */
+    public boolean exists() throws IOException {
+        return !new RqAuth(this).identity().equals(Identity.ANONYMOUS);
     }
 
 }

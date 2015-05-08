@@ -98,7 +98,7 @@ final class AwsDocs implements Docs {
 
     @Override
     public long size() throws IOException {
-        long total = 0;
+        long total = 0L;
         for (final String object : this.bucket.list(this.prefix())) {
             total += this.bucket.ocket(object).meta().getContentLength();
         }

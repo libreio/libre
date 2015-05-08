@@ -95,6 +95,7 @@ public final class TkDocsTest {
             XhtmlMatchers.hasXPaths(
                 "/page/user[balance=0]",
                 "/page/docs[count(doc)=2]",
+                "/page/account/size",
                 "/page/docs/doc[name='test.txt']",
                 "/page/docs/doc/links/link[@rel='read']"
             )

@@ -54,17 +54,14 @@
                                     </li>
                                 </ul>
                             </nav>
-                            <nav role="navigation" class="navbar navbar-center">
+                            <nav role="navigation">
                                 <ul>
                                     <xsl:apply-templates select="identity"/>
                                     <xsl:apply-templates select="user"/>
-                                    <xsl:apply-templates select="flash"/>
-                                    <li title="total amount of bytes stored in your account">
-                                        <!-- @todo #102:30min This value is hardcoded for now but should be connected to Docs.size() value and present total amount of bytes in user friendly form stored in account. -->
-                                        <xsl:text>[storage total]</xsl:text>
-                                    </li>
                                 </ul>
                             </nav>
+                            <xsl:apply-templates select="account"/>
+                            <xsl:apply-templates select="flash"/>
                         </header>
                     </xsl:if>
                     <xsl:apply-templates select="." mode="body"/>
@@ -147,6 +144,16 @@
              balance a link to the account page.
             -->
         </li>
+    </xsl:template>
+    <xsl:template match="account">
+        <nav role="navigation">
+            <ul>
+                <li title="account size">
+                    <xsl:value-of select="format-number(size div 1024, '0')"/>
+                    <xsl:text>Kb</xsl:text>
+                </li>
+            </ul>
+        </nav>
     </xsl:template>
     <xsl:template match="flash">
         <div>

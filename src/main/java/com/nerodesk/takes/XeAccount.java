@@ -29,50 +29,60 @@
  */
 package com.nerodesk.takes;
 
-import com.jcabi.matchers.XhtmlMatchers;
-import com.nerodesk.om.mock.MkBase;
-import org.hamcrest.MatcherAssert;
-import org.junit.Test;
-import org.takes.rq.RqFake;
-import org.takes.rq.RqWithHeader;
-import org.takes.rs.RsPrint;
+import com.nerodesk.om.Base;
+import java.io.IOException;
+import org.takes.Request;
+import org.takes.rs.xe.XeAppend;
+import org.takes.rs.xe.XeSource;
+import org.takes.rs.xe.XeWhen;
+import org.takes.rs.xe.XeWrap;
+import org.xembly.Directive;
 
 /**
- * Tests for {@code TkIndex}.
+ * XE source for user account.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
+ * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.2
+ * @since 0.4
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-public final class TkIndexTest {
+final class XeAccount extends XeWrap {
 
     /**
-     * TkIndex can return XML.
-     * @throws Exception If fails.
+     * Ctor.
+     * @param base Base
+     * @param req Request
+     * @throws IOException If fails
      */
-    @Test
-    public void returnsXml() throws Exception {
-        MatcherAssert.assertThat(
-            new RsPrint(
-                new TkIndex(new MkBase()).act(new RqFake())
-            ).printBody(),
-            XhtmlMatchers.hasXPath("/page/millis")
-        );
+    XeAccount(final Base base, final Request req) throws IOException {
+        super(XeAccount.make(base, req));
     }
 
     /**
-     * TkIndex can return HTML.
-     * @throws Exception If fails.
+     * Make it.
+     * @param base Base
+     * @param req Request
+     * @return Response
+     * @throws IOException If fails
      */
-    @Test
-    public void returnsHtml() throws Exception {
-        MatcherAssert.assertThat(
-            new RsPrint(
-                new TkIndex(new MkBase()).act(
-                    new RqWithHeader(new RqFake(), "Accept: text/html")
-                )
-            ).printBody(),
-            XhtmlMatchers.hasXPath("/xhtml:html")
+    private static XeSource make(final Base base, final Request req)
+        throws IOException {
+        final RqUser user = new RqUser(req, base);
+        return new XeWhen(
+            user.exists(),
+            new XeSource() {
+                @Override
+                public Iterable<Directive> toXembly() throws IOException {
+                    return new XeAppend(
+                        "account",
+                        new XeAppend(
+                            "size",
+                            Long.toString(user.user().docs().size())
+                        )
+                    ).toXembly();
+                }
+            }
         );
     }
+
 }
