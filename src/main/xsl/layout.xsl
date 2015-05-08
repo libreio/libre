@@ -137,8 +137,10 @@
     </xsl:template>
     <xsl:template match="user">
         <li title="current user balance">
+            <!--
             <xsl:text>$</xsl:text>
             <xsl:value-of select="format-number(balance div 100, '0.00')"/>
+            -->
             <!--
             @todo #118:30min Create a page account.xsl that will display all of
              the transactions performed on the account and make the above
