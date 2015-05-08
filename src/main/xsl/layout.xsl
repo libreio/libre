@@ -61,7 +61,7 @@
                                     <xsl:apply-templates select="flash"/>
                                     <li title="total amount of bytes stored in your account">
                                         <!-- @todo #102:30min This value is hardcoded for now but should be connected to Docs.size() value and present total amount of bytes in user friendly form stored in account. -->
-                                        <xsl:text>[47 mb]</xsl:text>
+                                        <xsl:text>[storage total]</xsl:text>
                                     </li>
                                 </ul>
                             </nav>
@@ -76,8 +76,8 @@
                                         <xsl:text>&#169; Nerodesk.com, 2015</xsl:text>
                                     </li>
                                     <li>
-                                        <xsl:text>Source code is open at </xsl:text>
-                                        <a href="https://github.com/nerodesk/nerodesk">Github</a>
+                                        <xsl:text>Source code is available at </xsl:text>
+                                        <a href="https://github.com/nerodesk/nerodesk">GitHub</a>
                                     </li>
                                 </ul>
                             </nav>
