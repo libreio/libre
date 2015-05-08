@@ -54,9 +54,13 @@
             </form>
             <xsl:apply-templates select="docs"/>
             <p>
-            <xsl:text>
+            <small>
+             <div align="center">
+              <xsl:text>
                 Nerodesk is currently in beta testing mode.
-            </xsl:text>
+              </xsl:text>
+             </div>
+            </small>
             </p>
         </article>
     </xsl:template>
