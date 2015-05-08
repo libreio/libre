@@ -149,6 +149,7 @@
         <nav role="navigation">
             <ul>
                 <li title="account size">
+                 <xsl:text>total storage: </xsl:text>
                  <xsl:choose>
                   <xsl:when test="size &gt;= 1073741824">
                    <xsl:value-of select="format-number(size div 1073741824, '#,###')"/>
