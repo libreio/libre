@@ -8,6 +8,8 @@ Nerodesk-GithubId: ${github.id}
 Nerodesk-GithubSecret: ${github.secret}
 Nerodesk-GoogleId: ${google.id}
 Nerodesk-GoogleSecret: ${google.secret}
+Nerodesk-TwitterId: ${twitter.id}
+Nerodesk-TwitterSecret: ${twitter.secret}
 Nerodesk-SecurityKey: ${security.key}
 Nerodesk-AwsKey: ${aws.key}
 Nerodesk-AwsSecret: ${aws.secret}
