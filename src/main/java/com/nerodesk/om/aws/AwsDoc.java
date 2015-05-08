@@ -144,7 +144,7 @@ final class AwsDoc implements Doc {
             .as("nerodesk", "R_95c4f6c85c67498bba37a73872577410")
             .call(
                 Bitly.shorten(
-                    new Href("http://www.nerodesk.com/doc/read").with(
+                    new Href("http://beta.nerodesk.com/doc/read").with(
                         "file", this.label
                     ).toString()
                 )
