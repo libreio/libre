@@ -142,6 +142,7 @@ public final class TkDocs implements Take {
                 new XeLink("short", new Href(doc.shortUrl())),
                 new XeLink("delete", home.path("delete")),
                 new XeLink("add-friend", home.path("add-friend")),
+                new XeLink("set-visibility", home.path("set-visibility")),
                 new XeAppend(
                     "friends",
                     new XeTransform<>(

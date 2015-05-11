@@ -146,12 +146,12 @@
         </span>
     </xsl:template>
     <xsl:template match="visibility">
-        <form action="{set-visibility}" method="post">
+        <form action="{../links/link[@rel='set-visibility']/@href}" method="post">
             <select name="visibility">
                 <option>Private</option>
                 <option>Public</option>
             </select>
-            <input type="submit"/>
+            <button>Set</button>
         </form>
     </xsl:template>
 </xsl:stylesheet>

@@ -29,12 +29,14 @@
  */
 package com.nerodesk.takes.doc;
 
+import com.nerodesk.om.Base;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.rs.RsWithStatus;
+import org.takes.facets.flash.RsFlash;
+import org.takes.facets.forward.RsForward;
+import org.takes.rq.RqHref;
 
 /**
  * Set file visibility.
@@ -42,16 +44,37 @@ import org.takes.rs.RsWithStatus;
  * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
  * @since 0.4
- * @todo #243:30min Implement setting of document visibility using method
- *  `show` from `Attributes`. Update docs.xsl and TkDocs with correct link to
- *  this class. docs.xsl should also show the current state of document
- *  public/private status (using `Attributes.visible` method).
  */
 public final class TkSetVisibility implements Take {
 
+    /**
+     * Base.
+     */
+    private final transient Base base;
+
+    /**
+     * Ctor.
+     * @param bse Base
+     */
+    TkSetVisibility(final Base bse) {
+        this.base = bse;
+    }
+
     @Override
     public Response act(final Request req) throws IOException {
-        return new RsWithStatus(HttpURLConnection.HTTP_UNAVAILABLE);
+        final String visibility = new RqHref.Smart(
+            new RqHref.Base(req)
+        ).single("visibility");
+        new RqDoc(req, this.base).doc().attributes().show(
+            "Public".equals(visibility)
+        );
+        return new RsForward(
+            new RsFlash(
+                String.format(
+                    "document visibility set to \"%s\"", visibility
+                )
+            )
+        );
     }
 
 }
