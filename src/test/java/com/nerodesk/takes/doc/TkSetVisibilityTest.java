@@ -52,6 +52,21 @@ import org.takes.rs.RsPrint;
 public final class TkSetVisibilityTest {
 
     /**
+     * POST.
+     */
+    private static final String POST = "POST";
+
+    /**
+     * File parameter.
+     */
+    private static final String FILE = "file";
+
+    /**
+     * Visibility parameter.
+     */
+    private static final String VISIBILITY = "visibility";
+
+    /**
      * TkSetVisibility can return a response.
      * @throws Exception If something goes wrong
      */
@@ -63,10 +78,10 @@ public final class TkSetVisibilityTest {
             new TkSetVisibility(base).act(
                 new RqWithTester(
                     new RqFake(
-                        "POST",
+                        TkSetVisibilityTest.POST,
                         new Href()
-                            .with("file", name)
-                            .with("visibility", "Private")
+                            .with(TkSetVisibilityTest.FILE, name)
+                            .with(TkSetVisibilityTest.VISIBILITY, "Private")
                     )
                 )
             ),
@@ -99,10 +114,10 @@ public final class TkSetVisibilityTest {
                 new TkSetVisibility(base).act(
                     new RqWithTester(
                         new RqFake(
-                            "POST",
+                            TkSetVisibilityTest.POST,
                             new Href()
-                                .with("file", name)
-                                .with("visibility", "Public")
+                                .with(TkSetVisibilityTest.FILE, name)
+                                .with(TkSetVisibilityTest.VISIBILITY, "Public")
                         )
                     )
                 )
