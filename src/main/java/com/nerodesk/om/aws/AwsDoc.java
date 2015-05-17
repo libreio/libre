@@ -159,15 +159,9 @@ final class AwsDoc implements Doc {
      * @return Key
      */
     private Ocket ocket() {
-        return this.bucket.ocket(this.ocketKey());
-    }
-
-    /**
-     * Ocket key.
-     * @return Ocket key.
-     */
-    private String ocketKey() {
-        return String.format("%s/%s", this.user, this.label);
+        return this.bucket.ocket(
+            String.format("%s/%s", this.user, this.label)
+        );
     }
 
 }
