@@ -30,6 +30,7 @@
 package com.nerodesk.om.aws;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.jcabi.manifests.Manifests;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
 import com.jcabi.s3.mock.MkBucket;
@@ -42,7 +43,6 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
@@ -139,13 +139,17 @@ public final class AwsDocTest {
      * @throws IOException If unsuccessful.
      */
     @Test
-    @Ignore
     public void shortenUrl() throws IOException {
+        Manifests.DEFAULT.put("Nerodesk-BitlyId", "nerodesk");
+        Manifests.DEFAULT.put(
+            "Nerodesk-BitlyKey",
+            "R_95c4f6c85c67498bba37a73872577410"
+        );
         final String label = "shorten";
         final AwsDoc doc = this.createDoc(label, label);
         MatcherAssert.assertThat(
             doc.shortUrl(),
-            Matchers.equalTo(doc.shortUrl())
+            Matchers.equalTo("http://bit.ly/1GgY5gX")
         );
     }
 

@@ -14,3 +14,5 @@ Nerodesk-SecurityKey: ${security.key}
 Nerodesk-AwsKey: ${aws.key}
 Nerodesk-AwsSecret: ${aws.secret}
 Nerodesk-Bucket: ${bucket}
+Nerodesk-BitlyId: ${bitly.id}
+Nerodesk-BitlyKey: ${bitly.key}
