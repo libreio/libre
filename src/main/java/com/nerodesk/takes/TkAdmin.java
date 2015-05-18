@@ -89,9 +89,7 @@ public final class TkAdmin implements Take {
                                     new Directives()
                                         .add("path").set(
                                         String.format(
-                                            "%s/%s",
-                                            user.urn().replaceAll(":", "/"),
-                                            name
+                                            "%s/%s", user.urn(), name
                                         )
                                     )
                                 )

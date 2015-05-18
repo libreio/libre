@@ -85,8 +85,8 @@ public final class TkAdminTest {
             ).printBody(),
             XhtmlMatchers.hasXPaths(
                 "/page/docs[count(doc)=2]",
-                "/page/docs/doc[path='urn/test/1/test.txt']",
-                "/page/docs/doc[path='urn/test/1/test-2.txt']"
+                "/page/docs/doc[path='urn:test:1/test.txt']",
+                "/page/docs/doc[path='urn:test:1/test-2.txt']"
             )
         );
     }
@@ -136,10 +136,10 @@ public final class TkAdminTest {
             ).printBody(),
             XhtmlMatchers.hasXPaths(
                 "/page/docs[count(doc)=4]",
-                "/page/docs/doc[path='urn/test/1/test_u1.txt']",
-                "/page/docs/doc[path='urn/test/1/test_u1_2.txt']",
-                "/page/docs/doc[path='urn/test/2/test_u2.txt']",
-                "/page/docs/doc[path='urn/test/2/test_u2_2.txt']"
+                "/page/docs/doc[path='urn:test:1/test_u1.txt']",
+                "/page/docs/doc[path='urn:test:1/test_u1_2.txt']",
+                "/page/docs/doc[path='urn:test:2/test_u2.txt']",
+                "/page/docs/doc[path='urn:test:2/test_u2_2.txt']"
             )
         );
     }
