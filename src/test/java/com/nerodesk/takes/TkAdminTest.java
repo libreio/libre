@@ -63,11 +63,13 @@ public final class TkAdminTest {
         final Base base = new MkBase();
         final String urn = "urn:test:1";
         final User user = base.user(urn);
+        final String content = "hello, world!";
         user.docs().doc("test.txt").write(
-            new ByteArrayInputStream("hello, world!".getBytes())
+            new ByteArrayInputStream(content.getBytes()), content.length()
         );
+        final String second = "hello!";
         user.docs().doc("test-2.txt").write(
-            new ByteArrayInputStream("hello!".getBytes())
+            new ByteArrayInputStream(second.getBytes()), second.length()
         );
         MatcherAssert.assertThat(
             new RsPrint(
@@ -99,18 +101,26 @@ public final class TkAdminTest {
         final Base base = new MkBase();
         final String urn = "urn:test:2";
         final User user = base.user(urn);
+        final String content = "User1. File1";
         user.docs().doc("test_u1.txt").write(
-            new ByteArrayInputStream("User1. File1".getBytes())
+            new ByteArrayInputStream(content.getBytes()),
+            content.length()
         );
+        final String second = "User1. File2";
         user.docs().doc("test_u1_2.txt").write(
-            new ByteArrayInputStream("User1. File2".getBytes())
+            new ByteArrayInputStream(second.getBytes()),
+            second.length()
         );
+        final String third = "User2. File1";
         final User another = base.user("urn:test:3");
         another.docs().doc("test_u2.txt").write(
-            new ByteArrayInputStream("User2. File1".getBytes())
+            new ByteArrayInputStream(third.getBytes()),
+            third.length()
         );
+        final String fourth = "User2. File2";
         another.docs().doc("test_u2_2.txt").write(
-            new ByteArrayInputStream("User2. File2".getBytes())
+            new ByteArrayInputStream(fourth.getBytes()),
+            fourth.length()
         );
         MatcherAssert.assertThat(
             new RsPrint(

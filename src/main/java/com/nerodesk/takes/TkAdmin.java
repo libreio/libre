@@ -30,15 +30,16 @@
 package com.nerodesk.takes;
 
 import com.nerodesk.om.Base;
-import com.nerodesk.om.Docs;
 import com.nerodesk.om.User;
 import java.io.IOException;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
 import org.takes.facets.auth.RqAuth;
+import org.takes.rs.xe.XeAppend;
+import org.takes.rs.xe.XeDirectives;
 import org.takes.rs.xe.XeSource;
-import org.xembly.Directive;
+import org.takes.rs.xe.XeTransform;
 import org.xembly.Directives;
 
 /**
@@ -74,35 +75,31 @@ public final class TkAdmin implements Take {
         return new RsPage(
             "/xsl/admin.xsl",
             req,
-            new XeSource() {
-                @Override
-                public Iterable<Directive> toXembly() throws IOException {
-                    return TkAdmin.this.list(user);
-                }
-            }
+            this.base,
+            new XeAppend(
+                "docs",
+                new XeTransform<>(
+                    user.docs().names(),
+                    new XeTransform.Func<String>() {
+                        @Override
+                        public XeSource transform(final String name) {
+                            return new XeAppend(
+                                "doc",
+                                new XeDirectives(
+                                    new Directives()
+                                        .add("path").set(
+                                        String.format(
+                                            "%s/%s",
+                                            user.urn().replaceAll(":", "/"),
+                                            name
+                                        )
+                                    )
+                                )
+                            );
+                        }
+                    }
+                )
+            )
         );
-    }
-
-    /**
-     * Convert docs into directives.
-     * @param user User
-     * @return Directives
-     * @throws IOException If fails
-     */
-    private Iterable<Directive> list(final User user)
-        throws IOException {
-        final Directives dirs = new Directives();
-        final Docs docs = user.docs();
-        dirs.add("docs");
-        for (final String name : docs.names()) {
-            dirs.add("doc")
-                .add("path").set(
-                    String.format(
-                        "%s/%s", user.urn().replaceAll(":", "/"), name
-                    )
-                ).up();
-            dirs.up();
-        }
-        return dirs;
     }
 }
