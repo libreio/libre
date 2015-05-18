@@ -29,7 +29,6 @@
  */
 package com.nerodesk.om.aws;
 
-import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -45,20 +44,22 @@ public final class AwsAttributesTest {
 
     /**
      * AwsAttributes can be invisible by default.
-     * @throws IOException If fails.
+     * @throws Exception If fails.
      */
     @Test
-    public void isNotVisibleByDefault() throws IOException {
-        final AwsAttributes attr = new AwsAttributes();
-        MatcherAssert.assertThat(attr.visible(), Matchers.equalTo(false));
+    public void invisibleByDefault() throws Exception {
+        MatcherAssert.assertThat(
+            new AwsAttributes().visible(),
+            Matchers.equalTo(false)
+        );
     }
 
     /**
      * AwsAttributes can change visibility status properly.
-     * @throws IOException If fails.
+     * @throws Exception If fails.
      */
     @Test
-    public void changesVisibility() throws IOException {
+    public void changesVisibility() throws Exception {
         final AwsAttributes attr = new AwsAttributes();
         attr.show(true);
         MatcherAssert.assertThat(attr.visible(), Matchers.equalTo(true));
