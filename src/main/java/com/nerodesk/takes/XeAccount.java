@@ -27,68 +27,62 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om;
+package com.nerodesk.takes;
 
-import com.jcabi.aspects.Immutable;
+import com.nerodesk.om.Base;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import org.takes.Request;
+import org.takes.rs.xe.XeAppend;
+import org.takes.rs.xe.XeSource;
+import org.takes.rs.xe.XeWhen;
+import org.takes.rs.xe.XeWrap;
+import org.xembly.Directive;
 
 /**
- * Document.
+ * XE source for user account.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.2
+ * @since 0.4
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@Immutable
-public interface Doc {
+final class XeAccount extends XeWrap {
 
     /**
-     * Does it exist?
-     * @return TRUE if exists
+     * Ctor.
+     * @param base Base
+     * @param req Request
      * @throws IOException If fails
      */
-    boolean exists() throws IOException;
+    XeAccount(final Base base, final Request req) throws IOException {
+        super(XeAccount.make(base, req));
+    }
 
     /**
-     * Delete it (fails if the document is not mine).
+     * Make it.
+     * @param base Base
+     * @param req Request
+     * @return Response
      * @throws IOException If fails
      */
-    void delete() throws IOException;
+    private static XeSource make(final Base base, final Request req)
+        throws IOException {
+        final RqUser user = new RqUser(req, base);
+        return new XeWhen(
+            user.exists(),
+            new XeSource() {
+                @Override
+                public Iterable<Directive> toXembly() throws IOException {
+                    return new XeAppend(
+                        "account",
+                        new XeAppend(
+                            "size",
+                            Long.toString(user.user().docs().size())
+                        )
+                    ).toXembly();
+                }
+            }
+        );
+    }
 
-    /**
-     * Everybody who has access to this document.
-     * @return Friends
-     * @throws IOException If fails
-     */
-    Friends friends() throws IOException;
-
-    /**
-     * Read its entire content into this output stream.
-     * @param output Output stream
-     * @throws IOException If fails
-     */
-    void read(OutputStream output) throws IOException;
-
-    /**
-     * Write its entire content from this input stream.
-     * @param input Input stream
-     * @param size Size of the stream in bytes
-     * @throws IOException If fails
-     */
-    void write(InputStream input, long size) throws IOException;
-
-    /**
-     * Shorten the URL to the document.
-     * @return Shortened URL as a string.
-     */
-    String shortUrl();
-
-    /**
-     * Document attributes.
-     * @return Attributes
-     * @throws IOException If fails
-     */
-    Attributes attributes() throws IOException;
 }

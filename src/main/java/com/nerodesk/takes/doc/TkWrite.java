@@ -29,13 +29,20 @@
  */
 package com.nerodesk.takes.doc;
 
+import com.jcabi.log.Logger;
+import com.nerodesk.om.Base;
 import com.nerodesk.om.Doc;
+import com.nerodesk.takes.RqDisposition;
+import com.nerodesk.takes.RqUser;
 import java.io.IOException;
+import java.io.InputStream;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
 import org.takes.facets.flash.RsFlash;
 import org.takes.facets.forward.RsForward;
+import org.takes.rq.RqBuffered;
+import org.takes.rq.RqLengthAware;
 import org.takes.rq.RqMultipart;
 
 /**
@@ -51,22 +58,31 @@ import org.takes.rq.RqMultipart;
 final class TkWrite implements Take {
 
     /**
-     * Doc.
+     * Base.
      */
-    private final transient Doc doc;
+    private final transient Base base;
 
     /**
      * Ctor.
-     * @param document Document
+     * @param bse Base
      */
-    TkWrite(final Doc document) {
-        this.doc = document;
+    TkWrite(final Base bse) {
+        this.base = bse;
     }
 
     @Override
     public Response act(final Request req) throws IOException {
-        final RqMultipart multi = new RqMultipart.Base(req);
-        this.doc.write(multi.part("file").iterator().next().body());
+        final RqMultipart multi = new RqMultipart.Base(new RqBuffered(req));
+        Logger.info(
+            this, "%d bytes received and parsed",
+            new RqLengthAware(req).body().available()
+        );
+        final Request part = multi.part("file").iterator().next();
+        final Doc doc = new RqUser(req, this.base).user().docs().doc(
+            new RqDisposition(part).filename()
+        );
+        final InputStream body = part.body();
+        doc.write(body, body.available());
         return new RsForward(new RsFlash("file uploaded"));
     }
 

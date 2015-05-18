@@ -29,6 +29,7 @@
  */
 package com.nerodesk.takes;
 
+import com.nerodesk.om.Attributes;
 import com.nerodesk.om.Base;
 import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
@@ -40,9 +41,12 @@ import org.takes.Take;
 import org.takes.facets.auth.RqAuth;
 import org.takes.misc.Href;
 import org.takes.rq.RqHref;
+import org.takes.rs.xe.XeAppend;
+import org.takes.rs.xe.XeChain;
+import org.takes.rs.xe.XeDirectives;
 import org.takes.rs.xe.XeLink;
 import org.takes.rs.xe.XeSource;
-import org.xembly.Directive;
+import org.takes.rs.xe.XeTransform;
 import org.xembly.Directives;
 
 /**
@@ -52,6 +56,7 @@ import org.xembly.Directives;
  * @version $Id$
  * @since 0.2
  * @checkstyle MultipleStringLiteralsCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class TkDocs implements Take {
 
@@ -68,68 +73,112 @@ public final class TkDocs implements Take {
         this.base = bse;
     }
 
+    // @todo #118:30min User balance shouldn't be inside docs page but in some
+    //  kind of decorator of all the pages that are show to logged in users.
+    //  Create such place and move user directive there.
     @Override
     public Response act(final Request req) throws IOException {
         final User user = this.base.user(new RqAuth(req).identity().urn());
+        final Docs docs = user.docs();
         return new RsPage(
             "/xsl/docs.xsl",
             req,
+            this.base,
             new XeLink("upload", "/doc/write"),
-            new XeSource() {
-                @Override
-                public Iterable<Directive> toXembly() throws IOException {
-                    return TkDocs.this.list(user, req);
-                }
-            },
+            new XeAppend(
+                "user",
+                new XeAppend(
+                    "balance",
+                    new XeDirectives(
+                        new Directives().set(
+                            Integer.toString(user.account().balance())
+                        )
+                    )
+                )
+            ),
+            new XeAppend(
+                "docs",
+                new XeTransform<>(
+                    docs.names(),
+                    new XeTransform.Func<String>() {
+                        @Override
+                        public XeSource transform(final String doc)
+                            throws IOException {
+                            return TkDocs.source(docs.doc(doc), doc, req);
+                        }
+                    }
+                )
+            ),
             new XeLink("mkdir", "/dir/create")
         );
     }
 
     /**
-     * Convert docs into directives.
-     * @param user User
+     * Convert doc into XE source.
+     * @param doc Doc
+     * @param name Document name
      * @param req Request
-     * @return Directives
+     * @return Source
      * @throws IOException If fails
-     * @todo #118:30min User balance shouldn't be inside docs page but in some
-     *  kind of decorator of all the pages that are show to logged in users.
-     *  Create such place and move user directive there.
      */
-    private Iterable<Directive> list(final User user, final Request req)
-        throws IOException {
-        final Directives dirs = new Directives();
-        dirs.add("user").add("balance").set(
-            Integer.toString(user.account().balance())
-        ).up().up();
-        final Href home = new RqHref.Base(req).href();
-        final Docs docs = user.docs();
-        dirs.add("docs");
-        for (final String name : docs.names()) {
-            final Doc doc = docs.doc(name);
-            final Href href = home.path("doc").with("file", name);
-            dirs.add("doc")
-                .add("name").set(name).up()
-                .add("size").set(Long.toString(doc.size())).up()
-                .add("created").set(Long.toString(doc.created().getTime())).up()
-                .add("type").set(doc.type()).up()
-                .add("name").set(name).up()
-                .add("read").set(href.path("read").toString()).up()
-                .add("delete").set(href.path("delete").toString()).up()
-                .add("add-friend").set(href.path("add-friend").toString()).up()
-                .add("friends");
-            for (final String friend : doc.friends().names()) {
-                dirs.add("friend")
-                    .add("name").set(friend).up()
-                    .add("eject")
-                    .set(
-                        href.path("eject-friend")
-                            .with("friend", friend).toString()
+    private static XeSource source(final Doc doc, final String name,
+        final Request req) throws IOException {
+        final Href home = new RqHref.Base(req).href()
+            .path("doc").with("file", name);
+        final Attributes attrs = doc.attributes();
+        return new XeAppend(
+            "doc",
+            new XeChain(
+                new XeDirectives(
+                    new Directives()
+                        .add("name").set(name).up()
+                        .add("size").set(Long.toString(attrs.size())).up()
+                        .add("created")
+                        .set(Long.toString(attrs.created().getTime())).up()
+                        .add("type").set(attrs.type()).up()
+                        .add("name").set(name)
+                ),
+                new XeLink("read", home.path("read")),
+                new XeLink("short", new Href(doc.shortUrl())),
+                new XeLink("delete", home.path("delete")),
+                new XeLink("add-friend", home.path("add-friend")),
+                new XeLink("set-visibility", home.path("set-visibility")),
+                new XeAppend(
+                    "friends",
+                    new XeTransform<>(
+                        doc.friends().names(),
+                        new XeTransform.Func<String>() {
+                            @Override
+                            public XeSource transform(final String friend) {
+                                return TkDocs.source(friend, home);
+                            }
+                        }
                     )
-                    .up().up();
-            }
-            dirs.up().up();
-        }
-        return dirs;
+                )
+            )
+        );
+    }
+
+    /**
+     * Convert friend into XE source.
+     * @param friend Name of the friend
+     * @param home Home of the doc
+     * @return Source
+     */
+    private static XeSource source(final String friend,
+        final Href home) {
+        return new XeAppend(
+            "friend",
+            new XeChain(
+                new XeDirectives(
+                    new Directives().add("name").set(friend)
+                ),
+                new XeLink(
+                    "eject",
+                    home.path("eject-friend").with("friend", friend)
+                )
+            )
+        );
     }
 
 }

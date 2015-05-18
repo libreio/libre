@@ -30,19 +30,12 @@
 package com.nerodesk.takes.doc;
 
 import com.nerodesk.om.Base;
-import com.nerodesk.om.Doc;
-import com.nerodesk.takes.RqDisposition;
 import java.io.IOException;
-import java.util.Iterator;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.facets.auth.RqAuth;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkFork;
-import org.takes.misc.Href;
-import org.takes.rq.RqHref;
-import org.takes.rq.RqMultipart;
 
 /**
  * Takes for a specific document.
@@ -68,48 +61,16 @@ public final class TkDoc implements Take {
         this.base = bse;
     }
 
-    // @todo #94:30min This method is way to complicated and should be splitted
-    //  to smaller chunks. It's very hard to test what is going on here. After
-    //  splitting, it should be covered by unit tests.
     @Override
     public Response act(final Request req) throws IOException {
-        final Href href = new RqHref.Base(req).href();
-        final String key = "file";
-        final String file = this.filename(
-            req,
-            key,
-            href.param(key).iterator()
-        );
-        final Doc doc = this.base.user(
-            new RqAuth(req).identity().urn()
-        ).docs().doc(file);
         return new TkFork(
-            new FkRegex("/doc/read", new TkRead(doc)),
-            new FkRegex("/doc/delete", new TkDelete(doc)),
-            new FkRegex("/doc/write", new TkWrite(doc)),
-            new FkRegex("/doc/add-friend", new TkAddFriend(doc)),
-            new FkRegex("/doc/eject-friend", new TkEjectFriend(doc))
+            new FkRegex("/doc/read", new TkRead(this.base)),
+            new FkRegex("/doc/delete", new TkDelete(this.base)),
+            new FkRegex("/doc/write", new TkWrite(this.base)),
+            new FkRegex("/doc/add-friend", new TkAddFriend(this.base)),
+            new FkRegex("/doc/eject-friend", new TkEjectFriend(this.base)),
+            new FkRegex("/doc/set-visibility", new TkSetVisibility(this.base))
         ).act(req);
     }
 
-    /**
-     * Gets the filename from the Content-Disposition request header.
-     * @param req The Request.
-     * @param key The Multipart Key.
-     * @param param The Parameters iterator.
-     * @return The Filename found.
-     * @throws IOException In case of error.
-     */
-    private String filename(final Request req, final String key,
-        final Iterator<String> param) throws IOException {
-        final String name;
-        if (param.hasNext()) {
-            name = param.next();
-        } else {
-            name = new RqDisposition(
-                new RqMultipart.Base(req).part(key).iterator().next()
-            ).filename();
-        }
-        return name;
-    }
 }

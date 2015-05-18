@@ -27,68 +27,51 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om;
+package com.nerodesk.takes;
 
-import com.jcabi.aspects.Immutable;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import org.takes.Request;
+import org.takes.facets.auth.Identity;
+import org.takes.facets.auth.TkAuth;
+import org.takes.facets.auth.codecs.CcPlain;
+import org.takes.rq.RqFake;
+import org.takes.rq.RqWithHeader;
+import org.takes.rq.RqWrap;
 
 /**
- * Document.
+ * Request with authenticated tester.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.2
+ * @since 0.4
  */
-@Immutable
-public interface Doc {
+public final class RqWithTester extends RqWrap {
 
     /**
-     * Does it exist?
-     * @return TRUE if exists
+     * Ctor.
      * @throws IOException If fails
      */
-    boolean exists() throws IOException;
+    public RqWithTester() throws IOException {
+        this(new RqFake());
+    }
 
     /**
-     * Delete it (fails if the document is not mine).
+     * Ctor.
+     * @param req Original request
      * @throws IOException If fails
      */
-    void delete() throws IOException;
+    public RqWithTester(final Request req) throws IOException {
+        super(
+            new RqWithHeader(
+                req,
+                TkAuth.class.getSimpleName(),
+                new String(
+                    new CcPlain().encode(
+                        new Identity.Simple("urn:test:1")
+                    )
+            )
+        )
+        );
+    }
 
-    /**
-     * Everybody who has access to this document.
-     * @return Friends
-     * @throws IOException If fails
-     */
-    Friends friends() throws IOException;
-
-    /**
-     * Read its entire content into this output stream.
-     * @param output Output stream
-     * @throws IOException If fails
-     */
-    void read(OutputStream output) throws IOException;
-
-    /**
-     * Write its entire content from this input stream.
-     * @param input Input stream
-     * @param size Size of the stream in bytes
-     * @throws IOException If fails
-     */
-    void write(InputStream input, long size) throws IOException;
-
-    /**
-     * Shorten the URL to the document.
-     * @return Shortened URL as a string.
-     */
-    String shortUrl();
-
-    /**
-     * Document attributes.
-     * @return Attributes
-     * @throws IOException If fails
-     */
-    Attributes attributes() throws IOException;
 }

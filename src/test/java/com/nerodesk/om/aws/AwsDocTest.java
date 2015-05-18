@@ -29,17 +29,25 @@
  */
 package com.nerodesk.om.aws;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.jcabi.manifests.Manifests;
 import com.jcabi.s3.Bucket;
+import com.jcabi.s3.Ocket;
 import com.jcabi.s3.mock.MkBucket;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.atomic.AtomicBoolean;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Tests for {@link AwsDoc}.
@@ -49,6 +57,7 @@ import org.junit.rules.TemporaryFolder;
  * @version $Id$
  * @since 0.3
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class AwsDocTest {
     /**
      * AwsDoc can verify if it exists.
@@ -126,6 +135,63 @@ public final class AwsDocTest {
     }
 
     /**
+     * AwsDoc can shorten document URL.
+     * @throws IOException If unsuccessful.
+     */
+    @Test
+    public void shortenUrl() throws IOException {
+        Manifests.DEFAULT.put("Nerodesk-BitlyId", "nerodesk");
+        Manifests.DEFAULT.put(
+            "Nerodesk-BitlyKey",
+            "R_95c4f6c85c67498bba37a73872577410"
+        );
+        final String label = "shorten";
+        final AwsDoc doc = this.createDoc(label, label);
+        MatcherAssert.assertThat(
+            doc.shortUrl(),
+            Matchers.equalTo("http://bit.ly/1GgY5gX")
+        );
+    }
+
+    /**
+     * AwsDoc can upload a file with content length header.
+     * @throws IOException If unsuccessful.
+     */
+    @Test
+    public void uploadsFileWithContentLengthHeader() throws IOException {
+        final String data = "data";
+        final Bucket bucket = Mockito.mock(Bucket.class);
+        final Ocket ocket = Mockito.mock(Ocket.class);
+        Mockito.when(bucket.ocket(Mockito.anyString())).thenReturn(ocket);
+        final AtomicBoolean found = new AtomicBoolean(false);
+        Mockito.doAnswer(
+            new Answer<Void>() {
+                @Override
+                public Void answer(final InvocationOnMock invocation) {
+                    final ObjectMetadata meta = invocation.getArgumentAt(
+                        1, ObjectMetadata.class
+                    );
+                    MatcherAssert.assertThat(
+                        meta.getContentLength(),
+                        Matchers.equalTo((long) data.getBytes().length)
+                    );
+                    found.set(true);
+                    return null;
+                }
+            }
+        ).when(ocket)
+            .write(
+                Mockito.any(InputStream.class),
+                Mockito.any(ObjectMetadata.class)
+            );
+        new AwsDoc(bucket, "", "name").write(
+            new ByteArrayInputStream(data.getBytes()),
+            data.getBytes().length
+        );
+        MatcherAssert.assertThat(found.get(), Matchers.is(true));
+    }
+
+    /**
      * Constructs a mock bucket.
      * @param name Bucket name.
      * @throws IOException In case of failure.
@@ -148,7 +214,10 @@ public final class AwsDocTest {
         throws IOException {
         final Bucket bucket = this.mockBucket(name);
         final AwsDoc doc = new AwsDoc(bucket, "", name);
-        doc.write(new ByteArrayInputStream(contents.getBytes()));
+        doc.write(
+            new ByteArrayInputStream(contents.getBytes()),
+            contents.getBytes().length
+        );
         return doc;
     }
 }

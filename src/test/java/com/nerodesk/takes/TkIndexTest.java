@@ -30,6 +30,7 @@
 package com.nerodesk.takes;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import com.nerodesk.om.mock.MkBase;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 import org.takes.rq.RqFake;
@@ -52,7 +53,9 @@ public final class TkIndexTest {
     @Test
     public void returnsXml() throws Exception {
         MatcherAssert.assertThat(
-            new RsPrint(new TkIndex().act(new RqFake())).printBody(),
+            new RsPrint(
+                new TkIndex(new MkBase()).act(new RqFake())
+            ).printBody(),
             XhtmlMatchers.hasXPath("/page/millis")
         );
     }
@@ -65,7 +68,7 @@ public final class TkIndexTest {
     public void returnsHtml() throws Exception {
         MatcherAssert.assertThat(
             new RsPrint(
-                new TkIndex().act(
+                new TkIndex(new MkBase()).act(
                     new RqWithHeader(new RqFake(), "Accept: text/html")
                 )
             ).printBody(),

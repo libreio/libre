@@ -29,7 +29,7 @@
  */
 package com.nerodesk.takes.doc;
 
-import com.nerodesk.om.Doc;
+import com.nerodesk.om.Base;
 import java.io.IOException;
 import org.takes.Request;
 import org.takes.Response;
@@ -48,16 +48,16 @@ import org.takes.rq.RqHref;
 final class TkEjectFriend implements Take {
 
     /**
-     * Doc.
+     * Base.
      */
-    private final transient Doc doc;
+    private final transient Base base;
 
     /**
      * Ctor.
-     * @param src Source document to read from
+     * @param bse Base
      */
-    TkEjectFriend(final Doc src) {
-        this.doc = src;
+    TkEjectFriend(final Base bse) {
+        this.base = bse;
     }
 
     @Override
@@ -65,7 +65,7 @@ final class TkEjectFriend implements Take {
         final String friend = new RqHref.Smart(
             new RqHref.Base(req)
         ).single("friend");
-        this.doc.friends().eject(friend);
+        new RqDoc(req, this.base).doc().friends().eject(friend);
         return new RsForward(
             new RsFlash(String.format("friend \"%s\" ejected", friend))
         );

@@ -27,68 +27,54 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om;
+package com.nerodesk.takes.doc;
 
-import com.jcabi.aspects.Immutable;
+import com.nerodesk.om.Base;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import org.takes.Request;
+import org.takes.Response;
+import org.takes.Take;
+import org.takes.facets.flash.RsFlash;
+import org.takes.facets.forward.RsForward;
+import org.takes.rq.RqHref;
 
 /**
- * Document.
+ * Set file visibility.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
- * @since 0.2
+ * @since 0.4
  */
-@Immutable
-public interface Doc {
+public final class TkSetVisibility implements Take {
 
     /**
-     * Does it exist?
-     * @return TRUE if exists
-     * @throws IOException If fails
+     * Base.
      */
-    boolean exists() throws IOException;
+    private final transient Base base;
 
     /**
-     * Delete it (fails if the document is not mine).
-     * @throws IOException If fails
+     * Ctor.
+     * @param bse Base
      */
-    void delete() throws IOException;
+    TkSetVisibility(final Base bse) {
+        this.base = bse;
+    }
 
-    /**
-     * Everybody who has access to this document.
-     * @return Friends
-     * @throws IOException If fails
-     */
-    Friends friends() throws IOException;
+    @Override
+    public Response act(final Request req) throws IOException {
+        final String visibility = new RqHref.Smart(
+            new RqHref.Base(req)
+        ).single("visibility");
+        new RqDoc(req, this.base).doc().attributes().show(
+            "Public".equals(visibility)
+        );
+        return new RsForward(
+            new RsFlash(
+                String.format(
+                    "document visibility set to \"%s\"", visibility
+                )
+            )
+        );
+    }
 
-    /**
-     * Read its entire content into this output stream.
-     * @param output Output stream
-     * @throws IOException If fails
-     */
-    void read(OutputStream output) throws IOException;
-
-    /**
-     * Write its entire content from this input stream.
-     * @param input Input stream
-     * @param size Size of the stream in bytes
-     * @throws IOException If fails
-     */
-    void write(InputStream input, long size) throws IOException;
-
-    /**
-     * Shorten the URL to the document.
-     * @return Shortened URL as a string.
-     */
-    String shortUrl();
-
-    /**
-     * Document attributes.
-     * @return Attributes
-     * @throws IOException If fails
-     */
-    Attributes attributes() throws IOException;
 }

@@ -29,7 +29,6 @@
  */
 package com.nerodesk.takes.doc;
 
-import com.google.common.collect.Lists;
 import com.nerodesk.om.Base;
 import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
@@ -37,53 +36,97 @@ import com.nerodesk.om.mock.MkBase;
 import com.nerodesk.takes.RqWithTester;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.takes.misc.Href;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
 
 /**
- * Test case for {@link TkAddFriend}.
+ * Test case for {@link TkSetVisibility}.
  *
  * @author Carlos Miranda (miranda.cma@gmail.com)
  * @version $Id$
  * @since 0.4
  */
-public final class TkAddFriendTest {
+public final class TkSetVisibilityTest {
 
     /**
-     * TkAddFriend can add a friend.
-     * @throws Exception If fails.
+     * POST.
+     */
+    private static final String POST = "POST";
+
+    /**
+     * File parameter.
+     */
+    private static final String FILE = "file";
+
+    /**
+     * Visibility parameter.
+     */
+    private static final String VISIBILITY = "visibility";
+
+    /**
+     * TkSetVisibility can return a response.
+     * @throws Exception If something goes wrong
      */
     @Test
-    public void addsFriend() throws Exception {
+    public void returnsResponse() throws Exception {
         final Base base = new MkBase();
-        final Docs docs = base.user("urn:test:1").docs();
-        final String name = "hey.txt";
-        final Doc doc = docs.doc(name);
-        final String friend = "The Dude";
+        final String name = "returnsResponse.txt";
         MatcherAssert.assertThat(
-            Lists.newArrayList(doc.friends().names()),
-            Matchers.not(Matchers.hasItem(friend))
+            new TkSetVisibility(base).act(
+                new RqWithTester(
+                    new RqFake(
+                        TkSetVisibilityTest.POST,
+                        new Href()
+                            .with(TkSetVisibilityTest.FILE, name)
+                            .with(TkSetVisibilityTest.VISIBILITY, "Private")
+                    )
+                )
+            ),
+            Matchers.notNullValue()
+        );
+    }
+
+    /**
+     * TkSetVisibility can set a file's visibility.
+     * @throws Exception If something goes wrong
+     * @todo #255:30min Make visibility functionality in MkAttributes be a
+     *  function of the underlying file instead of a boolean field. This is
+     *  necessary in order for different instances of MkDoc which point to the
+     *  same underlying file to see the same visibility status. Once this is
+     *  done, un-ignore the test below.
+     */
+    @Test
+    @Ignore
+    public void setsVisibility() throws Exception {
+        final Base base = new MkBase();
+        final String name = "setsVisibility.txt";
+        final Docs docs = base.user("urn:test:1").docs();
+        final Doc doc = docs.doc(name);
+        MatcherAssert.assertThat(
+            doc.attributes().visible(),
+            Matchers.is(false)
         );
         MatcherAssert.assertThat(
             new RsPrint(
-                new TkAddFriend(base).act(
+                new TkSetVisibility(base).act(
                     new RqWithTester(
                         new RqFake(
-                            "POST",
+                            TkSetVisibilityTest.POST,
                             new Href()
-                                .with("file", name)
-                                .with("friend", friend)
+                                .with(TkSetVisibilityTest.FILE, name)
+                                .with(TkSetVisibilityTest.VISIBILITY, "Public")
                         )
                     )
                 )
             ).print(),
-            Matchers.containsString("document+shared")
+            Matchers.containsString("document+visibility+set+to")
         );
         MatcherAssert.assertThat(
-            Lists.newArrayList(doc.friends().names()),
-            Matchers.hasItem(friend)
+            doc.attributes().visible(),
+            Matchers.is(true)
         );
     }
 

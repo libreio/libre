@@ -29,8 +29,10 @@
  */
 package com.nerodesk.takes.doc;
 
+import com.nerodesk.om.Base;
 import com.nerodesk.om.Doc;
 import com.nerodesk.om.mock.MkBase;
+import com.nerodesk.takes.RqWithTester;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -53,10 +55,18 @@ public final class TkReadTest {
      */
     @Test
     public void readsFileContent() throws Exception {
-        final Doc doc = new MkBase().user("urn:test:1").docs().doc("hey");
-        doc.write(IOUtils.toInputStream("hello, world!"));
+        final Base base = new MkBase();
+        final Doc doc = base.user("urn:test:1").docs().doc("hey");
+        final String input = "hello, world!";
+        doc.write(IOUtils.toInputStream(input), input.getBytes().length);
         MatcherAssert.assertThat(
-            new RsPrint(new TkRead(doc).act(new RqFake())).printBody(),
+            new RsPrint(
+                new TkRead(base).act(
+                    new RqWithTester(
+                        new RqFake("GET", "/?file=hey")
+                    )
+                )
+            ).printBody(),
             Matchers.endsWith("world!")
         );
     }

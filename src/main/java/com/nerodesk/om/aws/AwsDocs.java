@@ -89,12 +89,16 @@ final class AwsDocs implements Docs {
 
     @Override
     public Doc doc(final String doc) {
-        return new SmallDoc(new AwsDoc(this.bucket, this.user, doc));
+        return new SmallDoc(
+            new AwsDoc(this.bucket, this.user, doc),
+            // @checkstyle MagicNumber (1 line)
+            250_000_000L
+        );
     }
 
     @Override
     public long size() throws IOException {
-        long total = 0;
+        long total = 0L;
         for (final String object : this.bucket.list(this.prefix())) {
             total += this.bucket.ocket(object).meta().getContentLength();
         }

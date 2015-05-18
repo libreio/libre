@@ -57,7 +57,7 @@
             <item name="Introduction" href="./index.html"/>
             <item name="JavaDoc ${project.version}" href="apidocs-${project.version}/index.html"/>
             <item name="Test Coverage" href="cobertura/index.html"/>
-            <item name="Release History" href="https://github.com/teamed/nerodesk/releases"/>
+            <item name="Release History" href="https://github.com/nerodesk/nerodesk/releases"/>
         </menu>
         <menu ref="reports"/>
     </body>

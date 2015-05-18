@@ -30,6 +30,7 @@
 package com.nerodesk.takes;
 
 import com.jcabi.manifests.Manifests;
+import com.nerodesk.om.Base;
 import java.io.IOException;
 import org.takes.Request;
 import org.takes.Response;
@@ -66,24 +67,29 @@ final class RsPage extends RsWrap {
      * Ctor.
      * @param xsl XSL
      * @param req Request
+     * @param base Base
      * @param src Source
      * @throws IOException If fails
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    RsPage(final String xsl, final Request req, final XeSource... src)
+    RsPage(final String xsl, final Request req, final Base base,
+        final XeSource... src)
         throws IOException {
-        super(RsPage.make(xsl, req, src));
+        super(RsPage.make(xsl, req, base, src));
     }
 
     /**
      * Make it.
      * @param xsl XSL
      * @param req Request
+     * @param base Base
      * @param src Source
      * @return Response
      * @throws IOException If fails
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
     private static Response make(final String xsl, final Request req,
-        final XeSource... src) throws IOException {
+        final Base base, final XeSource... src) throws IOException {
         final Response raw = new RsXembly(
             new XeStylesheet(xsl),
             new XeAppend(
@@ -95,6 +101,7 @@ final class RsPage extends RsWrap {
                 new XeSLA(),
                 new XeLocalhost(),
                 new XeIdentity(req),
+                new XeAccount(base, req),
                 new XeFlash(req),
                 new XeFacebookLink(req, Manifests.read("Nerodesk-FacebookId")),
                 new XeLogoutLink(req),

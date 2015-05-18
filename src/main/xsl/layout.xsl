@@ -54,17 +54,14 @@
                                     </li>
                                 </ul>
                             </nav>
-                            <nav role="navigation" class="navbar navbar-center">
+                            <nav role="navigation">
                                 <ul>
                                     <xsl:apply-templates select="identity"/>
                                     <xsl:apply-templates select="user"/>
-                                    <xsl:apply-templates select="flash"/>
-                                    <li title="total amount of bytes stored in your account">
-                                        <!-- @todo #102:30min This value is hardcoded for now but should be connected to Docs.size() value and present total amount of bytes in user friendly form stored in account. -->
-                                        <xsl:text>[47 mb]</xsl:text>
-                                    </li>
                                 </ul>
                             </nav>
+                            <xsl:apply-templates select="account"/>
+                            <xsl:apply-templates select="flash"/>
                         </header>
                     </xsl:if>
                     <xsl:apply-templates select="." mode="body"/>
@@ -76,8 +73,8 @@
                                         <xsl:text>&#169; Nerodesk.com, 2015</xsl:text>
                                     </li>
                                     <li>
-                                        <xsl:text>Source code is open at </xsl:text>
-                                        <a href="https://github.com/teamed/nerodesk">Github</a>
+                                        <xsl:text>Source code is available at </xsl:text>
+                                        <a href="https://github.com/nerodesk/nerodesk">GitHub</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -137,14 +134,46 @@
     </xsl:template>
     <xsl:template match="user">
         <li title="current user balance">
+            <!--
             <xsl:text>$</xsl:text>
             <xsl:value-of select="format-number(balance div 100, '0.00')"/>
+            -->
             <!--
             @todo #118:30min Create a page account.xsl that will display all of
              the transactions performed on the account and make the above
              balance a link to the account page.
             -->
         </li>
+    </xsl:template>
+    <xsl:template match="account">
+        <nav role="navigation">
+            <ul>
+                <li title="account size">
+                 <xsl:text>total storage: </xsl:text>
+                 <xsl:choose>
+                  <xsl:when test="size &gt;= 1073741824">
+                   <xsl:value-of select="format-number(size div 1073741824, '#,###')"/>
+                   <xsl:text>Gb</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="size &gt;= 1048576">
+                   <xsl:value-of select="format-number(size div 1048576, '#,###')"/>
+                   <xsl:text>Mb</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="size &gt;= 1024">
+                   <xsl:value-of select="format-number(size div 1024, '#,###')"/>
+                   <xsl:text>Kb</xsl:text>
+                  </xsl:when>
+                  <xsl:when test="size &gt; 0 and size &lt; 1024">
+                   <xsl:value-of select="format-number(size div 0, '#,###')"/>
+                   <xsl:text>bytes</xsl:text>
+                  </xsl:when>
+                  <xsl:otherwise>
+                   <xsl:text>0 bytes</xsl:text>
+                  </xsl:otherwise>
+                 </xsl:choose>
+                </li>
+            </ul>
+        </nav>
     </xsl:template>
     <xsl:template match="flash">
         <div>

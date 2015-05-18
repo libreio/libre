@@ -29,9 +29,11 @@
  */
 package com.nerodesk.takes.doc;
 
+import com.nerodesk.om.Base;
 import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
 import com.nerodesk.om.mock.MkBase;
+import com.nerodesk.takes.RqWithTester;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -54,11 +56,19 @@ public final class TkDeleteTest {
      */
     @Test
     public void deletesFile() throws Exception {
-        final Docs docs = new MkBase().user("urn:test:1").docs();
+        final Base base = new MkBase();
+        final Docs docs = base.user("urn:test:1").docs();
         final Doc doc = docs.doc("hey");
-        doc.write(IOUtils.toInputStream("hello, world!"));
+        final String input = "hello, world!";
+        doc.write(IOUtils.toInputStream(input), input.getBytes().length);
         MatcherAssert.assertThat(
-            new RsPrint(new TkDelete(doc).act(new RqFake())).print(),
+            new RsPrint(
+                new TkDelete(base).act(
+                    new RqWithTester(
+                        new RqFake("GET", "/?file=hey")
+                    )
+                )
+            ).print(),
             Matchers.startsWith("HTTP/1.1 303")
         );
         MatcherAssert.assertThat(docs.names(), Matchers.emptyIterable());

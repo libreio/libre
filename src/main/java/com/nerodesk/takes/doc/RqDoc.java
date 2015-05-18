@@ -27,68 +27,51 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om;
+package com.nerodesk.takes.doc;
 
-import com.jcabi.aspects.Immutable;
+import com.nerodesk.om.Base;
+import com.nerodesk.om.Doc;
+import com.nerodesk.takes.RqUser;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import org.takes.Request;
+import org.takes.rq.RqHref;
+import org.takes.rq.RqWrap;
 
 /**
- * Document.
+ * Request that understand the document.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
- * @since 0.2
+ * @since 0.3
  */
-@Immutable
-public interface Doc {
+final class RqDoc extends RqWrap {
 
     /**
-     * Does it exist?
-     * @return TRUE if exists
+     * Base.
+     */
+    private final transient Base base;
+
+    /**
+     * Ctor.
+     * @param req Request
+     * @param bse Base
+     */
+    RqDoc(final Request req, final Base bse) {
+        super(req);
+        this.base = bse;
+    }
+
+    /**
+     * Get document we're working with.
+     * @return Document
      * @throws IOException If fails
      */
-    boolean exists() throws IOException;
+    public Doc doc() throws IOException {
+        return new RqUser(this, this.base).user().docs().doc(
+            new RqHref.Smart(
+                new RqHref.Base(this)
+            ).single("file")
+        );
+    }
 
-    /**
-     * Delete it (fails if the document is not mine).
-     * @throws IOException If fails
-     */
-    void delete() throws IOException;
-
-    /**
-     * Everybody who has access to this document.
-     * @return Friends
-     * @throws IOException If fails
-     */
-    Friends friends() throws IOException;
-
-    /**
-     * Read its entire content into this output stream.
-     * @param output Output stream
-     * @throws IOException If fails
-     */
-    void read(OutputStream output) throws IOException;
-
-    /**
-     * Write its entire content from this input stream.
-     * @param input Input stream
-     * @param size Size of the stream in bytes
-     * @throws IOException If fails
-     */
-    void write(InputStream input, long size) throws IOException;
-
-    /**
-     * Shorten the URL to the document.
-     * @return Shortened URL as a string.
-     */
-    String shortUrl();
-
-    /**
-     * Document attributes.
-     * @return Attributes
-     * @throws IOException If fails
-     */
-    Attributes attributes() throws IOException;
 }

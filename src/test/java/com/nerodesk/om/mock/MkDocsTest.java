@@ -73,7 +73,10 @@ public final class MkDocsTest {
         final String[] files = new String[] {"a.txt", "b.txt"};
         final MkDocs docs = new MkDocs(this.temp.newFolder(), "user1");
         for (final String file : files) {
-            docs.doc(file).write(IOUtils.toInputStream("content1"));
+            final String content = "content1";
+            docs.doc(file).write(
+                IOUtils.toInputStream(content), content.getBytes().length
+            );
         }
         MatcherAssert.assertThat(
             docs.names(),
@@ -89,7 +92,10 @@ public final class MkDocsTest {
     public void returnsExistingDoc() throws Exception {
         final MkDocs docs = new MkDocs(this.temp.newFolder(), "user2");
         final String filename = "test2";
-        docs.doc(filename).write(IOUtils.toInputStream("content2"));
+        final String content = "content2";
+        docs.doc(filename).write(
+            IOUtils.toInputStream(content), content.getBytes().length
+        );
         MatcherAssert.assertThat(
             docs.doc(filename).exists(),
             Matchers.is(true)

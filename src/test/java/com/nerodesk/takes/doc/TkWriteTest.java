@@ -30,8 +30,10 @@
 package com.nerodesk.takes.doc;
 
 import com.google.common.base.Joiner;
-import com.nerodesk.om.Docs;
+import com.nerodesk.om.Base;
+import com.nerodesk.om.User;
 import com.nerodesk.om.mock.MkBase;
+import com.nerodesk.takes.RqWithTester;
 import java.io.ByteArrayOutputStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -55,38 +57,50 @@ public final class TkWriteTest {
      */
     @Test
     public void writesFileContent() throws Exception {
-        final Docs docs = new MkBase().user("urn:test:1").docs();
+        final Base base = new MkBase();
+        final User user = base.user("urn:test:1");
         final String file = "hey.txt";
+        final String content = "hello, world!";
+        final String body = Joiner.on("\r\n").join(
+            // @checkstyle MultipleStringLiteralsCheck (1 line)
+            "--AaB03x",
+            "Content-Disposition: form-data; name=\"name\"",
+            "",
+            file,
+            "--AaB03x",
+            String.format(
+                // @checkstyle LineLength (1 line)
+                "Content-Disposition: form-data; name=\"file\"; filename=\"%s\"",
+                file
+            ),
+            "Content-Transfer-Encoding: utf-8",
+            "",
+            content,
+            "--AaB03x--"
+        );
         MatcherAssert.assertThat(
             new RsPrint(
-                new TkWrite(docs.doc(file)).act(
-                    new RqWithHeader(
-                        new RqFake(
-                            "POST", "/",
-                            Joiner.on("\r\n").join(
-                                " --AaB03x",
-                                "Content-Disposition: form-data; name=\"name\"",
-                                "",
-                                file,
-                                "--AaB03x",
-                                "Content-Disposition: form-data; name=\"file\"",
-                                "Content-Transfer-Encoding: utf-8",
-                                "",
-                                "hello, world!",
-                                "--AaB03x--"
-                            )
-                        ),
-                        "Content-Type: multipart/form-data; boundary=AaB03x"
+                new TkWrite(base).act(
+                    new RqWithTester(
+                        new RqWithHeader(
+                            new RqWithHeader(
+                                new RqFake("POST", "/", body),
+                                "Content-Type",
+                                "multipart/form-data; boundary=AaB03x"
+                            ),
+                            "Content-length",
+                            String.valueOf(body.length())
+                        )
                     )
                 )
             ).print(),
             Matchers.startsWith("HTTP/1.1 303 See Other")
         );
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        docs.doc(file).read(baos);
+        user.docs().doc(file).read(baos);
         MatcherAssert.assertThat(
             new String(baos.toByteArray()),
-            Matchers.endsWith("world!")
+            Matchers.equalTo(content)
         );
     }
 

@@ -44,10 +44,11 @@ import org.takes.rq.RqWrap;
  * @since 0.3.2
  */
 public final class RqDisposition extends RqWrap {
+
     /**
      * Regex to get the filename from header.
      */
-    private static final Pattern HEADER_FNAME = Pattern
+    private static final Pattern PTN = Pattern
         .compile(".*filename=\"(.*)\";?.*");
 
     /**
@@ -62,10 +63,9 @@ public final class RqDisposition extends RqWrap {
      */
     public RqDisposition(final Request req) throws IOException {
         super(req);
-        this.content = new RqHeaders(req)
-            .header("Content-Disposition")
-            .iterator()
-            .next();
+        this.content = new RqHeaders.Smart(
+            new RqHeaders.Base(req)
+        ).single("Content-Disposition");
     }
 
     /**
@@ -74,7 +74,7 @@ public final class RqDisposition extends RqWrap {
      * @throws IOException If the filename header is not present.
      */
     public String filename() throws IOException {
-        final Matcher matcher = HEADER_FNAME.matcher(this.content);
+        final Matcher matcher = RqDisposition.PTN.matcher(this.content);
         if (!matcher.matches()) {
             throw new IOException(
                 "filename isn't present in header"

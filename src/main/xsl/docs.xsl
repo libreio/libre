@@ -54,11 +54,13 @@
             </form>
             <xsl:apply-templates select="docs"/>
             <p>
-            <xsl:text>
-                At the moment maximum document size is 10Mb.
-                The system is still in beta testing mode,
-                please excuse minor defects.
-            </xsl:text>
+            <small>
+             <div align="center">
+              <xsl:text>
+                Nerodesk is currently in beta testing mode.
+              </xsl:text>
+             </div>
+            </small>
             </p>
         </article>
     </xsl:template>
@@ -69,6 +71,7 @@
                     <th><xsl:text>File</xsl:text></th>
                     <th><xsl:text>Options</xsl:text></th>
                     <th><xsl:text>Friends</xsl:text></th>
+                    <th><xsl:text>Permissions</xsl:text></th>
                 </tr>
             </thead>
             <tbody>
@@ -79,12 +82,28 @@
     <xsl:template match="doc">
         <tr>
             <td>
-                <a href="{read}" style="display:block">
+                <a href="{links/link[@rel='read']/@href}" style="display:block">
                     <xsl:value-of select="name"/>
                 </a>
                 <small>
-                    <xsl:value-of select="size"/>
-                    <xsl:text> bytes, </xsl:text>
+                    <xsl:choose>
+                     <xsl:when test="size &gt;= 1073741824">
+                      <xsl:value-of select="format-number(size div 1073741824, '#,###')"/>
+                      <xsl:text>Gb</xsl:text>
+                     </xsl:when>
+                     <xsl:when test="size &gt;= 1048576">
+                      <xsl:value-of select="format-number(size div 1048576, '#,###')"/>
+                      <xsl:text>Mb</xsl:text>
+                     </xsl:when>
+                     <xsl:when test="size &gt;= 1024">
+                      <xsl:value-of select="format-number(size div 1024, '#,###')"/>
+                      <xsl:text>Kb</xsl:text>
+                     </xsl:when>
+                     <xsl:when test="size &gt; 0 and size &lt; 1024">
+                      <xsl:value-of select="format-number(size div 0, '#,###')"/>
+                      <xsl:text>bytes</xsl:text>
+                     </xsl:when>
+                    </xsl:choose>
                     <xsl:text>created on </xsl:text>
                     <!--
                     @todo #101:30min Creation date of document should be displayed using
@@ -94,18 +113,26 @@
                     -->
                     <xsl:value-of select="created"/>
                 </small>
+                <small>
+                    <a href="{links/link[@rel='short']/@href}" style="display:block">
+                        link
+                    </a>
+                </small>
             </td>
             <td>
-                <a href="{delete}">delete</a>
+                <a href="{links/link[@rel='delete']/@href}">delete</a>
             </td>
             <td>
                 <xsl:apply-templates select="friends"/>
+            </td>
+            <td>
+                <xsl:apply-templates select="visibility"/>
             </td>
         </tr>
     </xsl:template>
     <xsl:template match="friends">
         <xsl:apply-templates select="friend"/>
-        <form action="{../add-friend}" method="post">
+        <form action="{../links/link[@rel='add-friend']/@href}" method="post">
             <input name="friend" type="text" placeholder="email"/>
             <button>Share</button>
         </form>
@@ -117,5 +144,14 @@
             <a href="{eject}">stop</a>
             <xsl:text>) </xsl:text>
         </span>
+    </xsl:template>
+    <xsl:template match="visibility">
+        <form action="{../links/link[@rel='set-visibility']/@href}" method="post">
+            <select name="visibility">
+                <option>Private</option>
+                <option>Public</option>
+            </select>
+            <button>Set</button>
+        </form>
     </xsl:template>
 </xsl:stylesheet>
