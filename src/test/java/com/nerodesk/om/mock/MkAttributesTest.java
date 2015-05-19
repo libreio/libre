@@ -133,12 +133,12 @@ public final class MkAttributesTest {
     public void setsVisibility() throws IOException {
         final File file = new File(this.folder.newFolder(), "visibility");
         final String content = "text content.";
-        final Attributes attrs = new MkAttributes(file);
         Files.write(
             file.toPath(),
             content.getBytes(StandardCharsets.UTF_8),
             StandardOpenOption.CREATE
         );
+        final Attributes attrs = new MkAttributes(file);
         MatcherAssert.assertThat(
             attrs.visible(),
             Matchers.is(false)

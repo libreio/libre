@@ -29,11 +29,14 @@
  */
 package com.nerodesk.om.mock;
 
+import com.google.common.base.Charsets;
 import com.nerodesk.om.Attributes;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.Date;
 import org.apache.commons.io.FileUtils;
 
@@ -45,16 +48,15 @@ import org.apache.commons.io.FileUtils;
  * @since 0.4
  */
 public final class MkAttributes implements Attributes {
+    /**
+     * The "visibility" attribute.
+     */
+    private static final String VISIBILITY = "nerodesk.mkattributes.visibility";
 
     /**
      * File of document.
      */
     private final transient File file;
-
-    /**
-     * Document shown to the public.
-     */
-    private transient boolean shown;
 
     /**
      * Constructor.
@@ -89,11 +91,37 @@ public final class MkAttributes implements Attributes {
 
     @Override
     public boolean visible() throws IOException {
-        return this.shown;
+        final boolean shown;
+        if (this.file.exists()) {
+            final UserDefinedFileAttributeView view =
+                Files.getFileAttributeView(
+                    this.file.toPath(), UserDefinedFileAttributeView.class
+                );
+            if (view.list().contains(MkAttributes.VISIBILITY)) {
+                final ByteBuffer buf = ByteBuffer.allocate(
+                    view.size(MkAttributes.VISIBILITY)
+                );
+                view.read(MkAttributes.VISIBILITY, buf);
+                buf.flip();
+                shown = Boolean.valueOf(Charsets.UTF_8.decode(buf).toString());
+            } else {
+                shown = false;
+            }
+        } else {
+            shown = false;
+        }
+        return shown;
     }
 
     @Override
     public void show(final boolean shwn) throws IOException {
-        this.shown = shwn;
+        if (this.file.exists()) {
+            Files.getFileAttributeView(
+                this.file.toPath(), UserDefinedFileAttributeView.class
+            ).write(
+                    MkAttributes.VISIBILITY,
+                    Charsets.UTF_8.encode(String.valueOf(shwn))
+                );
+        }
     }
 }

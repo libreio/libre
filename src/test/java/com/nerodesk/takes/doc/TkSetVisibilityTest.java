@@ -29,14 +29,16 @@
  */
 package com.nerodesk.takes.doc;
 
+import com.google.common.io.Files;
 import com.nerodesk.om.Base;
 import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
 import com.nerodesk.om.mock.MkBase;
 import com.nerodesk.takes.RqWithTester;
+import java.io.File;
+import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.takes.misc.Href;
 import org.takes.rq.RqFake;
@@ -92,19 +94,18 @@ public final class TkSetVisibilityTest {
     /**
      * TkSetVisibility can set a file's visibility.
      * @throws Exception If something goes wrong
-     * @todo #255:30min Make visibility functionality in MkAttributes be a
-     *  function of the underlying file instead of a boolean field. This is
-     *  necessary in order for different instances of MkDoc which point to the
-     *  same underlying file to see the same visibility status. Once this is
-     *  done, un-ignore the test below.
      */
     @Test
-    @Ignore
     public void setsVisibility() throws Exception {
-        final Base base = new MkBase();
+        final File dir = Files.createTempDir();
+        final Base base = new MkBase(dir);
         final String name = "setsVisibility.txt";
         final Docs docs = base.user("urn:test:1").docs();
         final Doc doc = docs.doc(name);
+        final File file = dir.toPath().resolve(Paths.get("urn/test/1", name))
+            .toFile();
+        file.getParentFile().mkdirs();
+        file.createNewFile();
         MatcherAssert.assertThat(
             doc.attributes().visible(),
             Matchers.is(false)
