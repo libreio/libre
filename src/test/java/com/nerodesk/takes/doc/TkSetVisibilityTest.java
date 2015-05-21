@@ -29,14 +29,11 @@
  */
 package com.nerodesk.takes.doc;
 
-import com.google.common.io.Files;
 import com.nerodesk.om.Base;
 import com.nerodesk.om.Doc;
-import com.nerodesk.om.Docs;
 import com.nerodesk.om.mock.MkBase;
 import com.nerodesk.takes.RqWithTester;
-import java.io.File;
-import java.nio.file.Paths;
+import java.io.ByteArrayInputStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -97,15 +94,10 @@ public final class TkSetVisibilityTest {
      */
     @Test
     public void setsVisibility() throws Exception {
-        final File dir = Files.createTempDir();
-        final Base base = new MkBase(dir);
+        final Base base = new MkBase();
         final String name = "setsVisibility.txt";
-        final Docs docs = base.user("urn:test:1").docs();
-        final Doc doc = docs.doc(name);
-        final File file = dir.toPath().resolve(Paths.get("urn/test/1", name))
-            .toFile();
-        file.getParentFile().mkdirs();
-        file.createNewFile();
+        final Doc doc = base.user("urn:test:1").docs().doc(name);
+        doc.write(new ByteArrayInputStream(new byte[1]), 1);
         MatcherAssert.assertThat(
             doc.attributes().visible(),
             Matchers.is(false)

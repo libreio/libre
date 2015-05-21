@@ -29,11 +29,11 @@
  */
 package com.nerodesk.om.mock;
 
-import com.google.common.base.Charsets;
 import com.nerodesk.om.Attributes;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
@@ -103,7 +103,9 @@ public final class MkAttributes implements Attributes {
                 );
                 view.read(MkAttributes.VISIBILITY, buf);
                 buf.flip();
-                shown = Boolean.valueOf(Charsets.UTF_8.decode(buf).toString());
+                shown = Boolean.valueOf(
+                    StandardCharsets.UTF_8.decode(buf).toString()
+                );
             } else {
                 shown = false;
             }
@@ -120,7 +122,7 @@ public final class MkAttributes implements Attributes {
                 this.file.toPath(), UserDefinedFileAttributeView.class
             ).write(
                     MkAttributes.VISIBILITY,
-                    Charsets.UTF_8.encode(String.valueOf(shwn))
+                    StandardCharsets.UTF_8.encode(String.valueOf(shwn))
                 );
         }
     }
