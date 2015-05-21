@@ -185,6 +185,10 @@ public final class TkApp extends TkWrap {
                 )
             ),
             new FkRegex(
+                "/admin",
+                new TkSecure(new TkAdmin(base))
+            ),
+            new FkRegex(
                 "/doc/.*",
                 new TkSecure(new TkDoc(base))
             ),

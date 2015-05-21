@@ -72,4 +72,9 @@ public final class MkUser implements User {
     public Account account() {
         return new MkAccount();
     }
+
+    @Override
+    public String urn() {
+        return this.name;
+    }
 }

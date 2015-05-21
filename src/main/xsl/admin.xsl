@@ -1,4 +1,5 @@
-/**
+<?xml version="1.0"?>
+<!--
  * Copyright (c) 2015, nerodesk.com
  * All rights reserved.
  *
@@ -26,38 +27,40 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-package com.nerodesk.om;
-
-import com.jcabi.aspects.Immutable;
-import java.io.IOException;
-
-/**
- * User.
- *
- * @author Yegor Bugayenko (yegor@teamed.io)
- * @version $Id$
- * @since 0.2
- */
-@Immutable
-public interface User {
-
-    /**
-     * Get documents.
-     * @throws IOException If fails
-     * @return Documents
-     */
-    Docs docs() throws IOException;
-
-    /**
-     * Account info.
-     * @return Account
-     */
-    Account account();
-
-    /**
-     * User's urn.
-     * @return Urn
-     */
-    String urn();
-}
+ -->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns="http://www.w3.org/1999/xhtml" version="1.0">
+    <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes" />
+    <xsl:include href="/xsl/layout.xsl"/>
+    <xsl:template match="page" mode="head">
+        <title>
+            <xsl:text>docs</xsl:text>
+        </title>
+    </xsl:template>
+    <xsl:template match="page" mode="body">
+        <article>
+            <xsl:apply-templates select="docs"/>
+        </article>
+    </xsl:template>
+    <xsl:template match="docs[doc]">
+        <table>
+            <thead>
+                <tr>
+                    <th><xsl:text>Files</xsl:text></th>
+                </tr>
+            </thead>
+            <tbody>
+                <xsl:apply-templates select="doc"/>
+            </tbody>
+        </table>
+    </xsl:template>
+    <xsl:template match="doc">
+        <tr>
+            <td>
+                <a href="{read}" style="display:block">
+                    <xsl:value-of select="path"/>
+                </a>
+            </td>
+        </tr>
+    </xsl:template>
+</xsl:stylesheet>

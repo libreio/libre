@@ -31,6 +31,7 @@ package com.nerodesk.om.aws;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.log.Logger;
+import com.jcabi.manifests.Manifests;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
 import com.nerodesk.om.Attributes;
@@ -134,19 +135,15 @@ final class AwsDoc implements Doc {
 
     @Override
     public String shortUrl() {
-        // @checkstyle MethodBodyCommentsCheck (5 lines)
-        // @todo #212:30min Implementation has to be replaced with the correct
-        //  one using the correct authentication for the bit.ly data and the
-        //  correctly generated url to the actual document. After that fix and
-        //  un-ignore the test `com.nerodesk.om.aws.AwsDocTest.shortenUrl()` to
-        //  match some real data.
         return Bitly
-            .as("nerodesk", "R_95c4f6c85c67498bba37a73872577410")
+            .as(
+                Manifests.read("Nerodesk-BitlyId"),
+                Manifests.read("Nerodesk-BitlyKey")
+        )
             .call(
                 Bitly.shorten(
-                    new Href("http://beta.nerodesk.com/doc/read").with(
-                        "file", this.label
-                    ).toString()
+                    new Href("http://beta.nerodesk.com/doc/read")
+                        .with("file", this.label).toString()
                 )
             )
             .getShortUrl();
@@ -158,7 +155,7 @@ final class AwsDoc implements Doc {
     }
 
     /**
-     * Ocket key.
+     * Ocket.
      * @return Key
      */
     private Ocket ocket() {
