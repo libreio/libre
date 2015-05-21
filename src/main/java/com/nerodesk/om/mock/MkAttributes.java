@@ -92,23 +92,19 @@ public final class MkAttributes implements Attributes {
     @Override
     public boolean visible() throws IOException {
         final boolean shown;
-        if (this.file.exists()) {
-            final UserDefinedFileAttributeView view =
-                Files.getFileAttributeView(
-                    this.file.toPath(), UserDefinedFileAttributeView.class
-                );
-            if (view.list().contains(MkAttributes.VISIBILITY)) {
-                final ByteBuffer buf = ByteBuffer.allocate(
-                    view.size(MkAttributes.VISIBILITY)
-                );
-                view.read(MkAttributes.VISIBILITY, buf);
-                buf.flip();
-                shown = Boolean.valueOf(
-                    StandardCharsets.UTF_8.decode(buf).toString()
-                );
-            } else {
-                shown = false;
-            }
+        final UserDefinedFileAttributeView view =
+            Files.getFileAttributeView(
+                this.file.toPath(), UserDefinedFileAttributeView.class
+            );
+        if (view.list().contains(MkAttributes.VISIBILITY)) {
+            final ByteBuffer buf = ByteBuffer.allocate(
+                view.size(MkAttributes.VISIBILITY)
+            );
+            view.read(MkAttributes.VISIBILITY, buf);
+            buf.flip();
+            shown = Boolean.valueOf(
+                StandardCharsets.UTF_8.decode(buf).toString()
+            );
         } else {
             shown = false;
         }
@@ -117,13 +113,11 @@ public final class MkAttributes implements Attributes {
 
     @Override
     public void show(final boolean shwn) throws IOException {
-        if (this.file.exists()) {
-            Files.getFileAttributeView(
-                this.file.toPath(), UserDefinedFileAttributeView.class
-            ).write(
-                    MkAttributes.VISIBILITY,
-                    StandardCharsets.UTF_8.encode(String.valueOf(shwn))
-                );
-        }
+        Files.getFileAttributeView(
+            this.file.toPath(), UserDefinedFileAttributeView.class
+        ).write(
+                MkAttributes.VISIBILITY,
+                StandardCharsets.UTF_8.encode(String.valueOf(shwn))
+            );
     }
 }

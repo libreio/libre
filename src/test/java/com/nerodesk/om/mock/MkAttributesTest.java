@@ -149,4 +149,26 @@ public final class MkAttributesTest {
             Matchers.is(true)
         );
     }
+
+    /**
+     * MkAttributes can throw an exception if visibility is set for a
+     * nonexistent file.
+     * @throws Exception In case of error
+     */
+    @Test(expected = IOException.class)
+    public void throwsExceptionIfVisibilitySetForNonexistentFile()
+        throws Exception {
+        new MkAttributes(new File("nonexistent-set-visibility")).show(true);
+    }
+
+    /**
+     * MkAttributes can throw an exception if visible is called for a
+     * nonexistent file.
+     * @throws Exception In case of error
+     */
+    @Test(expected = IOException.class)
+    public void throwsExceptionIfVisibileCalledNonexistentFile()
+        throws Exception {
+        new MkAttributes(new File("nonexistent-call-visible")).visible();
+    }
 }
