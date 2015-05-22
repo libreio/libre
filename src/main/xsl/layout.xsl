@@ -76,6 +76,10 @@
                                         <xsl:text>Source code is available at </xsl:text>
                                         <a href="https://github.com/nerodesk/nerodesk">GitHub</a>
                                     </li>
+                                    <li>
+                                        <xsl:text>Feedback with </xsl:text>
+                                        <a href="http://www.nerodesk.com/feedback">Disqus</a>
+                                    </li>
                                 </ul>
                             </nav>
                         </footer>
