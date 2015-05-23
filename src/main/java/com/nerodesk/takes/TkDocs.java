@@ -35,6 +35,8 @@ import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
 import com.nerodesk.om.User;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
@@ -126,6 +128,10 @@ public final class TkDocs implements Take {
         final Href home = new RqHref.Base(req).href()
             .path("doc").with("file", name);
         final Attributes attrs = doc.attributes();
+        final SimpleDateFormat fmt = new SimpleDateFormat(
+            "yyyy-MM-dd'T'HH:mm:ssXXX",
+            Locale.US
+        );
         return new XeAppend(
             "doc",
             new XeChain(
@@ -134,7 +140,7 @@ public final class TkDocs implements Take {
                         .add("name").set(name).up()
                         .add("size").set(Long.toString(attrs.size())).up()
                         .add("created")
-                        .set(Long.toString(attrs.created().getTime())).up()
+                        .set(fmt.format(attrs.created().getTime())).up()
                         .add("type").set(attrs.type()).up()
                         .add("name").set(name)
                 ),

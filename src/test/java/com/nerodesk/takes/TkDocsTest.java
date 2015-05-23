@@ -36,8 +36,11 @@ import com.nerodesk.om.User;
 import com.nerodesk.om.mock.MkBase;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.facets.auth.Identity;
 import org.takes.facets.auth.TkAuth;
@@ -176,6 +179,43 @@ public final class TkDocsTest {
                     // @checkstyle LineLength (1 line)
                     "//xhtml:form[@action='http://www.example.com/doc/add-friend?file=%s']",
                     file
+                )
+            )
+        );
+    }
+
+    /**
+     * TkDocs can format date.
+     * @throws IOException In case of error
+     */
+    @Test
+    public void formatsDate() throws IOException {
+        final Base base = new MkBase();
+        final String file = "test4.txt";
+        final Doc doc = base.user(TkDocsTest.FAKE_URN).docs().doc(file);
+        final byte[] bytes = "hey!".getBytes();
+        doc.write(new ByteArrayInputStream(bytes), bytes.length);
+        MatcherAssert.assertThat(
+            IOUtils.toString(
+                new RsXSLT(
+                    new TkDocs(base).act(
+                        new RqWithHeader(
+                            new RqFake(),
+                            TkAuth.class.getSimpleName(),
+                            new String(
+                                new CcPlain().encode(
+                                    new Identity.Simple(TkDocsTest.FAKE_URN)
+                                )
+                            )
+                        )
+                    )
+                ).body()
+            ),
+            Matchers.containsString(
+                String.format(
+                    "created on %s",
+                    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.US)
+                        .format(doc.attributes().created())
                 )
             )
         );

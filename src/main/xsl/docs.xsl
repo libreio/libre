@@ -105,12 +105,6 @@
                      </xsl:when>
                     </xsl:choose>
                     <xsl:text>created on </xsl:text>
-                    <!--
-                    @todo #101:30min Creation date of document should be displayed using
-                     ISO_8601 combined date time and timezone
-                     (e.g. 2007-04-05T12:30-02:00). Right now it is just a unix
-                     timestamp.
-                    -->
                     <xsl:value-of select="created"/>
                 </small>
                 <small>
