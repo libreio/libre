@@ -29,49 +29,42 @@
  */
 package com.nerodesk.om.aws;
 
-import com.jcabi.aspects.Tv;
-import com.nerodesk.om.Attributes;
-import java.io.IOException;
-import java.util.Date;
-import lombok.EqualsAndHashCode;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * Aws based document attributes.
+ * Tests for {@link AwsAttributes}.
  *
- * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
+ * @author Alexey Saenko (alexey.saenko@gmail.com)
  * @version $Id$
  * @since 0.4
  */
-@EqualsAndHashCode
-public final class AwsAttributes implements Attributes {
+public final class AwsAttributesTest {
 
     /**
-     * Visible status.
+     * AwsAttributes can be invisible by default.
+     * @throws Exception If fails.
      */
-    private transient boolean shown;
-
-    @Override
-    public long size() throws IOException {
-        return Tv.MILLION;
+    @Test
+    public void invisibleByDefault() throws Exception {
+        MatcherAssert.assertThat(
+            new AwsAttributes().visible(),
+            Matchers.equalTo(false)
+        );
     }
 
-    @Override
-    public String type() throws IOException {
-        return "application/octet-stream";
+    /**
+     * AwsAttributes can change visibility status properly.
+     * @throws Exception If fails.
+     */
+    @Test
+    public void changesVisibility() throws Exception {
+        final AwsAttributes attr = new AwsAttributes();
+        attr.show(true);
+        MatcherAssert.assertThat(attr.visible(), Matchers.equalTo(true));
+        attr.show(false);
+        MatcherAssert.assertThat(attr.visible(), Matchers.equalTo(false));
     }
 
-    @Override
-    public Date created() throws IOException {
-        return new Date();
-    }
-
-    @Override
-    public boolean visible() throws IOException {
-        return this.shown;
-    }
-
-    @Override
-    public void show(final boolean shwn) throws IOException {
-        this.shown = shwn;
-    }
 }
