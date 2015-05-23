@@ -192,6 +192,20 @@ public final class AwsDocTest {
     }
 
     /**
+     * AwsDoc throws exception when the file has zero length.
+     * @throws IOException In case of error
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsException() throws IOException {
+        final String name = "zero";
+        final Bucket bucket = this.mockBucket(name);
+        final byte[] bytes = new byte[0];
+        new AwsDoc(bucket, "", name).write(
+            new ByteArrayInputStream(bytes), bytes.length
+        );
+    }
+
+    /**
      * Constructs a mock bucket.
      * @param name Bucket name.
      * @throws IOException In case of failure.
