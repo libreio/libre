@@ -27,74 +27,63 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.mock;
+package com.nerodesk.om;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import com.nerodesk.om.Doc;
-import com.nerodesk.om.Docs;
-import com.nerodesk.om.SafeDoc;
-import com.nerodesk.om.SmallDoc;
+import com.google.common.io.Files;
+import com.nerodesk.om.mock.MkDoc;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
+import java.nio.charset.StandardCharsets;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
- * Mocked version of docs.
+ * Tests for {@link SafeDoc}.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Dmitry Zaytsev (dmzaytsev@gmail.com)
  * @version $Id$
- * @since 0.2
+ * @since 0.3.30
  */
-public final class MkDocs implements Docs {
+public final class SafeDocTest {
+    /**
+     * Temporary folder.
+     * @checkstyle VisibilityModifierCheck (5 lines)
+     */
+    @Rule
+    public final transient TemporaryFolder folder = new TemporaryFolder();
 
     /**
-     * Directory.
+     * SafeDoc can write a doc.
+     * @throws IOException In case of error
      */
-    private final transient File dir;
-
-    /**
-     * URN.
-     */
-    private final transient String name;
-
-    /**
-     * Ctor.
-     * @param file Directory
-     * @param urn URN
-     */
-    public MkDocs(final File file, final String urn) {
-        this.dir = file;
-        this.name = urn;
-        this.dir.mkdirs();
-    }
-
-    @Override
-    public List<String> names() {
-        return Lists.transform(
-            Lists.newArrayList(
-                FileUtils.listFiles(
-                    this.dir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE
-                )
-            ),
-            new Function<File, String>() {
-                @Override
-                public String apply(final File input) {
-                    return input.getName();
-                }
-            }
+    @Test
+    public void writesTheDoc() throws IOException {
+        final File file = new File(this.folder.newFolder(), "writable");
+        final String content = "store";
+        final byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
+        new SafeDoc(new MkDoc(file, "", "")).write(
+            new ByteArrayInputStream(bytes), bytes.length
+        );
+        MatcherAssert.assertThat(
+            Files.toString(file, StandardCharsets.UTF_8),
+            Matchers.equalTo(content)
         );
     }
 
-    @Override
-    public Doc doc(final String doc) {
-        return new SafeDoc(new SmallDoc(new MkDoc(this.dir, this.name, doc)));
-    }
-
-    @Override
-    public long size() throws IOException {
-        return FileUtils.sizeOf(this.dir);
+    /**
+     * SafeDoc can throw exception if the Doc size is equals to zero.
+     * @throws IOException In case of error
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void failsToWriteZeroLengthDoc() throws IOException {
+        final File file = new File(this.folder.newFolder(), "zero");
+        final byte[] bytes = new byte[0];
+        new SafeDoc(new MkDoc(file, "", "")).write(
+            new ByteArrayInputStream(bytes), bytes.length
+        );
     }
 }

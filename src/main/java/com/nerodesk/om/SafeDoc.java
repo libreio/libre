@@ -27,74 +27,76 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.mock;
+package com.nerodesk.om;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import com.nerodesk.om.Doc;
-import com.nerodesk.om.Docs;
-import com.nerodesk.om.SafeDoc;
-import com.nerodesk.om.SmallDoc;
-import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
+import java.io.InputStream;
+import java.io.OutputStream;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
- * Mocked version of docs.
+ * Decorator for {@link Doc} which throws the exception
+ * if doc size to write has zero length.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Dmitry Zaytsev (dmzaytsev@gmail.com)
  * @version $Id$
- * @since 0.2
+ * @since 0.3.30
  */
-public final class MkDocs implements Docs {
+@ToString
+@EqualsAndHashCode
+public final class SafeDoc implements Doc {
+    /**
+     * Decorated.
+     */
+    private final transient Doc decorated;
 
     /**
-     * Directory.
+     * Constructor.
+     * @param doc Doc to be decorated
      */
-    private final transient File dir;
-
-    /**
-     * URN.
-     */
-    private final transient String name;
-
-    /**
-     * Ctor.
-     * @param file Directory
-     * @param urn URN
-     */
-    public MkDocs(final File file, final String urn) {
-        this.dir = file;
-        this.name = urn;
-        this.dir.mkdirs();
+    public SafeDoc(final Doc doc) {
+        this.decorated = doc;
     }
 
     @Override
-    public List<String> names() {
-        return Lists.transform(
-            Lists.newArrayList(
-                FileUtils.listFiles(
-                    this.dir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE
-                )
-            ),
-            new Function<File, String>() {
-                @Override
-                public String apply(final File input) {
-                    return input.getName();
-                }
-            }
-        );
+    public boolean exists() throws IOException {
+        return this.decorated.exists();
     }
 
     @Override
-    public Doc doc(final String doc) {
-        return new SafeDoc(new SmallDoc(new MkDoc(this.dir, this.name, doc)));
+    public void delete() throws IOException {
+        this.decorated.delete();
     }
 
     @Override
-    public long size() throws IOException {
-        return FileUtils.sizeOf(this.dir);
+    public Friends friends() throws IOException {
+        return this.decorated.friends();
+    }
+
+    @Override
+    public void read(final OutputStream output) throws IOException {
+        this.decorated.read(output);
+    }
+
+    @Override
+    public void write(final InputStream input, final long size)
+        throws IOException {
+        if (size == 0) {
+            throw new IllegalArgumentException(
+                "the document size should be greater 0"
+            );
+        }
+        this.decorated.write(input, size);
+    }
+
+    @Override
+    public String shortUrl() {
+        return this.decorated.shortUrl();
+    }
+
+    @Override
+    public Attributes attributes() throws IOException {
+        return this.decorated.attributes();
     }
 }
