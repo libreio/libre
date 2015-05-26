@@ -29,7 +29,8 @@
  */
 package com.nerodesk.om.aws;
 
-import com.jcabi.aspects.Tv;
+import com.amazonaws.util.DateUtils;
+import com.jcabi.s3.Ocket;
 import com.nerodesk.om.Attributes;
 import java.io.IOException;
 import java.util.Date;
@@ -47,19 +48,34 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode
 public final class AwsAttributes implements Attributes {
+    /**
+     * The Doc ocket.
+     */
+    private final transient Ocket ocket;
+
+    /**
+     * Ctor.
+     * @param ockt Ocket
+     */
+    public AwsAttributes(final Ocket ockt) {
+        this.ocket = ockt;
+    }
+
     @Override
     public long size() throws IOException {
-        return Tv.MILLION;
+        return this.ocket.meta().getContentLength();
     }
 
     @Override
     public String type() throws IOException {
-        return "application/octet-stream";
+        return this.ocket.meta().getContentType();
     }
 
     @Override
     public Date created() throws IOException {
-        return new Date();
+        return DateUtils.cloneDate(
+            (Date) this.ocket.meta().getRawMetadata().get("Date")
+        );
     }
 
     @Override
