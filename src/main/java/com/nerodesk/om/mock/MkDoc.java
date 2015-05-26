@@ -112,11 +112,6 @@ public final class MkDoc implements Doc {
     @Override
     public void write(final InputStream input, final long size)
         throws IOException {
-        if (size == 0) {
-            throw new IllegalArgumentException(
-                "the document size should be greater 0"
-            );
-        }
         final File file = this.file();
         FileUtils.touch(file);
         try (final FileOutputStream output = new FileOutputStream(file)) {

@@ -120,11 +120,6 @@ final class AwsDoc implements Doc {
     @Override
     public void write(final InputStream input, final long size)
         throws IOException {
-        if (size == 0) {
-            throw new IllegalArgumentException(
-                "the document size should be greater 0"
-            );
-        }
         final Ocket ocket = this.ocket();
         if (ocket.exists()
             && ocket.meta().getUserMetaDataOf(AwsDoc.HEADER) != null) {

@@ -49,7 +49,7 @@
             </h2>
             <form method="post" action="{links/link[@rel='upload']/@href}"
                 enctype="multipart/form-data"
-                onSubmit="if(document.getElementById('fileinput').value == '') return false;">
+                onSubmit="if(document.getElementById('fileinput').value.trim() == '') return false;">
                 <input id="fileinput" name="file" type="file"/>
                 <button type="submit">Upload</button>
             </form>

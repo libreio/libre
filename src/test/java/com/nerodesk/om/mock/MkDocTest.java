@@ -162,17 +162,4 @@ public final class MkDocTest {
             Matchers.equalTo(file.toURI().toURL().toString())
         );
     }
-
-    /**
-     * MkDoc throws exception when the file has zero length.
-     * @throws IOException In case of error
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void throwsException() throws IOException {
-        final File file = new File(this.folder.newFolder(), "zero");
-        final byte[] bytes = new byte[0];
-        new MkDoc(file, "", "").write(
-            new ByteArrayInputStream(bytes), bytes.length
-        );
-    }
 }
