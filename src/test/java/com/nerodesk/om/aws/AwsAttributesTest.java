@@ -30,66 +30,36 @@
 package com.nerodesk.om.aws;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.jcabi.aspects.Tv;
 import com.nerodesk.om.Attributes;
-import java.io.IOException;
-import java.util.Date;
-import lombok.EqualsAndHashCode;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 /**
- * Aws based document attributes.
- *
- * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
+ * Tests for {@link AwsAttributes}.
+ * @author Paul Polishchuk (ppol@ua.fm)
  * @version $Id$
  * @since 0.4
  */
-@EqualsAndHashCode
-public final class AwsAttributes implements Attributes {
+public final class AwsAttributesTest {
 
     /**
-     * Visible attribute name.
+     * AwsAttributes can provide visibility attribute change it.
+     * @throws Exception in case of error.
      */
-    private static final String VISIBLE_ATTR = "visible";
-
-    /**
-     * AWS document metadata.
-     */
-    private final transient ObjectMetadata meta;
-
-    /**
-     * Ctor.
-     * @param metadata AWS document metadata.
-     */
-    public AwsAttributes(final ObjectMetadata metadata) {
-        this.meta = metadata;
-    }
-
-    @Override
-    public long size() throws IOException {
-        return Tv.MILLION;
-    }
-
-    @Override
-    public String type() throws IOException {
-        return "application/octet-stream";
-    }
-
-    @Override
-    public Date created() throws IOException {
-        return new Date();
-    }
-
-    @Override
-    public boolean visible() throws IOException {
-        return Boolean.parseBoolean(
-            this.meta.getUserMetaDataOf(AwsAttributes.VISIBLE_ATTR)
+    @Test
+    public void changesVisibility() throws Exception {
+        final ObjectMetadata meta = new ObjectMetadata();
+        meta.addUserMetadata("visible", "false");
+        final Attributes attributes = new AwsAttributes(meta);
+        MatcherAssert.assertThat(
+            attributes.visible(),
+            Matchers.is(false)
         );
-    }
-
-    @Override
-    public void show(final boolean shown) {
-        this.meta.addUserMetadata(
-            AwsAttributes.VISIBLE_ATTR, String.valueOf(shown)
+        attributes.show(true);
+        MatcherAssert.assertThat(
+            attributes.visible(),
+            Matchers.is(true)
         );
     }
 }
