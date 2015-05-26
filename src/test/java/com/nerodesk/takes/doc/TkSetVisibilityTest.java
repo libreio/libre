@@ -75,7 +75,7 @@ public final class TkSetVisibilityTest {
         final String name = "returnsResponse.txt";
         // @checkstyle MultipleStringLiterals (1 line)
         base.user("urn:test:1").docs().doc(name)
-            .write(new ByteArrayInputStream("".getBytes()), 0);
+            .write(new ByteArrayInputStream(new byte[0]), 0);
         MatcherAssert.assertThat(
             new TkSetVisibility(base).act(
                 new RqWithTester(
