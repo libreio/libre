@@ -86,23 +86,4 @@ public final class SafeDocTest {
             new ByteArrayInputStream(bytes), bytes.length
         );
     }
-
-    /**
-     * SafeDoc can shorten a URL.
-     * @throws IOException In case of error.
-     */
-    @Test
-    public void shortenUrl() throws IOException {
-        final File file = new File(this.folder.newFolder(), "shorten");
-        final String content = "shorten me";
-        final Doc doc = new SafeDoc(new MkDoc(file, "", ""));
-        final byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
-        doc.write(
-            new ByteArrayInputStream(bytes), bytes.length
-        );
-        MatcherAssert.assertThat(
-            doc.shortUrl(),
-            Matchers.equalTo(file.toURI().toURL().toString())
-        );
-    }
 }

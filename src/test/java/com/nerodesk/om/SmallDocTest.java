@@ -87,7 +87,7 @@ public final class SmallDocTest {
         );
         final String content = StringUtils.repeat('b', 101);
         final byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
-        new SafeDoc(new SmallDoc(new MkDoc(file, "", ""), Tv.HUNDRED)).write(
+        new SmallDoc(new MkDoc(file, "", ""), Tv.HUNDRED).write(
             new ByteArrayInputStream(bytes), bytes.length
         );
         MatcherAssert.assertThat(
