@@ -35,6 +35,7 @@ import com.google.common.collect.Lists;
 import com.jcabi.s3.Bucket;
 import com.nerodesk.om.Doc;
 import com.nerodesk.om.Docs;
+import com.nerodesk.om.SafeDoc;
 import com.nerodesk.om.SmallDoc;
 import java.io.IOException;
 import java.util.List;
@@ -89,10 +90,12 @@ final class AwsDocs implements Docs {
 
     @Override
     public Doc doc(final String doc) {
-        return new SmallDoc(
-            new AwsDoc(this.bucket, this.user, doc),
-            // @checkstyle MagicNumber (1 line)
-            250_000_000L
+        return new SafeDoc(
+            new SmallDoc(
+                new AwsDoc(this.bucket, this.user, doc),
+                // @checkstyle MagicNumber (1 line)
+                250_000_000L
+            )
         );
     }
 
