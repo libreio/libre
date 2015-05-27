@@ -29,16 +29,15 @@
  */
 package com.nerodesk.om.aws;
 
-import com.jcabi.manifests.Manifests;
-import com.jcabi.s3.Bucket;
-import com.jcabi.s3.mock.MkBucket;
+import com.nerodesk.om.Attributes;
 import com.nerodesk.om.Doc;
-import java.io.ByteArrayInputStream;
+import com.nerodesk.om.Friends;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 /**
  * Tests for {@link CdShortUrl}.
@@ -54,46 +53,48 @@ public final class CdShortUrlTest {
      */
     @Test
     public void shortenUrl() throws IOException {
-        Manifests.DEFAULT.put("Nerodesk-BitlyId", "nerodesk");
-        Manifests.DEFAULT.put(
-            "Nerodesk-BitlyKey",
-            "R_95c4f6c85c67498bba37a73872577410"
+        final String url = "http://bit.ly/CdShort";
+        final Doc doc = new CdShortUrl(
+            // @checkstyle AnonInnerLengthCheck (1 lines)
+            new Doc() {
+                @Override
+                public boolean exists() throws IOException {
+                    return false;
+                }
+                @Override
+                public void delete() throws IOException {
+                    assert 1 != 0;
+                }
+                @Override
+                public Friends friends() throws IOException {
+                    return null;
+                }
+                @Override
+                public void read(final OutputStream output) throws IOException {
+                    output.close();
+                }
+                @Override
+                public void write(final InputStream input, final long size)
+                    throws IOException {
+                    input.close();
+                }
+                @Override
+                public String shortUrl() {
+                    return url;
+                }
+                @Override
+                public Attributes attributes() throws IOException {
+                    return null;
+                }
+            }
         );
-        final String label = "shorten";
-        final CdShortUrl doc = new CdShortUrl(this.createDoc(label, label));
         MatcherAssert.assertThat(
             doc.shortUrl(),
-            Matchers.equalTo("http://bit.ly/1GgY5gX")
+            Matchers.equalTo(url)
         );
-    }
-
-    /**
-     * Constructs a mock bucket.
-     * @param name Bucket name.
-     * @throws IOException In case of failure.
-     * @return The mock bucket.
-     */
-    private MkBucket mockBucket(final String name) throws IOException {
-        final TemporaryFolder folder = new TemporaryFolder();
-        folder.create();
-        return new MkBucket(folder.getRoot(), name);
-    }
-
-    /**
-     * Creates an AwsDoc with given contents inside of a mock bucket .
-     * @param name Doc name.
-     * @param contents Doc contents.
-     * @return The new AwsDoc.
-     * @throws IOException In case of failure.
-     */
-    private Doc createDoc(final String name, final String contents)
-        throws IOException {
-        final Bucket bucket = this.mockBucket(name);
-        final AwsDoc doc = new AwsDoc(bucket, "", name);
-        doc.write(
-            new ByteArrayInputStream(contents.getBytes()),
-            contents.getBytes().length
+        MatcherAssert.assertThat(
+            doc.shortUrl(),
+            Matchers.equalTo(url)
         );
-        return doc;
     }
 }

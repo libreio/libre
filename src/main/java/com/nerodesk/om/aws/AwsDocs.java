@@ -90,11 +90,11 @@ final class AwsDocs implements Docs {
 
     @Override
     public Doc doc(final String doc) {
-        return new SmallDoc(
-            new CdShortUrl(
-                new AwsDoc(this.bucket, this.user, doc),
-            // @checkstyle MagicNumber (1 line)
-            250_000_000L
+        return new SafeDoc(
+            new SmallDoc(
+                new CdShortUrl(new AwsDoc(this.bucket, this.user, doc)),
+                // @checkstyle MagicNumber (1 line))
+                250_000_000L
             )
         );
     }
