@@ -29,15 +29,12 @@
  */
 package com.nerodesk.om.aws;
 
-import com.nerodesk.om.Attributes;
 import com.nerodesk.om.Doc;
-import com.nerodesk.om.Friends;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Tests for {@link CdShortUrl}.
@@ -53,48 +50,18 @@ public final class CdShortUrlTest {
      */
     @Test
     public void shortenUrl() throws IOException {
-        final String url = "http://bit.ly/CdShort";
-        final Doc doc = new CdShortUrl(
-            // @checkstyle AnonInnerLengthCheck (1 lines)
-            new Doc() {
-                @Override
-                public boolean exists() throws IOException {
-                    return false;
-                }
-                @Override
-                public void delete() throws IOException {
-                    assert 1 != 0;
-                }
-                @Override
-                public Friends friends() throws IOException {
-                    return null;
-                }
-                @Override
-                public void read(final OutputStream output) throws IOException {
-                    output.close();
-                }
-                @Override
-                public void write(final InputStream input, final long size)
-                    throws IOException {
-                    input.close();
-                }
-                @Override
-                public String shortUrl() {
-                    return url;
-                }
-                @Override
-                public Attributes attributes() throws IOException {
-                    return null;
-                }
-            }
+        final Doc doc = Mockito.mock(Doc.class);
+        final String first = "http://bit.ly/1";
+        Mockito.when(doc.shortUrl()).thenReturn(first)
+            .thenReturn("http://bit.ly/2");
+        final Doc cdd = new CdShortUrl(doc);
+        MatcherAssert.assertThat(
+            cdd.shortUrl(),
+            Matchers.equalTo(first)
         );
         MatcherAssert.assertThat(
-            doc.shortUrl(),
-            Matchers.equalTo(url)
-        );
-        MatcherAssert.assertThat(
-            doc.shortUrl(),
-            Matchers.equalTo(url)
+            cdd.shortUrl(),
+            Matchers.equalTo(first)
         );
     }
 }
