@@ -29,16 +29,12 @@
  */
 package com.nerodesk.om.aws;
 
-import com.jcabi.s3.mock.MkOcket;
-import java.io.File;
-import java.io.FileOutputStream;
+import com.amazonaws.services.s3.Headers;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Date;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -47,92 +43,50 @@ import org.junit.Test;
  * @author Dmitry Zaytsev (dmitry.zaytsev@gmail.comm)
  * @version $Id$
  * @since 0.3.30
- * @todo #210:30min when the issue jcabi-s3:25 see
- *  https://github.com/jcabi/jcabi-s3/issues/25 will be resolved
- *  please uncomment the tests below. And make sure that all test
- *  are working properly.
  */
 public final class AwsAttributesTest {
     /**
-     * AwsAttributes can return correct the doc size.
+     * AwsAttributes can return correct size.
      * @throws IOException If unsuccessful.
      */
     @Test
-    @Ignore
     public void returnsCorrectSize() throws IOException {
-        final File file = AwsAttributesTest.createFile(".tmp");
+        final ObjectMetadata meta = new ObjectMetadata();
+        meta.setContentLength(1L);
         MatcherAssert.assertThat(
-            new AwsAttributes(
-                new MkOcket(
-                    file,
-                    AwsAttributesTest.class.getSimpleName(),
-                    "size"
-                )
-            ).size(),
-            Matchers.equalTo(file.length())
+            new AwsAttributes(meta).size(),
+            Matchers.is(1L)
         );
     }
 
     /**
-     * AwsAttributes can return correct the doc creation date.
+     * AwsAttributes can return correct creation date.
      * @throws IOException If unsuccessful.
      */
     @Test
-    @Ignore
     public void returnsCorrectDate() throws IOException {
-        final File file = AwsAttributesTest.createFile(".json");
+        final Date date = new Date();
+        final ObjectMetadata meta = new ObjectMetadata();
+        meta.setHeader(Headers.DATE, date);
         MatcherAssert.assertThat(
-            new AwsAttributes(
-                new MkOcket(
-                    file,
-                    AwsAttributesTest.class.getSimpleName(),
-                    "date"
-                )
-            ).created().getTime(),
-            Matchers.equalTo(
-                Files.readAttributes(
-                    Paths.get(file.toURI()),
-                    BasicFileAttributes.class
-                ).creationTime().toMillis()
-            )
+            new AwsAttributes(meta).created(),
+            Matchers.is(date)
         );
     }
 
     /**
-     * AwsAttributes can return correct the doc type.
+     * AwsAttributes can return correct type.
      * @throws IOException If unsuccessful.
      */
     @Test
-    @Ignore
     public void returnsCorrectType() throws IOException {
-        final File file = AwsAttributesTest.createFile(".xml");
+        final String type = "application/xml";
+        final ObjectMetadata meta = new ObjectMetadata();
+        meta.setContentType(type);
         MatcherAssert.assertThat(
-            new AwsAttributes(
-                new MkOcket(
-                    file,
-                    AwsAttributesTest.class.getSimpleName(),
-                    "type"
-                )
-            ).type(),
-            Matchers.equalTo("application/xml")
+            new AwsAttributes(meta).type(),
+            Matchers.is(type)
         );
-    }
-
-    /**
-     * Creates temporary file.
-     * @param extension The file extension
-     * @throws IOException In case of failure.
-     * @return The temporary file.
-     */
-    private static File createFile(final String extension) throws IOException {
-        final File file = File.createTempFile(
-            AwsAttributesTest.class.getSimpleName(),
-            extension
-        );
-        file.deleteOnExit();
-        final FileOutputStream out = new FileOutputStream(file);
-        out.write("test".getBytes());
-        out.close();
-        return file;
     }
 }
+

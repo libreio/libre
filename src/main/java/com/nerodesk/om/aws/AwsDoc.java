@@ -147,7 +147,7 @@ final class AwsDoc implements Doc {
 
     @Override
     public Attributes attributes() throws IOException {
-        return new AwsAttributes(this.ocket());
+        return new AwsAttributes(this.ocket().meta());
     }
 
     /**

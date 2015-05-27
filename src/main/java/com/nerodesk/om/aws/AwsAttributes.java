@@ -29,8 +29,9 @@
  */
 package com.nerodesk.om.aws;
 
+import com.amazonaws.services.s3.Headers;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.util.DateUtils;
-import com.jcabi.s3.Ocket;
 import com.nerodesk.om.Attributes;
 import java.io.IOException;
 import java.util.Date;
@@ -49,32 +50,32 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode
 public final class AwsAttributes implements Attributes {
     /**
-     * The Doc ocket.
+     * AWS document metadata.
      */
-    private final transient Ocket ocket;
+    private final transient ObjectMetadata meta;
 
     /**
      * Ctor.
-     * @param ockt Ocket
+     * @param metadata AWS document metadata.
      */
-    public AwsAttributes(final Ocket ockt) {
-        this.ocket = ockt;
+    public AwsAttributes(final ObjectMetadata metadata) {
+        this.meta = metadata;
     }
 
     @Override
     public long size() throws IOException {
-        return this.ocket.meta().getContentLength();
+        return this.meta.getContentLength();
     }
 
     @Override
     public String type() throws IOException {
-        return this.ocket.meta().getContentType();
+        return this.meta.getContentType();
     }
 
     @Override
     public Date created() throws IOException {
         return DateUtils.cloneDate(
-            (Date) this.ocket.meta().getRawMetadata().get("Date")
+            (Date) this.meta.getRawMetadataValue(Headers.DATE)
         );
     }
 
