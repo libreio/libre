@@ -35,7 +35,6 @@ import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
 import com.jcabi.s3.mock.MkBucket;
 import com.nerodesk.om.Docs;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -140,7 +139,8 @@ public final class AwsDocsTest {
         final Bucket bucket = this.mockBucket(label, name);
         final List<String> expected = Arrays.asList(
             name,
-            String.format("sub%sfile", File.separator)
+            // @checkstyle MultipleStringLiteralsCheck (1 line)
+            Paths.get("sub", "file").toString()
         );
         final List<String> names = new AwsDocs(bucket, label).names();
         Collections.sort(names);
