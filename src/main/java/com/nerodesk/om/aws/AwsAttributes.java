@@ -77,15 +77,15 @@ public final class AwsAttributes implements Attributes {
 
     @Override
     public Date created() throws IOException {
-        final Date date;
+        final Date dat;
         if (this.meta.getRawMetadataValue(Headers.DATE) == null) {
-            date = this.meta.getLastModified();
+            dat = this.meta.getLastModified();
         } else {
-            date = DateUtils.cloneDate(
+            dat = DateUtils.cloneDate(
                 (Date) this.meta.getRawMetadataValue(Headers.DATE)
             );
         }
-        return date;
+        return dat;
     }
 
     @Override
