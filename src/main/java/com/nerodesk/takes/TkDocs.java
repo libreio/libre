@@ -133,7 +133,7 @@ public final class TkDocs implements Take {
             created = "";
         } else {
             created = new SimpleDateFormat(
-                "yyyy-MM-dd'T'HH:mm:ssXXX",
+                "yyyy-MM-dd",
                 Locale.US
             ).format(attrs.created().getTime());
         }
