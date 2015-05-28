@@ -15,7 +15,6 @@ To start application using default port use command line specified below:
 $ mvn clean package
 $ java -cp target/nerodesk.jar:target/deps/* com.nerodesk.Launch --port=8080
 ```
-
 If you're on Windows:
 
 ```
