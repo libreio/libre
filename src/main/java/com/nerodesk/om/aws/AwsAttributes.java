@@ -29,8 +29,9 @@
  */
 package com.nerodesk.om.aws;
 
+import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.jcabi.aspects.Tv;
+import com.amazonaws.util.DateUtils;
 import com.nerodesk.om.Attributes;
 import java.io.IOException;
 import java.util.Date;
@@ -66,17 +67,19 @@ public final class AwsAttributes implements Attributes {
 
     @Override
     public long size() throws IOException {
-        return Tv.MILLION;
+        return this.meta.getContentLength();
     }
 
     @Override
     public String type() throws IOException {
-        return "application/octet-stream";
+        return this.meta.getContentType();
     }
 
     @Override
     public Date created() throws IOException {
-        return new Date();
+        return DateUtils.cloneDate(
+            (Date) this.meta.getRawMetadataValue(Headers.DATE)
+        );
     }
 
     @Override

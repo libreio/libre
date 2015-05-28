@@ -29,19 +29,67 @@
  */
 package com.nerodesk.om.aws;
 
+import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.nerodesk.om.Attributes;
+import java.io.IOException;
+import java.util.Date;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
  * Tests for {@link AwsAttributes}.
+ *
+ * @author Dmitry Zaytsev (dmitry.zaytsev@gmail.com)
  * @author Paul Polishchuk (ppol@ua.fm)
  * @version $Id$
- * @since 0.4
+ * @since 0.3.30
  */
 public final class AwsAttributesTest {
+    /**
+     * AwsAttributes can return correct size.
+     * @throws IOException If unsuccessful.
+     */
+    @Test
+    public void returnsCorrectSize() throws IOException {
+        final ObjectMetadata meta = new ObjectMetadata();
+        meta.setContentLength(1L);
+        MatcherAssert.assertThat(
+            new AwsAttributes(meta).size(),
+            Matchers.is(1L)
+        );
+    }
+
+    /**
+     * AwsAttributes can return correct creation date.
+     * @throws IOException If unsuccessful.
+     */
+    @Test
+    public void returnsCorrectDate() throws IOException {
+        final Date date = new Date();
+        final ObjectMetadata meta = new ObjectMetadata();
+        meta.setHeader(Headers.DATE, date);
+        MatcherAssert.assertThat(
+            new AwsAttributes(meta).created(),
+            Matchers.is(date)
+        );
+    }
+
+    /**
+     * AwsAttributes can return correct type.
+     * @throws IOException If unsuccessful.
+     */
+    @Test
+    public void returnsCorrectType() throws IOException {
+        final String type = "application/xml";
+        final ObjectMetadata meta = new ObjectMetadata();
+        meta.setContentType(type);
+        MatcherAssert.assertThat(
+            new AwsAttributes(meta).type(),
+            Matchers.is(type)
+        );
+    }
 
     /**
      * AwsAttributes can provide visibility attribute change it.

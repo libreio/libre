@@ -51,10 +51,6 @@ import org.takes.misc.Href;
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$
  * @since 0.2
- * @todo #101:30min Methods size, type and created have to replaced with correct
- *  implementation. Size should give number of bytes of the document, type
- *  should be MIME type of the document, created should be a timestamp when the
- *  document was created.
  */
 @EqualsAndHashCode(of = { "bucket", "user", "label" })
 final class AwsDoc implements Doc {
