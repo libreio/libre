@@ -5,21 +5,9 @@
 
 [![Build Status](https://travis-ci.org/Nerodesk/nerodesk.svg?branch=master)](https://travis-ci.org/Nerodesk/nerodesk)
 
-Open-Source Cloud Storage
+Fast, Simple, Open-Source Cloud Storage.
 
-Main features:
-
- - user can create an account via web panel
- - user can delete their account
- - user can upload a file, download it back and delete it
- - user can upload multiple files in a single batch.
- - user can share any file with a few other users
- - user can see all their files in the web panel
- - user can manage file folders
- - user can share files with shortened URLs
- - the entire code will be open source
- - the web panel will be hosted on Heroku
- - objects/files will be stored in Amazon S3 (in the future will be changed to Amazon EC2)
+[www.nerodesk.com](http://www.nerodesk.com)
 
 To start application using default port use command line specified below:
 
@@ -34,24 +22,10 @@ If you're on Windows:
 java -cp target\nerodesk.jar;target\deps\* com.nerodesk.Launch --port=8080
 ```
 
-### File and Folder Visibility
-
-By default, files and folders are private, i.e. visible only to the owner. However, file
-and folder visibility may be set to public by the owner. Shared folders will
-automatically cascade their visibility to any contained files and subfolders.
-
 ## Limitations
 
-**File Size**.
 Maximum size of the size a user can upload is 5Tb, because this is the
 maximum size of Amazon S3 object, see http://aws.amazon.com/s3/faqs/.
-
-
-## Graphic design
-Resized [nerodesk logo](http://www.nerodesk.com/logo_large.png) should be placed
-on top of all site pages (centered horizontally), just above site information
-and login/logout link.
-
 
 ## How to contribute
 
@@ -87,4 +61,4 @@ a new [GitHub issue](https://github.com/nerodesk/nerodesk/issues/new).
 
 Copyright (c) 2015, nerodesk.com. All rights reserved.
 
-License information can be found [here](https://github.com/Nerodesk/nerodesk/blob/master/LICENSE.txt)
+License information can be found [here](https://github.com/Nerodesk/nerodesk/blob/master/LICENSE.txt).
