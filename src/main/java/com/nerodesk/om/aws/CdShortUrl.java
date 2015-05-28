@@ -29,72 +29,73 @@
  */
 package com.nerodesk.om.aws;
 
-import com.amazonaws.services.s3.Headers;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.util.DateUtils;
-import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.jcabi.aspects.Cacheable;
 import com.jcabi.aspects.Tv;
 import com.nerodesk.om.Attributes;
+import com.nerodesk.om.Doc;
+import com.nerodesk.om.Friends;
 import java.io.IOException;
-import java.util.Date;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.concurrent.TimeUnit;
 import lombok.EqualsAndHashCode;
 
 /**
- * Aws based document attributes.
+ * Decorator for {@link Doc} which cache short url..
  *
- * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
+ * @author Dmitry Zaytsev (dmitry.zaytsev@gmail.com)
  * @version $Id$
- * @since 0.4
+ * @since 0.3.30
  */
 @EqualsAndHashCode
-public final class AwsAttributes implements Attributes {
+public final class CdShortUrl implements Doc {
+    /**
+     * Decorated.
+     */
+    private final transient Doc decorated;
 
     /**
-     * Visible attribute name.
+     * Constructor.
+     * @param doc Doc to be decorated
      */
-    private static final String VISIBLE_ATTR = "visible";
-
-    /**
-     * AWS document metadata.
-     */
-    private final transient ObjectMetadata meta;
-
-    /**
-     * Ctor.
-     * @param metadata AWS document metadata.
-     */
-    public AwsAttributes(final ObjectMetadata metadata) {
-        this.meta = metadata;
+    public CdShortUrl(final Doc doc) {
+        this.decorated = doc;
     }
 
     @Override
-    public long size() throws IOException {
-        return this.meta.getContentLength();
+    public boolean exists() throws IOException {
+        return this.decorated.exists();
     }
 
     @Override
-    public String type() throws IOException {
-        return this.meta.getContentType();
+    public void delete() throws IOException {
+        this.decorated.delete();
     }
 
     @Override
-    public Date created() throws IOException {
-        return DateUtils.cloneDate(
-            (Date) this.meta.getRawMetadataValue(Headers.DATE)
-        );
+    public Friends friends() throws IOException {
+        return this.decorated.friends();
     }
 
     @Override
-    public boolean visible() throws IOException {
-        return Boolean.parseBoolean(
-            this.meta.getUserMetaDataOf(AwsAttributes.VISIBLE_ATTR)
-        );
+    public void read(final OutputStream output) throws IOException {
+        this.decorated.read(output);
     }
 
     @Override
-    public void show(final boolean shown) {
-        this.meta.addUserMetadata(
-            AwsAttributes.VISIBLE_ATTR, String.valueOf(shown)
-        );
+    public void write(final InputStream input, final long size)
+        throws IOException {
+        this.decorated.write(input, size);
+    }
+
+    @Override
+    @Cacheable(lifetime = Tv.THREE, unit = TimeUnit.HOURS)
+    public String shortUrl() {
+        return this.decorated.shortUrl();
+    }
+
+    @Override
+    public Attributes attributes() throws IOException {
+        return this.decorated.attributes();
     }
 }

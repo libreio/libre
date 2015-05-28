@@ -92,8 +92,8 @@ final class AwsDocs implements Docs {
     public Doc doc(final String doc) {
         return new SafeDoc(
             new SmallDoc(
-                new AwsDoc(this.bucket, this.user, doc),
-                // @checkstyle MagicNumber (1 line)
+                new CdShortUrl(new AwsDoc(this.bucket, this.user, doc)),
+                // @checkstyle MagicNumber (1 line))
                 250_000_000L
             )
         );

@@ -28,9 +28,9 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.nerodesk.om.aws;
-
 import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.nerodesk.om.Attributes;
 import java.io.IOException;
 import java.util.Date;
 import org.hamcrest.MatcherAssert;
@@ -40,7 +40,8 @@ import org.junit.Test;
 /**
  * Tests for {@link AwsAttributes}.
  *
- * @author Dmitry Zaytsev (dmitry.zaytsev@gmail.comm)
+ * @author Dmitry Zaytsev (dmitry.zaytsev@gmail.com)
+ * @author Paul Polishchuk (ppol@ua.fm)
  * @version $Id$
  * @since 0.3.30
  */
@@ -88,5 +89,24 @@ public final class AwsAttributesTest {
             Matchers.is(type)
         );
     }
-}
 
+    /**
+     * AwsAttributes can provide visibility attribute change it.
+     * @throws Exception in case of error.
+     */
+    @Test
+    public void changesVisibility() throws Exception {
+        final ObjectMetadata meta = new ObjectMetadata();
+        meta.addUserMetadata("visible", "false");
+        final Attributes attributes = new AwsAttributes(meta);
+        MatcherAssert.assertThat(
+            attributes.visible(),
+            Matchers.is(false)
+        );
+        attributes.show(true);
+        MatcherAssert.assertThat(
+            attributes.visible(),
+            Matchers.is(true)
+        );
+    }
+}

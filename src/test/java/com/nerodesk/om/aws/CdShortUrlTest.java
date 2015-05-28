@@ -29,72 +29,39 @@
  */
 package com.nerodesk.om.aws;
 
-import com.amazonaws.services.s3.Headers;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.util.DateUtils;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.jcabi.aspects.Tv;
-import com.nerodesk.om.Attributes;
+import com.nerodesk.om.Doc;
 import java.io.IOException;
-import java.util.Date;
-import lombok.EqualsAndHashCode;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
- * Aws based document attributes.
+ * Tests for {@link CdShortUrl}.
  *
- * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
+ * @author Dmitry Zaytsev (dmitry.zaytsev@gmail.com)
  * @version $Id$
- * @since 0.4
+ * @since 0.3.30
  */
-@EqualsAndHashCode
-public final class AwsAttributes implements Attributes {
-
+public final class CdShortUrlTest {
     /**
-     * Visible attribute name.
+     * CdShortUrl can shorten document URL.
+     * @throws IOException If unsuccessful.
      */
-    private static final String VISIBLE_ATTR = "visible";
-
-    /**
-     * AWS document metadata.
-     */
-    private final transient ObjectMetadata meta;
-
-    /**
-     * Ctor.
-     * @param metadata AWS document metadata.
-     */
-    public AwsAttributes(final ObjectMetadata metadata) {
-        this.meta = metadata;
-    }
-
-    @Override
-    public long size() throws IOException {
-        return this.meta.getContentLength();
-    }
-
-    @Override
-    public String type() throws IOException {
-        return this.meta.getContentType();
-    }
-
-    @Override
-    public Date created() throws IOException {
-        return DateUtils.cloneDate(
-            (Date) this.meta.getRawMetadataValue(Headers.DATE)
+    @Test
+    public void shortenUrl() throws IOException {
+        final Doc doc = Mockito.mock(Doc.class);
+        final String first = "http://bit.ly/1";
+        Mockito.when(doc.shortUrl()).thenReturn(first)
+            .thenReturn("http://bit.ly/2");
+        final Doc cdd = new CdShortUrl(doc);
+        MatcherAssert.assertThat(
+            cdd.shortUrl(),
+            Matchers.equalTo(first)
         );
-    }
-
-    @Override
-    public boolean visible() throws IOException {
-        return Boolean.parseBoolean(
-            this.meta.getUserMetaDataOf(AwsAttributes.VISIBLE_ATTR)
-        );
-    }
-
-    @Override
-    public void show(final boolean shown) {
-        this.meta.addUserMetadata(
-            AwsAttributes.VISIBLE_ATTR, String.valueOf(shown)
+        MatcherAssert.assertThat(
+            cdd.shortUrl(),
+            Matchers.equalTo(first)
         );
     }
 }
