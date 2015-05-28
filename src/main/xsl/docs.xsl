@@ -88,6 +88,7 @@
                 </a>
                 <small>
                     <xsl:choose>
+                     <xsl:text>[</xsl:text>
                      <xsl:when test="size &gt;= 1073741824">
                       <xsl:value-of select="format-number(size div 1073741824, '#,###')"/>
                       <xsl:text>Gb</xsl:text>
@@ -105,7 +106,7 @@
                       <xsl:text>bytes</xsl:text>
                      </xsl:when>
                     </xsl:choose>
-                    <xsl:text>created on </xsl:text>
+                    <xsl:text>] </xsl:text>
                     <xsl:value-of select="created"/>
                 </small>
                 <small>
