@@ -128,10 +128,15 @@ public final class TkDocs implements Take {
         final Href home = new RqHref.Base(req).href()
             .path("doc").with("file", name);
         final Attributes attrs = doc.attributes();
-        final SimpleDateFormat fmt = new SimpleDateFormat(
-            "yyyy-MM-dd'T'HH:mm:ssXXX",
-            Locale.US
-        );
+        final String created;
+        if (attrs.created() == null) {
+            created = "";
+        } else {
+            created = new SimpleDateFormat(
+                "yyyy-MM-dd'T'HH:mm:ssXXX",
+                Locale.US
+            ).format(attrs.created().getTime());
+        }
         return new XeAppend(
             "doc",
             new XeChain(
@@ -140,7 +145,7 @@ public final class TkDocs implements Take {
                         .add("name").set(name).up()
                         .add("size").set(Long.toString(attrs.size())).up()
                         .add("created")
-                        .set(fmt.format(attrs.created().getTime())).up()
+                        .set(created).up()
                         .add("type").set(attrs.type()).up()
                         .add("name").set(name)
                 ),
