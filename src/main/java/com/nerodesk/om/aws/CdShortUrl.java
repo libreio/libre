@@ -29,9 +29,7 @@
  */
 package com.nerodesk.om.aws;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.jcabi.aspects.Cacheable;
 import com.jcabi.aspects.Tv;
 import com.nerodesk.om.Attributes;
 import com.nerodesk.om.Doc;
@@ -39,7 +37,7 @@ import com.nerodesk.om.Friends;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import lombok.EqualsAndHashCode;
 
 /**
@@ -49,12 +47,8 @@ import lombok.EqualsAndHashCode;
  * @version $Id$
  * @since 0.3.30
  */
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "decorated")
 public final class CdShortUrl implements Doc {
-    /**
-     * Urls cache.
-     */
-    private static final CdShortUrl.CdUrls URLS = new CdShortUrl.CdUrls();
     /**
      * Decorated.
      */
@@ -95,49 +89,13 @@ public final class CdShortUrl implements Doc {
     }
 
     @Override
+    @Cacheable(lifetime = Tv.TWENTY, unit = TimeUnit.HOURS)
     public String shortUrl() {
-        return CdShortUrl.URLS.get(this.decorated);
+        return this.decorated.shortUrl();
     }
 
     @Override
     public Attributes attributes() throws IOException {
         return this.decorated.attributes();
-    }
-
-    /**
-     * Urls cache.
-     */
-    private static final class CdUrls {
-        /**
-         * Urls cache.
-         */
-        private final transient LoadingCache<Doc, String> urls;
-        /**
-         * Ctor.
-         */
-        CdUrls() {
-            this.urls = CacheBuilder.newBuilder()
-                .maximumSize(Tv.TEN * Tv.THOUSAND)
-                .build(
-                    new CacheLoader<Doc, String>() {
-                        @Override
-                        public String load(final Doc doc) {
-                            return doc.shortUrl();
-                        }
-                    });
-        }
-
-        /**
-         * Get short url for the doc.
-         * @param doc Doc
-         * @return Url
-         */
-        public String get(final Doc doc) {
-            try {
-                return this.urls.get(doc);
-            } catch (final ExecutionException ex) {
-                throw new IllegalStateException(ex);
-            }
-        }
     }
 }
