@@ -27,45 +27,25 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.takes.doc;
+package com.nerodesk.om;
 
-import com.nerodesk.om.Base;
-import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
-import org.takes.facets.fork.FkRegex;
-import org.takes.facets.fork.TkFork;
+import com.jcabi.aspects.Immutable;
 
 /**
- * Takes for a directory.
+ * Directories.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
+ * @author Felipe Pina (felipe.pina@protonmail.com)
  * @version $Id$
  * @since 0.4
  */
-public final class TkDir implements Take {
+@Immutable
+public interface Dirs {
 
     /**
-     * Base.
+     * Creates a new directory at the root level.
+     * @param name Name of the new directory.
+     * @return Dir.
      */
-    private final transient Base base;
+    Dir create(String name);
 
-    /**
-     * Ctor.
-     * @param bse Base.
-     */
-    public TkDir(final Base bse) {
-        this.base = bse;
-    }
-
-    // @todo #221:30min This class should have the ability to edit directories.
-    //  Specifically, implement the ability to remove and to attach existing
-    //  documents.
-    @Override
-    public Response act(final Request req) throws IOException {
-        return new TkFork(
-            new FkRegex("/dir/create", new TkDirCreate(this.base))
-        ).act(req);
-    }
 }
