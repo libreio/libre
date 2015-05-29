@@ -46,8 +46,6 @@ To start a web server locally run:
 $ mvn clean integration-test -Phit-refresh -Dport=8080
 ```
 
-## Got questions?
-
 If you have questions or general suggestions, don't hesitate to submit
 a new [GitHub issue](https://github.com/nerodesk/nerodesk/issues/new).
 
