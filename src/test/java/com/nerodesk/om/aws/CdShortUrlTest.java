@@ -50,18 +50,37 @@ public final class CdShortUrlTest {
      */
     @Test
     public void shortenUrl() throws IOException {
-        final Doc doc = Mockito.mock(Doc.class);
         final String first = "http://bit.ly/1";
-        Mockito.when(doc.shortUrl()).thenReturn(first)
-            .thenReturn("http://bit.ly/2");
-        final Doc cdd = new CdShortUrl(doc);
+        final String second = "http://bit.ly/2";
+        final Doc fdoc = new CdShortUrl(this.doc(first));
+        final Doc sdoc = new CdShortUrl(this.doc(second));
         MatcherAssert.assertThat(
-            cdd.shortUrl(),
+            fdoc.shortUrl(),
             Matchers.equalTo(first)
         );
         MatcherAssert.assertThat(
-            cdd.shortUrl(),
+            fdoc.shortUrl(),
             Matchers.equalTo(first)
         );
+        MatcherAssert.assertThat(
+            sdoc.shortUrl(),
+            Matchers.equalTo(second)
+        );
+        MatcherAssert.assertThat(
+            sdoc.shortUrl(),
+            Matchers.equalTo(second)
+        );
+    }
+
+    /**
+     * Creates mocked Doc.
+     * @param name Doc name
+     * @return Doc instance
+     */
+    private Doc doc(final String name) {
+        final Doc doc = Mockito.mock(Doc.class);
+        Mockito.when(doc.shortUrl()).thenReturn(name)
+            .thenReturn(String.format("%s/next", name));
+        return doc;
     }
 }
