@@ -30,6 +30,8 @@
 package com.nerodesk.takes.doc;
 
 import com.nerodesk.om.mock.MkBase;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.rq.RqFake;
 
@@ -46,9 +48,12 @@ public final class TkDirCreateTest {
      * TkDirCreate can act.
      * @throws Exception If fails.
      */
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void acts() throws Exception {
-        new TkDirCreate(new MkBase()).act(new RqFake());
+        MatcherAssert.assertThat(
+            new TkDirCreate(new MkBase()).act(new RqFake()),
+            Matchers.notNullValue()
+        );
     }
 
 }

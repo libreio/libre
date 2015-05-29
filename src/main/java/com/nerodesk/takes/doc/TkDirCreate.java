@@ -33,6 +33,7 @@ import com.nerodesk.om.Base;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.rs.RsEmpty;
 
 /**
  * Create directory.
@@ -60,7 +61,7 @@ public final class TkDirCreate implements Take {
     //  RqDir, analogous to RqDoc, to handle the actual directory creation.
     @Override
     public Response act(final Request request) {
-        throw new UnsupportedOperationException("#act()");
+        return new RsEmpty();
     }
 
 }
