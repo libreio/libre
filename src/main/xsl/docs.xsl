@@ -87,8 +87,8 @@
                     <xsl:value-of select="name"/>
                 </a>
                 <small>
+                    <xsl:text>[</xsl:text>
                     <xsl:choose>
-                     <xsl:text>[</xsl:text>
                      <xsl:when test="size &gt;= 1073741824">
                       <xsl:value-of select="format-number(size div 1073741824, '#,###')"/>
                       <xsl:text>Gb</xsl:text>

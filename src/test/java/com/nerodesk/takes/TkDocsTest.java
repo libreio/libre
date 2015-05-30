@@ -213,8 +213,8 @@ public final class TkDocsTest {
             ),
             Matchers.containsString(
                 String.format(
-                    "created on %s",
-                    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.US)
+                    "] %s",
+                    new SimpleDateFormat("yyyy-MM-dd", Locale.US)
                         .format(doc.attributes().created())
                 )
             )
