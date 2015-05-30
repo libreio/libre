@@ -58,7 +58,8 @@ public final class TkDirCreate implements Take {
     }
 
     // @todo #221:30min This is a stub implementation. We should create a class
-    //  RqDir, analogous to RqDoc, to handle the actual directory creation.
+    //  RqDir, analogous to RqDoc, to handle the actual directory creation. Make
+    //  sure to use the existing Dir and Dirs interfaces.
     @Override
     public Response act(final Request request) {
         return new RsEmpty();
