@@ -31,6 +31,8 @@ package com.nerodesk.om.aws;
 
 import com.nerodesk.om.Doc;
 import java.io.IOException;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -70,6 +72,16 @@ public final class CdShortUrlTest {
             sdoc.shortUrl(),
             Matchers.equalTo(second)
         );
+    }
+
+    /**
+     * CdShortUrl conforms to equals and hashCode contract.
+     */
+    @Test
+    public void conformsToEqualsHashCodeContract() {
+        EqualsVerifier.forClass(CdShortUrl.class)
+            .suppress(Warning.TRANSIENT_FIELDS)
+            .verify();
     }
 
     /**

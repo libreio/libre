@@ -36,6 +36,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
@@ -161,5 +163,15 @@ public final class MkDocTest {
             doc.shortUrl(),
             Matchers.equalTo(file.toURI().toURL().toString())
         );
+    }
+
+    /**
+     * SafeDoc conforms to equals and hashCode contract.
+     */
+    @Test
+    public void conformsToEqualsHashCodeContract() {
+        EqualsVerifier.forClass(MkDoc.class)
+            .suppress(Warning.TRANSIENT_FIELDS)
+            .verify();
     }
 }
