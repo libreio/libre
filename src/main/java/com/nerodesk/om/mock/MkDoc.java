@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -49,6 +50,7 @@ import org.apache.commons.io.IOUtils;
  * @version $Id$
  * @since 0.2
  */
+@EqualsAndHashCode(of = { "dir", "user", "label" })
 public final class MkDoc implements Doc {
 
     /**

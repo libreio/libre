@@ -44,7 +44,7 @@ import lombok.ToString;
  * @since 0.4
  */
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "decorated")
 public final class SmallDoc implements Doc {
     /**
      * Decorated.

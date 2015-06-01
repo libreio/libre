@@ -36,6 +36,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -116,5 +118,15 @@ public final class SmallDocTest {
             doc.shortUrl(),
             Matchers.equalTo(file.toURI().toURL().toString())
         );
+    }
+
+    /**
+     * SmallDoc conforms to equals and hashCode contract.
+     */
+    @Test
+    public void conformsToEqualsHashCodeContract() {
+        EqualsVerifier.forClass(SmallDoc.class)
+            .suppress(Warning.TRANSIENT_FIELDS)
+            .verify();
     }
 }

@@ -44,7 +44,7 @@ import lombok.ToString;
  * @since 0.3.30
  */
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "decorated")
 public final class SafeDoc implements Doc {
     /**
      * Decorated.

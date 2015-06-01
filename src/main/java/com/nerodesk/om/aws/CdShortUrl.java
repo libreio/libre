@@ -47,7 +47,7 @@ import lombok.EqualsAndHashCode;
  * @version $Id$
  * @since 0.3.30
  */
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "decorated")
 public final class CdShortUrl implements Doc {
     /**
      * Decorated.
@@ -89,7 +89,7 @@ public final class CdShortUrl implements Doc {
     }
 
     @Override
-    @Cacheable(lifetime = Tv.THREE, unit = TimeUnit.HOURS)
+    @Cacheable(lifetime = Tv.TWENTY, unit = TimeUnit.HOURS)
     public String shortUrl() {
         return this.decorated.shortUrl();
     }
