@@ -7,7 +7,7 @@
 
 Fast, Simple, Open-Source Cloud Storage.
 
-[www.nerodesk.com](http://www.nerodesk.com)
+[www.nerodesk.com](http://www.nerodesk.com) | [twitter.com/nerodesk](https://twitter.com/nerodesk)
 
 To start application using default port use command line specified below:
 
