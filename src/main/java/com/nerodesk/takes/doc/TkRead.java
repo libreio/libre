@@ -36,7 +36,9 @@ import java.io.IOException;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.rq.RqHref;
 import org.takes.rs.RsWithBody;
+import org.takes.rs.RsWithHeader;
 
 /**
  * Read file content.
@@ -64,7 +66,15 @@ final class TkRead implements Take {
     public Response act(final Request req) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         new RqDoc(req, this.base).doc().read(baos);
-        return new RsWithBody(new ByteArrayInputStream(baos.toByteArray()));
+        return
+            new RsWithHeader(
+                new RsWithBody(new ByteArrayInputStream(baos.toByteArray())),
+                "Content-Disposition",
+                String.format(
+                    "attachment; filename=\"%s\"",
+                    new RqHref.Smart(new RqHref.Base(req)).single("file")
+                //@checkstyle IndentationCheck (2 lines)
+                )
+            );
     }
-
 }
