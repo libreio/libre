@@ -42,7 +42,7 @@ import org.takes.rs.RsEmpty;
  * @version $Id$
  * @since 0.4
  */
-@SuppressWarnings({"PMD.SingularField", "PMD.UnusedPrivateField"})
+@SuppressWarnings({ "PMD.SingularField", "PMD.UnusedPrivateField" })
 public final class TkDirCreate implements Take {
 
     /**
