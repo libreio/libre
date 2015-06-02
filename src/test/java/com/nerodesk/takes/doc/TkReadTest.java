@@ -71,8 +71,9 @@ public final class TkReadTest {
         );
         MatcherAssert.assertThat(
             new RsPrint(resp).printHead(),
-            //@checkstyle LineLengthCheck (1 lines)
-            Matchers.containsString("Content-Disposition: attachment; filename=\"hey\"")
+            Matchers.containsString(
+                "Content-Disposition: attachment; filename=\"hey\""
+            )
         );
     }
 
