@@ -66,15 +66,13 @@ final class TkRead implements Take {
     public Response act(final Request req) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         new RqDoc(req, this.base).doc().read(baos);
-        return
-            new RsWithHeader(
-                new RsWithBody(new ByteArrayInputStream(baos.toByteArray())),
-                "Content-Disposition",
-                String.format(
-                    "attachment; filename=\"%s\"",
-                    new RqHref.Smart(new RqHref.Base(req)).single("file")
-                //@checkstyle IndentationCheck (2 lines)
-                )
-            );
+        return new RsWithHeader(
+            new RsWithBody(new ByteArrayInputStream(baos.toByteArray())),
+            "Content-Disposition",
+            String.format(
+                "attachment; filename=\"%s\"",
+                new RqHref.Smart(new RqHref.Base(req)).single("file")
+            )
+        );
     }
 }
