@@ -111,9 +111,12 @@ public final class TkSetVisibilityTest {
                     new RqWithTester(
                         new RqFake(
                             TkSetVisibilityTest.POST,
-                            new Href()
-                                .with(TkSetVisibilityTest.FILE, name)
-                                .with(TkSetVisibilityTest.VISIBILITY, "Public")
+                            new Href().with(TkSetVisibilityTest.FILE, name),
+                            String.format(
+                                "%s=%s",
+                                TkSetVisibilityTest.VISIBILITY,
+                                "Public"
+                            )
                         )
                     )
                 )

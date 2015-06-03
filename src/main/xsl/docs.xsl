@@ -39,11 +39,12 @@
     </xsl:template>
     <xsl:template match="page" mode="body">
         <article>
-            <form method="post" action="{links/link[@rel='mkdir']/@href}">
+            <!--<form method="post" action="{links/link[@rel='mkdir']/@href}">
                 <input name="name" type="text" placeholder="New directory name"/>
                 <input name="create" type="submit"/>
             </form>
             <hr/>
+            -->
             <h2>
                 <xsl:text>My Documents</xsl:text>
             </h2>
@@ -70,9 +71,8 @@
             <thead>
                 <tr>
                     <th><xsl:text>File</xsl:text></th>
-                    <th><xsl:text>Options</xsl:text></th>
-                    <th><xsl:text>Friends</xsl:text></th>
-                    <th><xsl:text>Permissions</xsl:text></th>
+                    <th style="width:1%"><xsl:text>Options</xsl:text></th>
+                    <th style="width:1%"><xsl:text>Permissions</xsl:text></th>
                 </tr>
             </thead>
             <tbody>
@@ -109,30 +109,26 @@
                     <xsl:text>] </xsl:text>
                     <xsl:value-of select="created"/>
                 </small>
-                <small>
-                    <a href="{links/link[@rel='short']/@href}" style="display:block">
-                        link
-                    </a>
-                </small>
             </td>
             <td>
                 <a href="{links/link[@rel='delete']/@href}">delete</a>
-            </td>
-            <td>
-                <xsl:apply-templates select="friends"/>
+                <a href="{links/link[@rel='short']/@href}" style="display:block">
+                    share
+                </a>
             </td>
             <td>
                 <xsl:apply-templates select="visibility"/>
             </td>
         </tr>
     </xsl:template>
-    <xsl:template match="friends">
+<!--    <xsl:template match="friends">
         <xsl:apply-templates select="friend"/>
         <form action="{../links/link[@rel='add-friend']/@href}" method="post">
             <input name="friend" type="text" placeholder="email"/>
             <button>Share</button>
         </form>
     </xsl:template>
+
     <xsl:template match="friend">
         <span>
             <xsl:value-of select="name"/>
@@ -141,13 +137,20 @@
             <xsl:text>) </xsl:text>
         </span>
     </xsl:template>
+-->
     <xsl:template match="visibility">
         <form action="{../links/link[@rel='set-visibility']/@href}" method="post">
-            <select name="visibility">
-                <option>Private</option>
-                <option>Public</option>
-            </select>
-            <button>Set</button>
+            <xsl:element name="input">
+                <xsl:attribute name="type">checkbox</xsl:attribute>
+                <xsl:attribute name="name">visibility</xsl:attribute>
+                <xsl:attribute name="value">Public</xsl:attribute>
+                <xsl:if test=".='true'">
+                    <xsl:attribute name="checked">
+                    </xsl:attribute>
+                </xsl:if>
+                <xsl:attribute name="onChange">this.form.submit()</xsl:attribute>
+                <xsl:text>Public</xsl:text>
+            </xsl:element>
         </form>
     </xsl:template>
 </xsl:stylesheet>

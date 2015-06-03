@@ -36,7 +36,7 @@ import org.takes.Response;
 import org.takes.Take;
 import org.takes.facets.flash.RsFlash;
 import org.takes.facets.forward.RsForward;
-import org.takes.rq.RqHref;
+import org.takes.rq.RqForm;
 
 /**
  * Set file visibility.
@@ -62,9 +62,9 @@ public final class TkSetVisibility implements Take {
 
     @Override
     public Response act(final Request req) throws IOException {
-        final String visibility = new RqHref.Smart(
-            new RqHref.Base(req)
-        ).single("visibility");
+        final String visibility = new RqForm.Smart(
+            new RqForm.Base(req)
+        ).single("visibility", "Private");
         new RqDoc(req, this.base).doc().attributes().show(
             "Public".equals(visibility)
         );

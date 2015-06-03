@@ -177,7 +177,7 @@ public final class TkDocsTest {
                 ),
                 String.format(
                     // @checkstyle LineLength (1 line)
-                    "//xhtml:form[@action='http://www.example.com/doc/add-friend?file=%s']",
+                    "//xhtml:form[@action='http://www.example.com/doc/set-visibility?file=%s']",
                     file
                 )
             )

@@ -147,7 +147,8 @@ public final class TkDocs implements Take {
                         .add("created")
                         .set(created).up()
                         .add("type").set(attrs.type()).up()
-                        .add("name").set(name)
+                        .add("name").set(name).up()
+                        .add("visibility").set(String.valueOf(attrs.visible()))
                 ),
                 new XeLink("read", home.path("read")),
                 new XeLink("short", new Href(doc.shortUrl())),
