@@ -39,12 +39,6 @@
     </xsl:template>
     <xsl:template match="page" mode="body">
         <article>
-            <!--<form method="post" action="{links/link[@rel='mkdir']/@href}">
-                <input name="name" type="text" placeholder="New directory name"/>
-                <input name="create" type="submit"/>
-            </form>
-            <hr/>
-            -->
             <h2>
                 <xsl:text>My Documents</xsl:text>
             </h2>
@@ -121,23 +115,6 @@
             </td>
         </tr>
     </xsl:template>
-<!--    <xsl:template match="friends">
-        <xsl:apply-templates select="friend"/>
-        <form action="{../links/link[@rel='add-friend']/@href}" method="post">
-            <input name="friend" type="text" placeholder="email"/>
-            <button>Share</button>
-        </form>
-    </xsl:template>
-
-    <xsl:template match="friend">
-        <span>
-            <xsl:value-of select="name"/>
-            <xsl:text> (</xsl:text>
-            <a href="{eject}">stop</a>
-            <xsl:text>) </xsl:text>
-        </span>
-    </xsl:template>
--->
     <xsl:template match="visibility">
         <form action="{../links/link[@rel='set-visibility']/@href}" method="post">
             <xsl:element name="input">
