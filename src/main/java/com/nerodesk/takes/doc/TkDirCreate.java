@@ -30,21 +30,20 @@
 package com.nerodesk.takes.doc;
 
 import com.nerodesk.om.Base;
-import java.io.IOException;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.facets.fork.FkRegex;
-import org.takes.facets.fork.TkFork;
+import org.takes.rs.RsEmpty;
 
 /**
- * Takes for a directory.
+ * Create directory.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
+ * @author Felipe Pina (felipe.pina@protonmail.com)
  * @version $Id$
  * @since 0.4
  */
-public final class TkDir implements Take {
+@SuppressWarnings({ "PMD.SingularField", "PMD.UnusedPrivateField" })
+public final class TkDirCreate implements Take {
 
     /**
      * Base.
@@ -55,17 +54,17 @@ public final class TkDir implements Take {
      * Ctor.
      * @param bse Base.
      */
-    public TkDir(final Base bse) {
+    TkDirCreate(final Base bse) {
         this.base = bse;
     }
 
-    // @todo #221:30min This class should have the ability to edit directories.
-    //  Specifically, implement the ability to remove and to attach existing
-    //  documents.
+    // @todo #221:30min This is a stub implementation. We should create a class
+    //  RqDir, analogous to RqDoc, to handle the actual directory creation. Make
+    //  sure to use the existing Dir and Dirs interfaces. Also remove the PMD
+    //  suppressions above.
     @Override
-    public Response act(final Request req) throws IOException {
-        return new TkFork(
-            new FkRegex("/dir/create", new TkDirCreate(this.base))
-        ).act(req);
+    public Response act(final Request request) {
+        return new RsEmpty();
     }
+
 }

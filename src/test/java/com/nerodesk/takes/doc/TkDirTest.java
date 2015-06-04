@@ -29,6 +29,7 @@
  */
 package com.nerodesk.takes.doc;
 
+import com.nerodesk.om.mock.MkBase;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -50,7 +51,7 @@ public final class TkDirTest {
     @Test
     public void returnsTake() throws Exception {
         MatcherAssert.assertThat(
-            new TkDir().act(new RqFake("POST", "/dir/create")),
+            new TkDir(new MkBase()).act(new RqFake("POST", "/dir/create")),
             Matchers.notNullValue()
         );
     }

@@ -29,43 +29,31 @@
  */
 package com.nerodesk.takes.doc;
 
-import com.nerodesk.om.Base;
-import java.io.IOException;
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
-import org.takes.facets.fork.FkRegex;
-import org.takes.facets.fork.TkFork;
+import com.nerodesk.om.mock.MkBase;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.takes.rq.RqFake;
 
 /**
- * Takes for a directory.
+ * Tests for {@link TkDirCreate}.
  *
- * @author Grzegorz Gajos (grzegorz.gajos@opentangerine.com)
+ * @author Felipe Pina (felipe.pina@protonmail.com)
  * @version $Id$
  * @since 0.4
  */
-public final class TkDir implements Take {
+public final class TkDirCreateTest {
 
     /**
-     * Base.
+     * TkDirCreate can act.
+     * @throws Exception If fails.
      */
-    private final transient Base base;
-
-    /**
-     * Ctor.
-     * @param bse Base.
-     */
-    public TkDir(final Base bse) {
-        this.base = bse;
+    @Test
+    public void acts() throws Exception {
+        MatcherAssert.assertThat(
+            new TkDirCreate(new MkBase()).act(new RqFake()),
+            Matchers.notNullValue()
+        );
     }
 
-    // @todo #221:30min This class should have the ability to edit directories.
-    //  Specifically, implement the ability to remove and to attach existing
-    //  documents.
-    @Override
-    public Response act(final Request req) throws IOException {
-        return new TkFork(
-            new FkRegex("/dir/create", new TkDirCreate(this.base))
-        ).act(req);
-    }
 }

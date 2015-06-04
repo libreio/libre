@@ -194,7 +194,7 @@ public final class TkApp extends TkWrap {
             ),
             new FkRegex(
                 "/dir/.*",
-                new TkSecure(new TkGreedy(new TkDir()))
+                new TkSecure(new TkGreedy(new TkDir(base)))
             )
         );
         return TkApp.fallback(
