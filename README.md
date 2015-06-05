@@ -1,13 +1,12 @@
 <img src="http://www.nerodesk.com/logo_large.png" width="384px" height="85px"/>
 
-[![Made By Teamed.io](http://img.teamed.io/btn.svg)](http://www.teamed.io)
-[![DevOps By Rultor.com](http://www.rultor.com/b/Nerodesk/nerodesk)](http://www.rultor.com/p/Nerodesk/nerodesk)
-
 [![Build Status](https://travis-ci.org/Nerodesk/nerodesk.svg?branch=master)](https://travis-ci.org/Nerodesk/nerodesk)
 
 Fast, Simple, Open-Source Cloud Storage.
 
 [www.nerodesk.com](http://www.nerodesk.com) | [twitter.com/nerodesk](https://twitter.com/nerodesk)
+
+![nerodesk](http://www.nerodesk.com/github_readme/basic_panel.jpg)
 
 To start application using default port use command line specified below:
 
