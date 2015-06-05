@@ -1,7 +1,6 @@
 <img src="http://www.nerodesk.com/logo_large.png" width="384px" height="85px"/>
 
-[![Made By Teamed.io](http://img.teamed.io/btn.svg)](http://www.teamed.io)
- [![DevOps By Rultor.com](http://www.rultor.com/b/Nerodesk/nerodesk)](http://www.rultor.com/p/Nerodesk/nerodesk) [![Build Status](https://travis-ci.org/Nerodesk/nerodesk.svg?branch=master)](https://travis-ci.org/Nerodesk/nerodesk)
+[![Build Status](https://travis-ci.org/Nerodesk/nerodesk.svg?branch=master)](https://travis-ci.org/Nerodesk/nerodesk)
 
 Fast, Simple, Open-Source Cloud Storage.
 
@@ -51,3 +50,6 @@ a new [GitHub issue](https://github.com/nerodesk/nerodesk/issues/new).
 Copyright (c) 2015, nerodesk.com. All rights reserved.
 
 License information can be found [here](https://github.com/Nerodesk/nerodesk/blob/master/LICENSE.txt).
+
+[![Made By Teamed.io](http://img.teamed.io/btn.svg)](http://www.teamed.io)
+[![DevOps By Rultor.com](http://www.rultor.com/b/Nerodesk/nerodesk)](http://www.rultor.com/p/Nerodesk/nerodesk)
