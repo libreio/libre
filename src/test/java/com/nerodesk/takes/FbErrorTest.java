@@ -30,13 +30,13 @@
 package com.nerodesk.takes;
 
 import java.io.IOException;
-import java.util.Iterator;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.takes.Response;
 import org.takes.facets.fallback.RqFallback;
+import org.takes.misc.Opt;
 
 /**
  * Tests for {@link FbError}.
@@ -54,12 +54,12 @@ public final class FbErrorTest {
     @Test
     public void displaysErrorMsg() throws IOException {
         final String msg = "errormsg";
-        final Iterator<Response> iterator = new FbError().route(
+        final Opt<Response> opt = new FbError().route(
             new RqFallback.Fake(500, new IOException(msg))
         );
-        MatcherAssert.assertThat(iterator.hasNext(), Matchers.equalTo(true));
+        MatcherAssert.assertThat(opt.has(), Matchers.equalTo(true));
         MatcherAssert.assertThat(
-            IOUtils.toString(iterator.next().body()),
+            IOUtils.toString(opt.get().body()),
             Matchers.allOf(
                 Matchers.containsString("oops, something "),
                 Matchers.containsString("IOException"),

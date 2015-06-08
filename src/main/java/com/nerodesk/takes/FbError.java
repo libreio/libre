@@ -29,13 +29,12 @@
  */
 package com.nerodesk.takes;
 
-import java.util.Collections;
-import java.util.Iterator;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.takes.Response;
 import org.takes.facets.fallback.Fallback;
 import org.takes.facets.fallback.FbWrap;
 import org.takes.facets.fallback.RqFallback;
+import org.takes.misc.Opt;
 import org.takes.rs.RsText;
 import org.takes.rs.RsWithStatus;
 
@@ -55,11 +54,11 @@ public final class FbError extends FbWrap {
         super(
             new Fallback() {
                 @Override
-                public Iterator<Response> route(final RqFallback req) {
+                public Opt<Response> route(final RqFallback req) {
                     final String exc = ExceptionUtils.getStackTrace(
                         req.throwable()
                     );
-                    return Collections.<Response>singleton(
+                    return new Opt.Single<Response>(
                         new RsWithStatus(
                             new RsText(
                                 String.format(
@@ -69,7 +68,7 @@ public final class FbError extends FbWrap {
                             ),
                             req.code()
                         )
-                    ).iterator();
+                    );
                 }
             }
         );
