@@ -6,7 +6,7 @@ Fast, Simple, Open-Source Cloud Storage.
 
 [www.nerodesk.com](http://www.nerodesk.com) | [twitter.com/nerodesk](https://twitter.com/nerodesk)
 
-![nerodesk](http://www.nerodesk.com/github_readme/basic_panel.jpg)
+<img src="http://www.nerodesk.com/github_readme/img/basic_panel_retina.png" width="628px" height="561px"/>
 
 To start application using default port use command line specified below:
 
