@@ -28,6 +28,7 @@ merge:
   - longtimeago
   - maurezen
   - super132
+  - suseika
 deploy:
   script: |-
     mvn clean package -Pnerodesk -Pqulice,cobertura --errors --settings ../settings.xml --batch-mode
