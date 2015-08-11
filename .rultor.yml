@@ -19,6 +19,7 @@ merge:
     mvn clean
     pdd --source=$(pwd) --verbose --file=/dev/null
   commanders:
+  - antonini
   - caarlos0
   - carlosmiranda
   - darkled
