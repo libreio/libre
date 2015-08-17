@@ -31,6 +31,7 @@ package com.nerodesk.om.mock;
 
 import com.google.common.io.Files;
 import com.nerodesk.om.Base;
+import com.nerodesk.om.Invitations;
 import com.nerodesk.om.User;
 import java.io.File;
 import java.io.IOException;
@@ -69,5 +70,10 @@ public final class MkBase implements Base {
     @Override
     public User user(final String urn) throws IOException {
         return new MkUser(this.dir, urn);
+    }
+
+    @Override
+    public Invitations invitations() {
+        return new MkInvitations();
     }
 }

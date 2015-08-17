@@ -27,33 +27,33 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om;
+package com.nerodesk.om.aws;
 
-import com.jcabi.aspects.Immutable;
-import java.io.IOException;
+import com.nerodesk.om.Invitations;
+import com.nerodesk.om.User;
 
 /**
- * Base.
+ * AWS version of Invitations.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Paul Polishchuk (ppol@ua.fm)
  * @version $Id$
- * @since 0.2
+ * @since 0.4
  */
-@Immutable
-public interface Base {
+public final class AwsInvitations implements Invitations {
 
-    /**
-     * Get user by URN.
-     * @param urn URN
-     * @throws IOException If fails
-     * @return InputStream
-     */
-    User user(String urn) throws IOException;
+    @Override
+    public void send(final User owner, final String doc, final String email) {
+        throw new UnsupportedOperationException("AwsInvitations#send()");
+    }
 
-    /**
-     * Invitations to share Docs.
-     * @return Invitations
-     * @since 0.4
-     */
-    Invitations invitations();
+    @Override
+    // @checkstyle ParameterNumberCheck (5 lines)
+    public void accept(
+        final User friend,
+        final String doc,
+        final String owner,
+        final String code
+    ) {
+        throw new UnsupportedOperationException("AwsInvitations#accept()");
+    }
 }

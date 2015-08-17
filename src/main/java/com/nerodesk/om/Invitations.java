@@ -30,30 +30,31 @@
 package com.nerodesk.om;
 
 import com.jcabi.aspects.Immutable;
-import java.io.IOException;
 
 /**
- * Base.
+ * Invitations to share the Doc.
  *
- * @author Yegor Bugayenko (yegor@teamed.io)
+ * @author Paul Polishchuk (ppol@ua.fm)
  * @version $Id$
- * @since 0.2
+ * @since 0.4
  */
 @Immutable
-public interface Base {
+public interface Invitations {
+    /**
+     * Send invitation to share Doc by email.
+     * @param owner Doc owner
+     * @param doc Doc path
+     * @param email Friend email
+     */
+    void send(User owner, String doc, String email);
 
     /**
-     * Get user by URN.
-     * @param urn URN
-     * @throws IOException If fails
-     * @return InputStream
+     * Accept invitation to share the Doc by friend.
+     * @param friend Friend
+     * @param doc Doc to be shared
+     * @param owner Doc owner
+     * @param code Security code
+     * @checkstyle ParameterNumberCheck (2 lines)
      */
-    User user(String urn) throws IOException;
-
-    /**
-     * Invitations to share Docs.
-     * @return Invitations
-     * @since 0.4
-     */
-    Invitations invitations();
+    void accept(User friend, String doc, String owner, String code);
 }
