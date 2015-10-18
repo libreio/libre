@@ -1,26 +1,22 @@
-<img src="http://www.nerodesk.com/logo_large.png" width="384px" height="85px"/>
+#libre
 
-[![Build Status](https://travis-ci.org/Nerodesk/nerodesk.svg?branch=master)](https://travis-ci.org/Nerodesk/nerodesk)
+[![Made By Teamed.io](http://img.teamed.io/btn.svg)](http://www.teamed.io)
 
-Fast, Simple, Open-Source Cloud Storage.
+Libre is a cloud storage platform that enables users to deploy a simple AWS gateway for storing and sharing files.
 
-[www.nerodesk.com](http://www.nerodesk.com) | [twitter.com/nerodesk](https://twitter.com/nerodesk)
-
-<img src="http://www.nerodesk.com/github_readme/img/basic_panel_retina.png" width="628px" height="561px"/>
-
-To start application using default port use command line specified below:
+##Starting the application:
 
 ```
 $ mvn clean package
-$ java -cp target/nerodesk.jar:target/deps/* com.nerodesk.Launch --port=8080
+$ java -cp target/libre.jar:target/deps/* com.libre.Launch --port=8080
 ```
-If you're on Windows:
+##If you're on Windows:
 
 ```
-java -cp target\nerodesk.jar;target\deps\* com.nerodesk.Launch --port=8080
+java -cp target\libre.jar;target\deps\* com.libre.Launch --port=8080
 ```
 
-## How to contribute
+##How to contribute
 
 Fork repository, make changes, send us a pull request. We will review your changes and apply them to the `master` branch shortly, provided they don't violate our quality standards. Before sending us your pull request please run full Maven build:
 
@@ -41,15 +37,5 @@ To start a web server locally run:
 ```
 $ mvn clean integration-test -Phit-refresh -Dport=8080
 ```
-
 If you have questions or general suggestions, don't hesitate to submit
-a new [GitHub issue](https://github.com/nerodesk/nerodesk/issues/new).
-
-## License & Copyright
-
-Copyright (c) 2015, nerodesk.com. All rights reserved.
-
-License information can be found [here](https://github.com/Nerodesk/nerodesk/blob/master/LICENSE.txt).
-
-[![Made By Teamed.io](http://img.teamed.io/btn.svg)](http://www.teamed.io)
-[![DevOps By Rultor.com](http://www.rultor.com/b/Nerodesk/nerodesk)](http://www.rultor.com/p/Nerodesk/nerodesk)
+a new [GitHub issue](https://github.com/libreio/libre/issues/new).
