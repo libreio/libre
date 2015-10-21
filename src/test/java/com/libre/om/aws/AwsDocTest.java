@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015, nerodesk.com
+ * Copyright (c) 2016, libre.io
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  * disclaimer. 2) Redistributions in binary form must reproduce the above
  * copyright notice, this list of conditions and the following
  * disclaimer in the documentation and/or other materials provided
- * with the distribution. 3) Neither the name of the nerodesk.com nor
+ * with the distribution. 3) Neither the name of the libre.io nor
  * the names of its contributors may be used to endorse or promote
  * products derived from this software without specific prior written
  * permission.
@@ -27,7 +27,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.aws;
+package com.libre.om.aws;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.manifests.Manifests;
@@ -140,16 +140,16 @@ public final class AwsDocTest {
      */
     @Test
     public void shortenUrl() throws IOException {
-        Manifests.DEFAULT.put("Nerodesk-BitlyId", "nerodesk");
+        Manifests.DEFAULT.put("libre-BitlyId", "libreio");
         Manifests.DEFAULT.put(
-            "Nerodesk-BitlyKey",
-            "R_95c4f6c85c67498bba37a73872577410"
+            "libre-BitlyKey",
+            "R_7bf816b032fa4c5e976578473658c8ab"
         );
         final String label = "shorten";
         final AwsDoc doc = this.createDoc(label, label);
         MatcherAssert.assertThat(
             doc.shortUrl(),
-            Matchers.equalTo("http://bit.ly/1GgY5gX")
+            Matchers.equalTo("http://bit.ly/1hUX4Bw")
         );
     }
 

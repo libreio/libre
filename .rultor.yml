@@ -5,6 +5,7 @@ install: |-
 architect:
 - yegor256
 - karato
+- k0r
 assets:
   secring.gpg: yegor256/home#assets/secring.gpg
   id_rsa: yegor256/home#assets/heroku-key
@@ -19,6 +20,7 @@ merge:
     mvn clean
     pdd --source=$(pwd) --verbose --file=/dev/null
   commanders:
+  - k0r
   - antonini
   - caarlos0
   - carlosmiranda
@@ -40,6 +42,7 @@ deploy:
     s3cmd --no-progress put nerodesk.xml --config=../s3cfg s3://est.teamed.io/nerodesk.xml
   commanders:
   - yegor256
+  - k0r
 env:
   MAVEN_OPTS: -XX:MaxPermSize=256m -Xmx1g
 release:
@@ -67,3 +70,4 @@ release:
     # mvn clean site-deploy -Psite --errors --settings ../settings.xml --batch-mode
   commanders:
   - yegor256
+  - k0r

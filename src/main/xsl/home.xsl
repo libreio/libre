@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
- * Copyright (c) 2015, nerodesk.com
+ * Copyright (c) 2015, libre.io
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * disclaimer. 2) Redistributions in binary form must reproduce the above
  * copyright notice, this list of conditions and the following
  * disclaimer in the documentation and/or other materials provided
- * with the distribution. 3) Neither the name of the nerodesk.com nor
+ * with the distribution. 3) Neither the name of the libre.io nor
  * the names of its contributors may be used to endorse or promote
  * products derived from this software without specific prior written
  * permission.
@@ -29,51 +29,48 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns="http://www.w3.org/1999/xhtml" version="1.0">
-    <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes" />
-    <xsl:include href="/xsl/layout.xsl"/>
-    <xsl:template match="page" mode="head">
-        <title>
-            <xsl:text>nerodesk</xsl:text>
-        </title>
-    </xsl:template>
-    <xsl:template match="page" mode="body">
-        <div id="center">
-            <div>
-                <p>
-                    <img style="width:240px;" src="/images/logo.png"/>
-                </p>
-                <p>
-                    <xsl:text>Open-Source Cloud Storage</xsl:text>
-                </p>
-                <p>
-                    <xsl:text>Login with:</xsl:text>
-                </p>
-                <nav>
-                    <ul>
-                        <li>
-                            <a title="facebook" href="{links/link[@rel='takes:facebook']/@href}">
-                                <img src="/svg/facebook.svg" alt="facebook icon"/>
-                            </a>
-                        </li>
-                        <li>
-                            <a title="github" href="{links/link[@rel='takes:github']/@href}">
-                                <img src="/svg/github.svg" alt="github icon"/>
-                            </a>
-                        </li>
-                        <li>
-                            <a title="twitter" href="{links/link[@rel='takes:twitter']/@href}">
-                                <img src="/svg/twitter.svg" alt="twitter icon"/>
-                            </a>
-                        </li>
-                        <li>
-                            <a title="google+" href="{links/link[@rel='takes:google']/@href}">
-                                <img src="/svg/google.svg" alt="google icon"/>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </xsl:template>
+	xmlns="http://www.w3.org/1999/xhtml" version="1.0">
+	<xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes" />
+	<xsl:include href="/xsl/layout.xsl" />
+	<xsl:template match="page" mode="head">
+		<title>
+			<xsl:text>libre.io</xsl:text>
+		</title>
+	</xsl:template>
+	<xsl:template match="page" mode="body">
+		<div id="center">
+			<div>
+				<p>
+					<img style="width:240px;" src="/images/logo.png" />
+				</p>
+				<p>
+					<xsl:text>Login with:</xsl:text>
+				</p>
+				<nav>
+					<ul>
+						<li>
+							<a title="facebook" href="{links/link[@rel='takes:facebook']/@href}">
+								<img src="/svg/facebook.svg" alt="facebook icon" />
+							</a>
+						</li>
+						<li>
+							<a title="github" href="{links/link[@rel='takes:github']/@href}">
+								<img src="/svg/github.svg" alt="github icon" />
+							</a>
+						</li>
+						<li>
+							<a title="twitter" href="{links/link[@rel='takes:twitter']/@href}">
+								<img src="/svg/twitter.svg" alt="twitter icon" />
+							</a>
+						</li>
+						<li>
+							<a title="google+" href="{links/link[@rel='takes:google']/@href}">
+								<img src="/svg/google.svg" alt="google icon" />
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</xsl:template>
 </xsl:stylesheet>

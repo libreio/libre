@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015, nerodesk.com
+ * Copyright (c) 2016, libre.io
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  * disclaimer. 2) Redistributions in binary form must reproduce the above
  * copyright notice, this list of conditions and the following
  * disclaimer in the documentation and/or other materials provided
- * with the distribution. 3) Neither the name of the nerodesk.com nor
+ * with the distribution. 3) Neither the name of the libre.io nor
  * the names of its contributors may be used to endorse or promote
  * products derived from this software without specific prior written
  * permission.
@@ -27,10 +27,10 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.takes;
+package com.libre.takes;
 
 import com.jcabi.manifests.Manifests;
-import com.nerodesk.om.Base;
+import com.libre.om.Base;
 import java.io.IOException;
 import org.takes.Request;
 import org.takes.Response;
@@ -103,15 +103,15 @@ final class RsPage extends RsWrap {
                 new XeIdentity(req),
                 new XeAccount(base, req),
                 new XeFlash(req),
-                new XeFacebookLink(req, Manifests.read("Nerodesk-FacebookId")),
+                new XeFacebookLink(req, Manifests.read("libre-FacebookId")),
                 new XeLogoutLink(req),
                 new XeAppend(
                     "version",
-                    new XeAppend("name", Manifests.read("Nerodesk-Version")),
+                    new XeAppend("name", Manifests.read("libre-Version")),
                     new XeAppend(
-                        "revision", Manifests.read("Nerodesk-Revision")
+                        "revision", Manifests.read("libre-Revision")
                     ),
-                    new XeAppend("date", Manifests.read("Nerodesk-Date"))
+                    new XeAppend("date", Manifests.read("libre-Date"))
                 )
             )
         );

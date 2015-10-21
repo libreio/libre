@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015, nerodesk.com
+ * Copyright (c) 2016, libre.io
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  * disclaimer. 2) Redistributions in binary form must reproduce the above
  * copyright notice, this list of conditions and the following
  * disclaimer in the documentation and/or other materials provided
- * with the distribution. 3) Neither the name of the nerodesk.com nor
+ * with the distribution. 3) Neither the name of the libre.io nor
  * the names of its contributors may be used to endorse or promote
  * products derived from this software without specific prior written
  * permission.
@@ -27,14 +27,14 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.takes;
+package com.libre.takes;
 
 import com.google.common.net.MediaType;
 import com.jcabi.log.VerboseProcess;
 import com.jcabi.manifests.Manifests;
-import com.nerodesk.om.Base;
-import com.nerodesk.takes.doc.TkDir;
-import com.nerodesk.takes.doc.TkDoc;
+import com.libre.om.Base;
+import com.libre.takes.doc.TkDir;
+import com.libre.takes.doc.TkDoc;
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -224,7 +224,7 @@ public final class TkApp extends TkWrap {
      * @return Authenticated takes
      */
     private static Take auth(final Take take) {
-        final String key = Manifests.read("Nerodesk-FacebookId");
+        final String key = Manifests.read("libre-FacebookId");
         return new TkAuth(
             take,
             new PsChain(
@@ -234,7 +234,7 @@ public final class TkApp extends TkWrap {
                         PsFacebook.class.getSimpleName(),
                         new PsFacebook(
                             key,
-                            Manifests.read("Nerodesk-FacebookSecret")
+                            Manifests.read("libre-FacebookSecret")
                         )
                     ),
                     new PsByFlag.Pair(
@@ -247,7 +247,7 @@ public final class TkApp extends TkWrap {
                         new CcHex(
                             new CcXOR(
                                 new CcSalted(new CcCompact()),
-                                Manifests.read("Nerodesk-SecurityKey")
+                                Manifests.read("libre-SecurityKey")
                             )
                         )
                     )

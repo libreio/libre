@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015, nerodesk.com
+ * Copyright (c) 2016, libre.io
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  * disclaimer. 2) Redistributions in binary form must reproduce the above
  * copyright notice, this list of conditions and the following
  * disclaimer in the documentation and/or other materials provided
- * with the distribution. 3) Neither the name of the nerodesk.com nor
+ * with the distribution. 3) Neither the name of the libre.io nor
  * the names of its contributors may be used to endorse or promote
  * products derived from this software without specific prior written
  * permission.
@@ -27,16 +27,16 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.nerodesk.om.aws;
+package com.libre.om.aws;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.jcabi.log.Logger;
 import com.jcabi.manifests.Manifests;
 import com.jcabi.s3.Bucket;
 import com.jcabi.s3.Ocket;
-import com.nerodesk.om.Attributes;
-import com.nerodesk.om.Doc;
-import com.nerodesk.om.Friends;
+import com.libre.om.Attributes;
+import com.libre.om.Doc;
+import com.libre.om.Friends;
 import com.rosaloves.bitlyj.Bitly;
 import java.io.IOException;
 import java.io.InputStream;
@@ -133,12 +133,12 @@ final class AwsDoc implements Doc {
     public String shortUrl() {
         return Bitly
             .as(
-                Manifests.read("Nerodesk-BitlyId"),
-                Manifests.read("Nerodesk-BitlyKey")
+                Manifests.read("libre-BitlyId"),
+                Manifests.read("libre-BitlyKey")
         )
             .call(
                 Bitly.shorten(
-                    new Href("http://beta.nerodesk.com/doc/read")
+                    new Href("http://beta.libre.io/doc/read")
                         .with("file", this.label).toString()
                 )
             )

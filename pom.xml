@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
- * Copyright (c) 2015, nerodesk.com
+ * Copyright (c) 2015, libre.io
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * disclaimer. 2) Redistributions in binary form must reproduce the above
  * copyright notice, this list of conditions and the following
  * disclaimer in the documentation and/or other materials provided
- * with the distribution. 3) Neither the name of the nerodesk.com nor
+ * with the distribution. 3) Neither the name of the libre.io nor
  * the names of its contributors may be used to endorse or promote
  * products derived from this software without specific prior written
  * permission.
@@ -37,22 +37,21 @@
         <artifactId>parent</artifactId>
         <version>0.32.1</version>
     </parent>
-    <groupId>com.nerodesk</groupId>
-    <artifactId>nerodesk</artifactId>
+    <groupId>com.libre</groupId>
+    <artifactId>libre</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>nerodesk</name>
-    <description>Open Source Cloud File Sharing</description>
-    <url>http://www.nerodesk.com</url>
+    <name>libre</name>
+    <url>http://www.libre.io</url>
     <inceptionYear>2015</inceptionYear>
     <organization>
-        <name>Nerodesk, Inc.</name>
-        <url>http://www.nerodesk.com</url>
+        <name>libre.io</name>
+        <url>http://www.libre.io</url>
     </organization>
     <licenses>
         <license>
             <name>BSD</name>
-            <url>http://doc.nerodesk.com/LICENSE.txt</url>
+            <url>http://doc.libre.io/LICENSE.txt</url>
             <distribution>site</distribution>
         </license>
     </licenses>
@@ -71,21 +70,21 @@
     </developers>
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/nerodesk/nerodesk/issues</url>
+        <url>https://github.com/libreio/libre/issues</url>
     </issueManagement>
     <scm>
-        <connection>scm:git:git@github.com:nerodesk/nerodesk.git</connection>
-        <developerConnection>scm:git:git@github.com:nerodesk/nerodesk.git</developerConnection>
-        <url>https://github.com/nerodesk/nerodesk</url>
+        <connection>scm:git:git@github.com:libreio/libre.git</connection>
+        <developerConnection>scm:git:git@github.com:libreio/libre.git</developerConnection>
+        <url>https://github.com/libreio/libre</url>
     </scm>
     <ciManagement>
         <system>travis</system>
-        <url>https://travis-ci.org/nerodesk/nerodesk</url>
+        <url>https://travis-ci.org/libreio/libre</url>
     </ciManagement>
     <distributionManagement>
         <site>
             <id>github-pages</id>
-            <url>http://doc.nerodesk.com</url>
+            <url>http://doc.libre.io</url>
         </site>
     </distributionManagement>
     <properties>
@@ -286,7 +285,7 @@
                 <file><exists>pom.xml</exists></file>
             </activation>
             <build>
-                <finalName>nerodesk</finalName>
+                <finalName>libre</finalName>
                 <plugins>
                     <plugin>
                         <groupId>nl.geodienstencentrum.maven</groupId>
@@ -362,7 +361,7 @@
                 <file><exists>pom.xml</exists></file>
             </activation>
             <build>
-                <finalName>nerodesk</finalName>
+                <finalName>libre</finalName>
                 <plugins>
                     <plugin>
                         <artifactId>maven-jar-plugin</artifactId>
@@ -401,8 +400,8 @@
                         <configuration>
                             <instrumentation>
                                 <excludes>
-                                    <exclude>com/nerodesk/om/ThresholdInputStream.class</exclude>
-                                    <exclude>com/nerodesk/Launch.class</exclude>
+                                    <exclude>com/libre/om/ThresholdInputStream.class</exclude>
+                                    <exclude>com/libre/Launch.class</exclude>
                                 </excludes>
                             </instrumentation>
                             <check>
@@ -448,7 +447,7 @@
                                     <goal>java</goal>
                                 </goals>
                                 <configuration>
-                                    <mainClass>com.nerodesk.Launch</mainClass>
+                                    <mainClass>com.libre.Launch</mainClass>
                                     <classpathScope>test</classpathScope>
                                     <cleanupDaemonThreads>false</cleanupDaemonThreads>
                                     <arguments>
@@ -480,4 +479,5 @@
             </build>
         </profile>
     </profiles>
+    <description>Simple AWS gateway for storing and sharing files</description>
 </project>
