@@ -2,6 +2,8 @@
 
 [![Made By Teamed.io](http://img.teamed.io/btn.svg)](http://www.teamed.io)
 
+[![Build Status](https://travis-ci.org/libreio/libre.svg?branch=master)](https://travis-ci.org/libreio/libre)
+
 Libre is a cloud storage platform that enables users to deploy a simple AWS gateway for storing and sharing files.
 
 ##Starting the application:
