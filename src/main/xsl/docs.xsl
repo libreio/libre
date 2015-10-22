@@ -28,97 +28,103 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns="http://www.w3.org/1999/xhtml" version="1.0">
-    <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes" />
-    <xsl:include href="/xsl/layout.xsl"/>
-    <xsl:template match="page" mode="head">
-        <title>
-            <xsl:text>docs</xsl:text>
-        </title>
-    </xsl:template>
-    <xsl:template match="page" mode="body">
-        <article>
-            <h2>
-                <xsl:text>My Documents</xsl:text>
-            </h2>
-            <form method="post" action="{links/link[@rel='upload']/@href}"
-                enctype="multipart/form-data"
-                onSubmit="if(document.getElementById('fileinput').value.trim() == '') return false;">
-                <input id="fileinput" name="file" type="file"/>
-                <button type="submit">Upload</button>
-            </form>
-            <xsl:apply-templates select="docs"/>
-        </article>
-    </xsl:template>
-    <xsl:template match="docs[doc]">
-        <table style="width:100%">
-            <thead>
-                <tr>
-                    <th><xsl:text>File</xsl:text></th>
-                    <th style="width:1%"><xsl:text>Options</xsl:text></th>
-                    <th style="width:1%"><xsl:text>Permissions</xsl:text></th>
-                </tr>
-            </thead>
-            <tbody>
-                <xsl:apply-templates select="doc"/>
-            </tbody>
-        </table>
-    </xsl:template>
-    <xsl:template match="doc">
-        <tr>
-            <td>
-                <a href="{links/link[@rel='read']/@href}" style="display:block">
-                    <xsl:value-of select="name"/>
-                </a>
-                <small>
-                    <xsl:text>[</xsl:text>
-                    <xsl:choose>
-                     <xsl:when test="size &gt;= 1073741824">
-                      <xsl:value-of select="format-number(size div 1073741824, '#,###')"/>
-                      <xsl:text>Gb</xsl:text>
-                     </xsl:when>
-                     <xsl:when test="size &gt;= 1048576">
-                      <xsl:value-of select="format-number(size div 1048576, '#,###')"/>
-                      <xsl:text>Mb</xsl:text>
-                     </xsl:when>
-                     <xsl:when test="size &gt;= 1024">
-                      <xsl:value-of select="format-number(size div 1024, '#,###')"/>
-                      <xsl:text>Kb</xsl:text>
-                     </xsl:when>
-                     <xsl:when test="size &gt; 0 and size &lt; 1024">
-                      <xsl:value-of select="format-number(size div 0, '#,###')"/>
-                      <xsl:text>bytes</xsl:text>
-                     </xsl:when>
-                    </xsl:choose>
-                    <xsl:text>] </xsl:text>
-                    <xsl:value-of select="created"/>
-                </small>
-            </td>
-            <td>
-                <a href="{links/link[@rel='delete']/@href}">delete</a>
-                <a href="{links/link[@rel='short']/@href}" style="display:block">
-                    share
-                </a>
-            </td>
-            <td>
-                <xsl:apply-templates select="visibility"/>
-            </td>
-        </tr>
-    </xsl:template>
-    <xsl:template match="visibility">
-        <form action="{../links/link[@rel='set-visibility']/@href}" method="post">
-            <xsl:element name="input">
-                <xsl:attribute name="type">checkbox</xsl:attribute>
-                <xsl:attribute name="name">visibility</xsl:attribute>
-                <xsl:attribute name="value">Public</xsl:attribute>
-                <xsl:if test=".='true'">
-                    <xsl:attribute name="checked">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
+ <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes" />
+ <xsl:include href="/xsl/layout.xsl" />
+ <xsl:template match="page" mode="head">
+  <title>
+   <xsl:text>docs</xsl:text>
+  </title>
+ </xsl:template>
+ <xsl:template match="page" mode="body">
+  <article>
+   <h2>
+    <xsl:text>My Documents</xsl:text>
+   </h2>
+   <form method="post" action="{links/link[@rel='upload']/@href}"
+    enctype="multipart/form-data"
+    onSubmit="if(document.getElementById('fileinput').value.trim() == '') return false;">
+    <input id="fileinput" name="file" type="file" />
+    <button type="submit">Upload</button>
+   </form>
+   <xsl:apply-templates select="docs" />
+  </article>
+ </xsl:template>
+ <xsl:template match="docs[doc]">
+  <table style="width:100%">
+   <thead>
+    <tr>
+     <th>
+      <xsl:text>File</xsl:text>
+     </th>
+     <th style="width:1%">
+      <xsl:text>Options</xsl:text>
+     </th>
+     <th style="width:1%">
+      <xsl:text>Permissions</xsl:text>
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <xsl:apply-templates select="doc" />
+   </tbody>
+  </table>
+ </xsl:template>
+ <xsl:template match="doc">
+  <tr>
+   <td>
+    <a href="{links/link[@rel='read']/@href}" style="display:block">
+     <xsl:value-of select="name" />
+    </a>
+    <small>
+     <xsl:text>[</xsl:text>
+     <xsl:choose>
+      <xsl:when test="size &gt;= 1073741824">
+       <xsl:value-of select="format-number(size div 1073741824, '#,###')" />
+       <xsl:text>Gb</xsl:text>
+      </xsl:when>
+      <xsl:when test="size &gt;= 1048576">
+       <xsl:value-of select="format-number(size div 1048576, '#,###')" />
+       <xsl:text>Mb</xsl:text>
+      </xsl:when>
+      <xsl:when test="size &gt;= 1024">
+       <xsl:value-of select="format-number(size div 1024, '#,###')" />
+       <xsl:text>Kb</xsl:text>
+      </xsl:when>
+      <xsl:when test="size &gt; 0 and size &lt; 1024">
+       <xsl:value-of select="format-number(size div 0, '#,###')" />
+       <xsl:text>bytes</xsl:text>
+      </xsl:when>
+     </xsl:choose>
+     <xsl:text>] </xsl:text>
+     <xsl:value-of select="created" />
+    </small>
+   </td>
+   <td>
+    <a href="{links/link[@rel='delete']/@href}">delete</a>
+    <a href="{links/link[@rel='short']/@href}" style="display:block">
+     share
+    </a>
+   </td>
+   <td>
+    <xsl:apply-templates select="visibility" />
+   </td>
+  </tr>
+ </xsl:template>
+ <xsl:template match="visibility">
+  <form action="{../links/link[@rel='set-visibility']/@href}"
+   method="post">
+   <xsl:element name="input">
+    <xsl:attribute name="type">checkbox</xsl:attribute>
+    <xsl:attribute name="name">visibility</xsl:attribute>
+    <xsl:attribute name="value">Public</xsl:attribute>
+    <xsl:if test=".='true'">
+     <xsl:attribute name="checked">
                     </xsl:attribute>
-                </xsl:if>
-                <xsl:attribute name="onChange">this.form.submit()</xsl:attribute>
-                <xsl:text>Public</xsl:text>
-            </xsl:element>
-        </form>
-    </xsl:template>
+    </xsl:if>
+    <xsl:attribute name="onChange">this.form.submit()</xsl:attribute>
+    <xsl:text>Public</xsl:text>
+   </xsl:element>
+  </form>
+ </xsl:template>
 </xsl:stylesheet>
