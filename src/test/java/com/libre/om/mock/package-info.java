@@ -29,7 +29,7 @@
  */
 
 /**
- * libre object model mock tests.
+ * Libre object model mock tests.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$
