@@ -37,8 +37,7 @@
     <meta name="description" content="libre" />
     <meta name="keywords" content="Simple AWS gatway for storing and sharing files" />
     <meta name="author" content="libre.io" />
-    <link rel="stylesheet" type="text/css" media="all"
-     href="//yegor256.github.io/tacit/tacit.min.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="//yegor256.github.io/tacit/tacit.min.css" />
     <link rel="stylesheet" type="text/css" media="all" href="/css/main.css" />
     <xsl:apply-templates select="." mode="head" />
    </head>
