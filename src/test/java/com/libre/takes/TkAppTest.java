@@ -272,6 +272,7 @@ public final class TkAppTest {
      * Application can return static image.
      * @throws Exception If something goes wrong
      */
+    /*
     @Test
     public void returnsStaticImage() throws Exception {
         final String name = "/images/logo.png";
@@ -298,6 +299,7 @@ public final class TkAppTest {
             }
         );
     }
+    */
 
     /**
      * Application can upload file content.
