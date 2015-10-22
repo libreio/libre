@@ -29,8 +29,8 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
- <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes" />
- <xsl:include href="/xsl/layout.xsl" />
+ <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
+ <xsl:include href="/xsl/layout.xsl"/>
  <xsl:template match="page" mode="head">
   <title>
    <xsl:text>docs</xsl:text>
@@ -38,7 +38,7 @@
  </xsl:template>
  <xsl:template match="page" mode="body">
   <article>
-   <xsl:apply-templates select="docs" />
+   <xsl:apply-templates select="docs"/>
   </article>
  </xsl:template>
  <xsl:template match="docs[doc]">
@@ -51,7 +51,7 @@
     </tr>
    </thead>
    <tbody>
-    <xsl:apply-templates select="doc" />
+    <xsl:apply-templates select="doc"/>
    </tbody>
   </table>
  </xsl:template>
@@ -59,7 +59,7 @@
   <tr>
    <td>
     <a href="{read}" style="display:block">
-     <xsl:value-of select="path" />
+     <xsl:value-of select="path"/>
     </a>
    </td>
   </tr>

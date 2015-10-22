@@ -29,7 +29,7 @@
  */
 
 /**
- * libre object model AWS tests.
+ * Libre object model AWS tests.
  *
  * @author Krzysztof Krason (Krzysztof.Krason@gmail.com)
  * @version $Id$

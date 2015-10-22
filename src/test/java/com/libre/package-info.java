@@ -29,7 +29,7 @@
  */
 
 /**
- * libre, tests.
+ * Libre, tests.
  *
  * @author Yegor Bugayenko (yegor@teamed.io)
  * @version $Id$

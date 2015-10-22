@@ -29,8 +29,8 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
- <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes" />
- <xsl:include href="/xsl/layout.xsl" />
+ <xsl:output method="html" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
+ <xsl:include href="/xsl/layout.xsl"/>
  <xsl:template match="page" mode="head">
   <title>
    <xsl:text>docs</xsl:text>
@@ -41,13 +41,11 @@
    <h2>
     <xsl:text>My Documents</xsl:text>
    </h2>
-   <form method="post" action="{links/link[@rel='upload']/@href}"
-    enctype="multipart/form-data"
-    onSubmit="if(document.getElementById('fileinput').value.trim() == '') return false;">
-    <input id="fileinput" name="file" type="file" />
+   <form method="post" action="{links/link[@rel='upload']/@href}" enctype="multipart/form-data" onSubmit="if(document.getElementById('fileinput').value.trim() == '') return false;">
+    <input id="fileinput" name="file" type="file"/>
     <button type="submit">Upload</button>
    </form>
-   <xsl:apply-templates select="docs" />
+   <xsl:apply-templates select="docs"/>
   </article>
  </xsl:template>
  <xsl:template match="docs[doc]">
@@ -66,7 +64,7 @@
     </tr>
    </thead>
    <tbody>
-    <xsl:apply-templates select="doc" />
+    <xsl:apply-templates select="doc"/>
    </tbody>
   </table>
  </xsl:template>
@@ -74,30 +72,30 @@
   <tr>
    <td>
     <a href="{links/link[@rel='read']/@href}" style="display:block">
-     <xsl:value-of select="name" />
+     <xsl:value-of select="name"/>
     </a>
     <small>
      <xsl:text>[</xsl:text>
      <xsl:choose>
       <xsl:when test="size &gt;= 1073741824">
-       <xsl:value-of select="format-number(size div 1073741824, '#,###')" />
+       <xsl:value-of select="format-number(size div 1073741824, '#,###')"/>
        <xsl:text>Gb</xsl:text>
       </xsl:when>
       <xsl:when test="size &gt;= 1048576">
-       <xsl:value-of select="format-number(size div 1048576, '#,###')" />
+       <xsl:value-of select="format-number(size div 1048576, '#,###')"/>
        <xsl:text>Mb</xsl:text>
       </xsl:when>
       <xsl:when test="size &gt;= 1024">
-       <xsl:value-of select="format-number(size div 1024, '#,###')" />
+       <xsl:value-of select="format-number(size div 1024, '#,###')"/>
        <xsl:text>Kb</xsl:text>
       </xsl:when>
       <xsl:when test="size &gt; 0 and size &lt; 1024">
-       <xsl:value-of select="format-number(size div 0, '#,###')" />
+       <xsl:value-of select="format-number(size div 0, '#,###')"/>
        <xsl:text>bytes</xsl:text>
       </xsl:when>
      </xsl:choose>
      <xsl:text>] </xsl:text>
-     <xsl:value-of select="created" />
+     <xsl:value-of select="created"/>
     </small>
    </td>
    <td>
@@ -107,13 +105,12 @@
     </a>
    </td>
    <td>
-    <xsl:apply-templates select="visibility" />
+    <xsl:apply-templates select="visibility"/>
    </td>
   </tr>
  </xsl:template>
  <xsl:template match="visibility">
-  <form action="{../links/link[@rel='set-visibility']/@href}"
-   method="post">
+  <form action="{../links/link[@rel='set-visibility']/@href}" method="post">
    <xsl:element name="input">
     <xsl:attribute name="type">checkbox</xsl:attribute>
     <xsl:attribute name="name">visibility</xsl:attribute>
